@@ -5,7 +5,7 @@ Created on Fri Apr 15 01:40:29 2022
 @author: Ehlion
 """
 
-from NodeCollectionIf import AbsCollectionNode
+from wordgenerator.NodeCollectionIf import AbsCollectionNode
         
 #___________________________________________________#
 #                                                   #
@@ -15,10 +15,15 @@ class SequenceNode(AbsCollectionNode):
     
     def __init__(self):
         AbsCollectionNode.__init__(self)
+        self.inbetweenAction = None
         
     def draw(self):
         """draw every children sequentially"""
+        firstAction=True
+        
         for row in self.children:
+            if firstAction : firstAction = False
+            else : yield self.inbetweenAction
             yield row.node
 
 #___________________________________________________#
