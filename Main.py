@@ -4,57 +4,90 @@ Created on Tue Sep 15 13:55:17 2020
 
 @author: Ehlion
 """
-from wordgenerator.weightmap import weightmap as weightmap
 
-w_empty = weightmap()
-w_single = weightmap()
-w_easy = weightmap()
-w_ponder = weightmap()
+from wordgenerator.Weight import WeightNode
+from wordgenerator.Interval import IntervalNode     
 
-w_empty.map
-w_single.map
-w_easy.map
+#___________________________________________________#
+#                                                   #
+#                     WeightNode                    #
+#___________________________________________________#
 
-w_single.put(1, "The best one in the world")
-w_easy.put(1, "banana")
-w_easy.put(1, "Chocolat")
-w_ponder.put(0, "NEVER")
-w_ponder.put(5, "YES")
-w_ponder.put(1, "NO")
+""" Declarations """
 
+w_empty = WeightNode()
+w_single = WeightNode()
+w_easy = WeightNode()
+w_ponder = WeightNode()
 
-print(w_empty.draw())
-print(w_single.draw())
+w_single.extend([
+    [1, "The best one in the world"],
+])
+w_easy.extend([
+    [1, "banana"],
+    [1, "Chocolat"],
+])
+w_ponder.extend([
+    [0, "NEVER"],
+    [5, "YES"],
+    [1, "NO"],
+])
+
+""" Executions """
+
+print("== Weigh maps ==")
+
+print("- Empty map :")
+w_empty.execute()
+
+print("- 1 row map :")
+w_single.execute()
+
+print("- 2 row map, weight=1 (5times) :")
 for i in range(0,5):
-    print(w_easy.draw())
-for i in range(0,10):
-    print(w_ponder.draw())
+    w_easy.execute()
     
-w_range = weightmap()
-w_range.extend([
-    (3,"test3"),
-    (5,"test5"),
-    ])
-print(w_range.draw())
+print("- 3 row map, different weight, including 0 (10times) :")
+for i in range(0,10):
+    w_ponder.execute()
+    
+#___________________________________________________#
+#                                                   #
+#                    IntervalNode                   #
+#___________________________________________________#
+    
+""" Declarations """
 
-from wordgenerator.intervalmap import intervalmap as intervalmap
+i_empty = IntervalNode()
+i_single = IntervalNode()
+i_test = IntervalNode()
 
-i_empty = intervalmap()
-i_single = intervalmap()
-i_test = intervalmap()
+i_single.extend([
+    [1,1,"your majesty"]
+])
+i_test.extend([
+    [1,1, "AAA"],
+    [2,4, "BBB"],
+    [0,3, "CCC"],
+    [4,1, "DDD"],
+])
 
-i_single.put(1,1,"your majesty")
-i_test.put(1,1, "AAA")
-i_test.put(2,4, "BBB")
-i_test.put(0,3, "CCC")
-i_test.put(4,1, "DDD")
+""" Executions """
 
-print(i_empty.draw(1))
+print("== Interval maps ==")
 
+print("- Empty map :")
+for resNode in i_empty.drawFromResult(1):
+    resNode.execute()
+
+print("- 1 row map (0->2) :")
 for i in range(0,3):
     print("single {}".format(i))
-    print(i_single.draw(i))
+    for resNode in i_single.drawFromResult(i):
+        resNode.execute()
 
+print("- 4 row map, with overlaps (0->5) :")
 for i in range(0,6):
     print("test {}".format(i))
-    print(i_test.draw(i))
+    for resNode in i_test.drawFromResult(i):
+        resNode.execute()
