@@ -75,7 +75,7 @@ action.extend([
 	[2,"befriended"],
 	[1,"seduced"],
 ])
-           
+
 victim = weightmap()
 victim.extend([
 	[4,"my family"],

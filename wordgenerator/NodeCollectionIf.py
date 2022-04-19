@@ -43,7 +43,8 @@ class RowNode:
     
             Parameters
             ----------
-            node : AbsGeneratorNode
+            node
+                AbsGeneratorNode
     
             Raises
             ------

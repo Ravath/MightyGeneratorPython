@@ -6,7 +6,7 @@ Created on Tue Sep 15 13:55:17 2020
 """
 
 from wordgenerator.Weight import WeightNode
-from wordgenerator.Interval import IntervalNode     
+from wordgenerator.Interval import IntervalNode
 
 #___________________________________________________#
 #                                                   #
@@ -46,16 +46,16 @@ w_single.execute()
 print("- 2 row map, weight=1 (5times) :")
 for i in range(0,5):
     w_easy.execute()
-    
+
 print("- 3 row map, different weight, including 0 (10times) :")
 for i in range(0,10):
     w_ponder.execute()
-    
+
 #___________________________________________________#
 #                                                   #
 #                    IntervalNode                   #
 #___________________________________________________#
-    
+
 """ Declarations """
 
 i_empty = IntervalNode()
