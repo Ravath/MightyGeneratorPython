@@ -54,7 +54,7 @@ class WeightRow(RowNode):
 #___________________________________________________#
 class WeightNode(AbsCollectionNode):
     
-    def __init__(self):
+    def __init__(self, numberOfDraw:int=1, putBack:bool=True):
         AbsCollectionNode.__init__(self)
         """ flag raised if the total weight of the row
             has changed and must be recomputed
@@ -63,8 +63,8 @@ class WeightNode(AbsCollectionNode):
         self.knowntotal = True
         
         """ introduce new attributes """
-        self.numberOfDraw=1
-        self.putBack=True
+        self.numberOfDraw = numberOfDraw
+        self.putBack = putBack
         
     def getRow(self, *args, **kargs) -> WeightRow:
         newRow=WeightRow()
@@ -98,17 +98,18 @@ class WeightNode(AbsCollectionNode):
             
         if self.totalWeight == 0 : return ""
     
-        # Roll
-        roll = random.randint(1,self.totalWeight)
-        index = 0
+        for y in range(0, self.numberOfDraw):
+            # Roll
+            roll = random.randint(1, self.totalWeight) #We ask to get a random number 
+            index = 0
         
-        # Find associated entry
-        roll -= self.children[index].weight
-        while roll > 0:
-            index += 1
+            # Find associated entry
             roll -= self.children[index].weight
+            while roll > 0:
+                index += 1
+                roll -= self.children[index].weight
             
-        yield self.children[index].node
+            yield  self.children[index].node
         
     def __str_attributes__(self) -> str :
         # Sum the total weight
@@ -122,7 +123,7 @@ class WeightNode(AbsCollectionNode):
 #                       DEBUG                       #
 #___________________________________________________#
 if __name__ == "__main__" :
-    var = WeightNode();
+    var = WeightNode(5);
     var.extend([
         "test",
         [2, PrintNode("yes")],
@@ -132,6 +133,5 @@ if __name__ == "__main__" :
     var.insert(1, 2, node="insert")
     var.insert(index=1, weight=3, node="insert2")
     var.printNode()
-    for i in range(0,5):
-        var.execute()
+    var.execute()
     
