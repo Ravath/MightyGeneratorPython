@@ -3,54 +3,63 @@
 Created on Tue Apr 19 20:28:43 2022
 
 @author: Ehlion
+
+| Module with debug and testing tools.
 """
 
-def getReturn(func) :
-    """Decorator which prints the return values of a function."""
-    def wrapper(*arg, **karg):
-        res = func(*arg, *karg)
-        print("Result({}) = {}".format(func.__name__, str(res)))
-        return res
-    return wrapper
+def print_log(log_name:str, message:str) :
+    """Format and print a log message"""
+    print(f"{log_name.upper():<8}| {message}")
 
-def getArgs(func) :
-    """Decorator which prints the arguments values of a function."""
-    def wrapper(*arg, **karg):
-        print("{}({} | {})".format(func.__name__, arg, karg))
-        res = func(*arg, *karg)
-        return res
-    return wrapper
-
-def trace(printArg = True, printRet = True) :
+def trace(print_arg = True, print_ret = True) :
     """
     Decorator the print the trace in and out of a function
 
     Parameters
     ----------
-    printArg : Bool, optional
+    print_arg : Bool, optional
         For printing the entry and arguments to the function.
         The default is True.
-    printRet : Bool, optional
+    print_ret : Bool, optional
         For printing the return value from the function.
         The default is True.
     """
-    
-    def traceDecoration(func):
+
+    # case with given arguments
+    def trace_decoration(func):
         def wrapper(*arg, **karg):
-            if printArg:
-                print("{}({} | {}) ...".format(func.__name__, arg, karg))
+            if print_arg:
+                print(f"{func.__name__}({arg} | {karg}) ...")
             res = func(*arg, *karg)
-            if printRet:
-                print("{}({} | {}) = {}".format(func.__name__, arg, karg, res))
+            if print_ret:
+                print(f"{func.__name__}({arg} | {karg}) = {res}")
             return res
         return wrapper
-        
-    if type(printArg) == type((trace)) :
-        func = printArg
+
+    # case without given arguments
+    if callable(print_arg) :
+        func = print_arg
         def wrapper(*arg, **karg):
-            print("{}({} | {}) ...".format(func.__name__, arg, karg))
+            print(f"{func.__name__}({arg} | {karg}) ...")
             res = func(*arg, *karg)
-            print("{}({} | {}) = {}".format(func.__name__, arg, karg, res))
+            print(f"{func.__name__}({arg} | {karg}) = {res}")
             return res
         return wrapper
-    return traceDecoration
+    return trace_decoration
+
+def test(expected, received) :
+    """
+    Test the result by comparing exoected and received values.
+    Good for unitary testing.
+
+    Parameters
+    ----------
+    expected :
+        The expected result.
+    received :
+        The value actually received.
+    """
+    if expected == received :
+        print_log("SUCCESS", f"Expected : {expected} = Received : {received}")
+    else :
+        print_log("ERROR", f"Expected : {expected}, Received : {received}")
