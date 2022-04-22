@@ -19,8 +19,14 @@ class WeightRow(RowNode):
         RowNode.__init__(self)
         
         """ introduce new attributes """
-        self.weight=1
-        self.putBack=1
+        self.weight= 1
+        # putBack indicates how many times a row can be put back in a node
+        # A value <0 for putBack allows an infinite put back in a node by default
+        self.putBack= -1 
+        """putBack indicates how many times a row 
+        can be put back in a node .A value <0 for putBack allows
+        an infinite put back in a node """
+        self.stopRow = False
         
         """ extend the signature conversion table """
         def int1(self, i1):
@@ -92,24 +98,43 @@ class WeightNode(AbsCollectionNode):
                 self.totalWeight += x.weight
         
     def draw(self):
-        
         # Sum the total weight
         self.computeTotal()
+        for child in self.children :
+            child.stopRow = False
+        for child in self.children :
+            child.putBack = child.putBack
             
         if self.totalWeight == 0 : return ""
     
         for y in range(0, self.numberOfDraw):
+            # Stops if no one can be picked
+            if self.totalWeight == 0 :
+                return
+            
             # Roll
-            roll = random.randint(1, self.totalWeight) #We ask to get a random number 
+            roll = random.randint(1, self.totalWeight) #We ask to get a random number
             index = 0
-        
             # Find associated entry
-            roll -= self.children[index].weight
+            # Particular case if first pick of the list has been row 
+            if self.children[index].stopRow == False :
+                roll -= self.children[index].weight
+            else : pass
+
             while roll > 0:
                 index += 1
-                roll -= self.children[index].weight
+                if self.children[index].stopRow == False :
+                    roll -= self.children[index].weight
+                
+            yield self.children[index].node
             
-            yield  self.children[index].node
+            # Conditions for putting back row and how many times it will do it
+            if self.putBack == False or (self.putBack == True and self.children[index].putBack == 0):
+                self.children[index].stopRow = True
+                self.totalWeight -= self.children[index].weight
+            elif self.putBack == True and self.children[index].putBack != 0 :
+                 self.children[index].putBack = self.children[index].putBack - 1
+            else: pass
         
     def __str_attributes__(self) -> str :
         # Sum the total weight
@@ -123,7 +148,7 @@ class WeightNode(AbsCollectionNode):
 #                       DEBUG                       #
 #___________________________________________________#
 if __name__ == "__main__" :
-    var = WeightNode(5);
+    var = WeightNode(7, True);
     var.extend([
         "test",
         [2, PrintNode("yes")],
