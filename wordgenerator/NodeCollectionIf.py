@@ -12,8 +12,10 @@ from wordgenerator.Print import PrintNode
 #                                                   #
 #                      RowNode                      #
 #___________________________________________________#
-class RowNode:
-    
+class RowNode :
+    """ A generic row node for the bridge pattern between
+    the CollectionNode and the children nodes. """
+
     def __init__(self) :
         """ The node child of this row
                 TYPE : AbsGeneratorNode
@@ -24,54 +26,54 @@ class RowNode:
                 parsing the arguments given to the row.
                 TYPE : *(*types, function(self, *args))
         """
-        self.argumentConversion={}
-        
+        self.argument_conversion={}
+
         """ We introduce default behavor:
             String or nodes or stored in self.node.
         """
         # Be Carreful : messing with attribute names will create new ones
         def conv1(self, s1) :
-                self.setNode(s1)
-        self.argumentConversion = [
+            self.set_node(s1)
+        self.argument_conversion = [
             ([str], conv1),
             ([AbsGeneratorNode], conv1),
         ]
-    
-    def setNode(self, node) :
+
+    def set_node(self, node) :
         """
             Set the child node of the row
-    
+
             Parameters
             ----------
             node
                 AbsGeneratorNode
-    
+
             Raises
             ------
             TypeError
                 The argument must be a string or a node.
         """
-        if type(node) is str :
+        if isinstance(node, str) :
             self.node=PrintNode(node)
         elif isinstance(node, AbsGeneratorNode) :
             self.node=node
         else :
             raise TypeError("Must be a node or some text")
-            
+
     def put(self, *args, **kargs) :
         """
             Parse the given arguments according to type and name
-    
+
             Parameters
             ----------
             *args : List of arguments for the row
                 The type and order of the arguments
                 are relevant and must match a signature in
-                the 'self.argumentConversion' table.
+                the 'self.argument_conversion' table.
             **kargs : dictionnary of arguments for the row
                 The given argument names must match
                 attributes names of the row.
-    
+
             Raises
             ------
             TypeError
@@ -80,16 +82,16 @@ class RowNode:
             NameError
                 The argument name must correspond to an attribute name.
         """
-        
-        """Do the unnamed arguments"""
+
+        # Do the unnamed arguments
         if len(args) > 0:
             types = [type(v) for v in args]
             found = False
-            
+
             # compare every signature
-            for signature, convertor in self.argumentConversion:
+            for signature, convertor in self.argument_conversion:
                 if len(signature) != len(args) : continue
-            
+
                 # check same signature
                 if signature == types:
                     found=True
@@ -100,125 +102,128 @@ class RowNode:
                            not issubclass(types[it], signature[it]) ) :
                             found=False
                             break
-                        
+
                 # if type signature found, do conversion
                 if found :
                     convertor(self, *args)
                     break
             if not found:
-                raise TypeError("Can't convert given types " + str(types))
-        
-        """Do the named arguments"""
+                raise TypeError(f"Can't convert given types {str(types)}")
+
+        # Do the named arguments
         for (k,v) in kargs.items() :
             # get ride of trivial case
             if k == "node":
-                self.setNode(v)
+                self.set_node(v)
             # Check if the attribute exists
             elif k in self.__dict__:
                 # Check if the type is compatible
-                if type(v) == type(self.__dict__[k]) :
+                if isinstance(v, type(self.__dict__[k])) :
                     self.__dict__[k]=v
-                else : raise  TypeError("argument '{}' of type {} is incompatible with type '{}'".
-                                        format(k, type(v), type(self.__dict__[k])))
-            else : raise NameError("Row has no attribute '" + k + "'")
-        
+                else : raise  TypeError(f"argument '{k}' of type {type(v)} "\
+                                        f"is incompatible with type '{type(self.__dict__[k])}'")
+            else : raise NameError(f"Row has no attribute '{k}'")
+
     #####################################################
     #                  PRINT NODE LOGIC                 #
     #####################################################
-    
+
     def __str_attributes__(self) -> str :
         """Get the attributes and values into a string"""
         return ""
-    
-    def printNode(self, tabs:int = 0) :
-        
-        print("{tabs}[{name} : {attributes}]".
-              format(tabs="\t"*tabs,
-                     name="ROW",
-                     attributes=self.__str_attributes__()))
-        
-        self.node.printNode(tabs+1)
+
+    def print_node(self, tabs:int = 0) :
+        """print the row node and its child."""
+        tab_signs = "\t"*tabs
+        print(f"{tab_signs}[ROW : {self.__str_attributes__}]")
+
+        self.node.print_node(tabs+1)
 
 #___________________________________________________#
 #                                                   #
 #                 AbsCollectionNode                 #
 #___________________________________________________#
 class AbsCollectionNode(AbsGeneratorNode) :
-    """
-    A generic collection node for the composite pattern.
-    """
-        
+    """ A generic collection node for the composite pattern. """
+
     @classmethod
     def __subclasshook__(cls, subclass) :
-        return (hasattr(subclass, 'draw') and 
+        return (hasattr(subclass, 'draw') and
                 callable(subclass.draw)and
-                hasattr(subclass, 'getRow') and 
-                callable(subclass.getRow) or 
+                hasattr(subclass, 'get_row') and
+                callable(subclass.get_row) or
                 NotImplemented)
-    
+
     def __init__(self) :
         AbsGeneratorNode.__init__(self)
-        self.children = list()
-        
+        self.children = []
+
     #####################################################
     #                   EXECUTE LOGIC                   #
     #####################################################
-    
+
     def draw(self) :
         """draw some children"""
-        raise NotImplementedError("In class {}".format(type(self).__name__))
-    
+        raise NotImplementedError(f"In class {type(self).__name__}")
+
     def execute(self) :
+        """Execute every node drawn from the collection."""
         for node in self.draw() :
             if node :
                 node.execute()
-        
+
     #####################################################
     #                ROW COLLECTION LOGIC               #
     #####################################################
-        
-    def getRow(self, *args, **kargs) -> RowNode:
+
+    def get_row(self, *args, **kargs) -> RowNode:
         """Convert given arguments into a suitable row
             for the collection.
             No specific arguments by default.
         """
-        newRow=RowNode()
-        newRow.put(*args, **kargs)
-        return newRow
-        
+        new_row = RowNode()
+        new_row.put(*args, **kargs)
+        return new_row
+
     def extend(self, table) :
-        assert type(table) is list
-        for t in table :
-            if (type(t) is str or
-                type(t) is not list) :
-                newRow = self.getRow(t)
+        """Append new RowNodes.
+        Arguments are managed by the argument_conversion table
+        of the appropriate row class."""
+        assert isinstance(table, list)
+        for row_args in table :
+            if (isinstance(row_args, str) or
+                not isinstance(row_args, list)) :
+                new_row = self.get_row(row_args)
             else :
-                newRow = self.getRow(*t)
-            self.children.append(newRow)
-        
+                new_row = self.get_row(*row_args)
+            self.children.append(new_row)
+
     def append(self, *args, **kargs) :
-        newRow = self.getRow(*args, **kargs)
-        self.children.append(newRow)
-        
+        """Append a new RowNode.
+        Arguments are managed by the argument_conversion table
+        of the appropriate row class."""
+        new_row = self.get_row(*args, **kargs)
+        self.children.append(new_row)
+
     def insert(self, index:int, *args, **kargs) :
-        newRow = self.getRow(*args, **kargs)
-        self.children.insert(index, newRow)
-        
+        """Insert a new RowNode at the given index.
+        Arguments are managed by the argument_conversion table
+        of the appropriate row class."""
+        new_row = self.get_row(*args, **kargs)
+        self.children.insert(index, new_row)
+
     #####################################################
     #                  PRINT NODE LOGIC                 #
     #####################################################
-    
+
     def __str_attributes__(self) -> str :
         """Get the attributes and values into a string"""
         return ""
-    
-    def printNode(self, tabs:int = 0) :
-        
-        print("{tabs}[{name} : {attributes}]".
-              format(tabs="\t"*tabs,
-                     name=type(self).__name__,
-                     attributes=self.__str_attributes__()))
-        
+
+    def print_node(self, tabs:int = 0) :
+        """print the node and its children."""
+        tab_sign="\t"*tabs
+        print(f"{tab_sign}[{type(self).__name__} : {self.__str_attributes__()}]")
+
         for row in self.children :
-            row.printNode(tabs+1)
-        
+            row.print_node(tabs+1)
