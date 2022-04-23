@@ -5,6 +5,7 @@ Created on Tue Sep 15 13:55:17 2020
 @author: Ehlion
 """
 
+from macro.dice import PoolSum, Pool
 from wordgenerator.Weight import WeightNode
 from wordgenerator.Interval import IntervalNode
 
@@ -51,6 +52,8 @@ print("- 3 row map, different weight, including 0 (10times) :")
 for i in range(0,10):
     w_ponder.execute()
 
+w_ponder.printNode()
+
 #___________________________________________________#
 #                                                   #
 #                    IntervalNode                   #
@@ -58,9 +61,11 @@ for i in range(0,10):
 
 """ Declarations """
 
-i_empty = IntervalNode()
-i_single = IntervalNode()
-i_test = IntervalNode()
+rand_pool = PoolSum(Pool(1,4))
+
+i_empty = IntervalNode(rand_pool)
+i_single = IntervalNode(rand_pool)
+i_test = IntervalNode(rand_pool)
 
 i_single.extend([
     [1,1,"your majesty"]
@@ -77,17 +82,23 @@ i_test.extend([
 print("== Interval maps ==")
 
 print("- Empty map :")
-for resNode in i_empty.drawFromResult(1):
+for resNode in i_empty.draw_from_result(1):
     resNode.execute()
 
 print("- 1 row map (0->2) :")
 for i in range(0,3):
     print("single {}".format(i))
-    for resNode in i_single.drawFromResult(i):
+    for resNode in i_single.draw_from_result(i):
         resNode.execute()
 
 print("- 4 row map, with overlaps (0->5) :")
 for i in range(0,6):
     print("test {}".format(i))
-    for resNode in i_test.drawFromResult(i):
+    for resNode in i_test.draw_from_result(i):
         resNode.execute()
+
+print("== Interval maps ==")
+i_empty.execute()
+i_single.execute()
+i_test.execute()
+

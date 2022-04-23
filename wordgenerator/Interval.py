@@ -5,6 +5,7 @@ Created on Tue Sep 15 17:35:42 2020
 @author: Ehlion
 """
 
+from macro.dice import ValueIf, PoolSum, Pool
 from wordgenerator.NodeIf import AbsGeneratorNode
 from wordgenerator.NodeCollectionIf import AbsCollectionNode, RowNode
 from wordgenerator.Print import PrintNode
@@ -13,28 +14,31 @@ from wordgenerator.Print import PrintNode
 #                                                   #
 #                    IntervalRow                    #
 #___________________________________________________#
-class IntervalRow(RowNode):
-    def __init__(self):
+class IntervalRow(RowNode) :
+    """The row of an IntervalNode. Encapsulates a node,
+    and uses a min-max interval to determine the odds of getting drawn."""
+    def __init__(self) :
         RowNode.__init__(self)
-        
-        """ introduce new attributes """
+
+        # introduce new attributes
         self.min=1
         self.max=1
-        
-        """ extend the signature conversion table """
-        def int1(self, i1):
+
+        # extend the signature conversion table
+# pylint: disable-msg=C0103
+        def int1(self, i1) :
             self.min=i1
-        def int2(self, i1, i2):
+        def int2(self, i1, i2) :
             self.min=i1
             self.max=i2
         def conv2(self, i1, s1) :
             self.min=i1
-            self.setNode(s1)
+            self.set_node(s1)
         def conv3(self, i1, i2, s1) :
             self.min=i1
             self.max=i2
-            self.setNode(s1)
-        self.argumentConversion.extend([
+            self.set_node(s1)
+        self.argument_conversion.extend([
             ([int], int1),
             ([int,int], int2),
             ([int,str], conv2),
@@ -42,61 +46,70 @@ class IntervalRow(RowNode):
             ([int,AbsGeneratorNode], conv2),
             ([int,int,AbsGeneratorNode], conv3),
         ])
-        
+# pylint: enable-msg=C0103
+
     def __str_attributes__(self) -> str :
-        return "Min={} Max={}".format(
-            self.min, self.max)
+        return f"Min={self.min} Max={self.max}"
 
 #___________________________________________________#
 #                                                   #
 #                    IntervalNode                   #
 #___________________________________________________#
-class IntervalNode(AbsCollectionNode):
-    
-    def __init__(self):
+class IntervalNode(AbsCollectionNode) :
+    """A random collection where the rows are drawn
+    if the random is between the min and max interval
+    of the given row."""
+
+    def __init__(self, dice:ValueIf, number_of_draw:int = 1, put_back:bool = True) :
         AbsCollectionNode.__init__(self)
-        
-        """ introduce new attributes """
-        self.numberOfDraw=1
-        self.putBack=True
-        
-    def getRow(self, *args, **kargs) -> IntervalRow:
-        newRow=IntervalRow()
-        newRow.put(*args, **kargs)
-        return newRow
-        
-    def put(self, min, max, text):
-        self.map.append(((min,max),text))
-        
+
+        # introduce new attributes
+        self.dice = dice
+        self.number_of_draw = number_of_draw
+        self.put_back = put_back
+
+    def get_row(self, *args, **kargs) -> IntervalRow :
+        """Instanciate the proper row with the given arguments"""
+        new_row=IntervalRow()
+        new_row.put(*args, **kargs)
+        return new_row
+
+    def put(self, vmin, vmax, text) :
+        """Add a row with the given interval."""
+        self.children.append(((vmin,vmax),text))
+
     def draw(self) :
-        #TODO
-        res=1
-        return self.drawFromResult(res)
-        
-    def drawFromResult(self, roll:int):
+        """Draw a random value from the given random generation
+        and draw rows consequently."""
+        res=self.dice.value
+        return self.draw_from_result(res)
+
+    def draw_from_result(self, roll:int) :
+        """Get the result for the given value."""
         for row in self.children:
-            if roll >= row.min and roll <= row.max:
+            if row.min <= roll <= row.max:
                 yield row.node
-                
+
     def __str_attributes__(self) -> str :
-        return "Draws={} PutBack={}".format(
-            self.numberOfDraw, self.putBack)
-            
+        return f"Draws={self.number_of_draw} PutBack={self.put_back}"
+
 #___________________________________________________#
 #                                                   #
 #                       DEBUG                       #
 #___________________________________________________#
 if __name__ == "__main__" :
-    var = IntervalNode();
+    var = IntervalNode(PoolSum(Pool(1,4)))
     var.extend([
-        "test",
+        [0, 4, "test"],
         [1, 2, PrintNode("yes")],
         [3, 2, "problem"],
-        PrintNode("manuel")])
-    var.printNode()
+        [5,10, PrintNode("manuel")]
+    ])
+    var.print_node()
     #can't do because have to implement roll
     #var.execute()
-    for i in range(0,6):
-        print("== {} ==".format(i))
-        for resNode in var.drawFromResult(i):
+    for i in range(0,6) :
+        print(f"== {i} ==")
+        for resNode in var.draw_from_result(i) :
             resNode.execute()
+    var.execute()
