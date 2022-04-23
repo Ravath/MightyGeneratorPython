@@ -9,7 +9,7 @@ Created on Tue Apr 19 14:15:22 2022
 """
 
 import random
-from calc import ValueIf
+from macro.calc import ValueIf
 
 def roll_dice(faces:int = 6) :
     """Get the result of a dice roll."""
@@ -360,7 +360,8 @@ class PoolSum(ValueIf, PoolIf) :
         self.pool = pool
 
     def get_value(self) -> int :
-        """Get the pool sum."""
+        """Roll and get the pool sum."""
+        self.roll()
         return sum([d.get_result()
                     for d in self.pool.get_results()
                     if not d.discarded])
@@ -372,6 +373,8 @@ class PoolSum(ValueIf, PoolIf) :
     def get_results(self) -> list :
         return self.pool.get_results()
 
+    value = property(get_value)
+
 class PoolCount(ValueIf, PoolIf) :
     """Count the number of the not discarded dice"""
     def __init__(self, pool:PoolIf) :
@@ -379,7 +382,8 @@ class PoolCount(ValueIf, PoolIf) :
         self.pool = pool
 
     def get_value(self) -> int :
-        """Get the pool count."""
+        """Roll and get the pool count."""
+        self.roll()
         return len([d
                     for d in self.pool.get_results()
                     if not d.discarded])
@@ -391,6 +395,8 @@ class PoolCount(ValueIf, PoolIf) :
     def get_results(self) -> list :
         return self.pool.get_results()
 
+    value = property(get_value)
+
 #___________________________________________________#
 #                                                   #
 #                      Testing                      #
@@ -401,18 +407,18 @@ if __name__ == "__main__" :
 
     # for test purpose, we stub the *ing not deterministic function
 # pylint: disable-msg=E0102
-    diceResults = []
+    dice_results = []
     def roll_dice(faces:int) :
         """Stub of the random function for unit testing"""
-        return ((diceResults.pop(0)-1) % faces)+1
+        return ((dice_results.pop(0)-1) % faces)+1
 # pylint: enable-msg=E0102
 
     def test_pool(tpool:PoolIf, results:list, discarded:list) :
         """Test the roll result of the given dicePool."""
 
         # Reset the pseudo-random stack
-        diceResults.clear()
-        diceResults.extend([1,2,3,4, 1,4,1,1,2,3])
+        dice_results.clear()
+        dice_results.extend([1,2,3,4, 1,4,1,1,2,3])
 
         # Roll
         tpool.roll()
@@ -522,11 +528,11 @@ if __name__ == "__main__" :
     def test_sum(pool, expected:int) :
         """Test the roll result of the given PoolResult."""
         # Reset the pseudo-random stack
-        diceResults.clear()
-        diceResults.extend([1,2,3,4])
+        dice_results.clear()
+        dice_results.extend([1,2,3,4])
         # Roll and test
-        pool.roll()
-        test(expected, pool.get_value())
+        # pool.roll() done in get_value
+        test(expected, pool.value)
 
     print_log("TEST", "PoolSum - Simple cases")
     p = PoolSum(Pool(4,4))
