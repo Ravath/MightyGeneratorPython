@@ -150,7 +150,7 @@ class Pool(PoolIf) :
 
 def test_match(pool, die:Dice) :
     """
-    Test the dice for the given pool filter.
+    Test the dice for the given pool threshold filter.
 
     Parameters
     ----------
