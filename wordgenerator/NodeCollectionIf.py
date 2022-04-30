@@ -135,7 +135,7 @@ class RowNode :
     def print_node(self, tabs:int = 0) :
         """print the row node and its child."""
         tab_signs = "\t"*tabs
-        print(f"{tab_signs}[ROW : {self.__str_attributes__}]")
+        print(f"{tab_signs}[ROW : {self.__str_attributes__()}]")
 
         self.node.print_node(tabs+1)
 
@@ -197,6 +197,7 @@ class AbsCollectionNode(AbsGeneratorNode) :
             else :
                 new_row = self.get_row(*row_args)
             self.children.append(new_row)
+        return self
 
     def append(self, *args, **kargs) :
         """Append a new RowNode.
@@ -204,6 +205,7 @@ class AbsCollectionNode(AbsGeneratorNode) :
         of the appropriate row class."""
         new_row = self.get_row(*args, **kargs)
         self.children.append(new_row)
+        return self
 
     def insert(self, index:int, *args, **kargs) :
         """Insert a new RowNode at the given index.
@@ -211,6 +213,14 @@ class AbsCollectionNode(AbsGeneratorNode) :
         of the appropriate row class."""
         new_row = self.get_row(*args, **kargs)
         self.children.insert(index, new_row)
+        return self
+
+    def __iter__(self) :
+        return [n.node for n in self.children].__iter__()
+    def __getitem__(self, key) :
+        return self.children[key].node
+    def __setitem__(self, key, value) :
+        self.children[key].set_node(value)
 
     #####################################################
     #                  PRINT NODE LOGIC                 #
