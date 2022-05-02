@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from wordgenerator.Weight import WeightNode
-from wordgenerator.Sequence import SequenceNode
+from wordgenerator.Weight import WeightNode as Weight
+from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Print import Title
 
 def DoubleRelance(rel_node) :
-    seq = SequenceNode()
+    seq = Sequence()
     seq.extend([
         rel_node,
         rel_node,
@@ -14,7 +14,7 @@ def DoubleRelance(rel_node) :
 
 ################ PROP SPE ARMES & ARMURES
 
-spe_armure = WeightNode()
+spe_armure = Weight()
 spe_armure.extend([
     [25, "Mimétisme (+2 700 po)"],
     [ 7, "Défense légère (+1 altération)"],
@@ -26,7 +26,7 @@ spe_armure.extend([
 ])# 00 : relance 2 fois
 spe_armure.append(DoubleRelance(spe_armure))
 
-spe_bouclier = WeightNode()
+spe_bouclier = Weight()
 spe_bouclier.extend([
     [20, "Interception de projectiles (+1 altération)"],
     [20, "Attaque (+1 altération)"],
@@ -38,7 +38,7 @@ spe_bouclier.extend([
 ])# 00 : relance 2 fois
 spe_bouclier.append(DoubleRelance(spe_bouclier))
 
-spe_cac = WeightNode()
+spe_cac = Weight()
 spe_cac.extend([
     [10, "Tueuse (+1 altération)"],
     [ 7, "Gardienne (+1 altération)"],
@@ -57,7 +57,7 @@ spe_cac.extend([
 ])# 00 : relance 2 fois
 spe_cac.append(DoubleRelance(spe_cac))
 
-spe_dist = WeightNode()
+spe_dist = Weight()
 spe_dist.extend([
     [12, "Tueuse (+1 altération)"],
     [13, "Longue portée (+1 altération)"],
@@ -73,17 +73,14 @@ spe_dist.append(DoubleRelance(spe_dist))
 
 ################ ARMURES & BOUCLIERS
 
-from wordgenerator.Sequence import SequenceNode as Sequence
-from wordgenerator.Print import ActionNode
-
-obj_armure_spe = WeightNode()
+obj_armure_spe = Weight()
 obj_armure_spe.extend([
     [50, "Chemise de mailles en mithral (1 100 po)"],
     [30, "Harnois en peau de dragon (3 300 po)"],
     [20, "Cotte de maille elfique (5 150 po)"],
 ])
 
-obj_bouclier_spe = WeightNode()
+obj_bouclier_spe = Weight()
 obj_bouclier_spe.extend([
     [30, "Bouclier en ébénite (205 po)"],
     [50, "Ecu en ébénite (257 po)"],
@@ -109,36 +106,36 @@ def RollArmorProperty() :
         pass #raise ValueError(f"Not expected value {armor_type}")
     armor_type = "NONE"
 
-obj_bouclier_armure = WeightNode()
+obj_bouclier_armure = Weight()
 obj_bouclier_armure.extend([
     [60, Sequence().extend([
         "Bouclier +1 (+1 000po)",
-        ActionNode(setShield)])],
+        setShield])],
     [20, Sequence().extend([
         "Armure +1 (+1 000po)",
-        ActionNode(setArmor)])],
+        setArmor])],
     [ 5, Sequence().extend([
         "Bouclier +2 (+4 000po)",
-        ActionNode(setShield)])],
+        setShield])],
     [ 3, Sequence().extend([
         "Armure +2 (+4 000po)",
-        ActionNode(setArmor)])],
+        setArmor])],
     [ 2, obj_armure_spe],
     [ 2, obj_bouclier_spe],
     # [ 8, reroll and add special property"],
 ])
 
-obj_bouclier_armure_reroll = WeightNode()
+obj_bouclier_armure_reroll = Weight()
 obj_bouclier_armure_reroll.children = [c for c in obj_bouclier_armure.children[0:4]]
 
 obj_bouclier_armure.append(8, Sequence().extend([
     obj_bouclier_armure_reroll,
-    Title("Propriété", ActionNode(RollArmorProperty))
+    Title("Propriété", RollArmorProperty)
 ]))
 
 ################ ARMES CAC & DIST
 
-obj_arme_spe = WeightNode()
+obj_arme_spe = Weight()
 obj_arme_spe.extend([
     [15, "Flèche endormante (132 po)"],
     [10, "Carreau hurleur (267 po)"],
@@ -150,7 +147,7 @@ obj_arme_spe.extend([
     [10, "Hache d'armes en adamantium (3 010 po)"],
 ])
 
-obj_cac_dist = WeightNode()
+obj_cac_dist = Weight()
 obj_cac_dist.extend([
     [70, "Arme +1 (+1 000po)"],
     [15, "Arme +2 (+8 000po)"],
@@ -158,7 +155,7 @@ obj_cac_dist.extend([
     # [10, reroll and add special property"],
 ])
 
-obj_arme_reroll = WeightNode()
+obj_arme_reroll = Weight()
 obj_arme_reroll.children = [c for c in obj_cac_dist.children[0:2]]
 
 obj_cac_dist.append(10, Sequence().extend([
@@ -169,14 +166,14 @@ obj_cac_dist.append(10, Sequence().extend([
 
 ################ AUTRES
 
-obj_potion = WeightNode()
+obj_potion = Weight()
 obj_potion.extend([
    [20, "Sort de niveau 0 (25 po)"],
    [40, "Sort de niveau 1 (50 po)"],
    [40, "Sort de niveau 2 (300 po)"],
 ])
 
-obj_anneaux = WeightNode()
+obj_anneaux = Weight()
 obj_anneaux.extend([
    [18, "Protection +1 (2 000 po)"],
    [10, "Feuille morte (2 200 po)"],
@@ -195,7 +192,7 @@ obj_anneaux.extend([
    [ 2, "Marche sur l’onde (15 000 po)"],
 ])
 
-obj_parchemin = WeightNode()
+obj_parchemin = Weight()
 obj_parchemin.extend([
     [ 5, "Sort de niveau 0 (12,5 po)"],
     [45, "Sort de niveau 1 (25 po)"],
@@ -203,14 +200,14 @@ obj_parchemin.extend([
     [ 4, "Sort de niveau 3 (375 po)"],
 ])
 
-obj_baguette = WeightNode()
+obj_baguette = Weight()
 obj_baguette.extend([
     [ 5, "Sort de niveau 0 (375 po)"],
     [55, "Sort de niveau 1 (750 po)"],
     [40, "Sort de niveau 2 (4 500 po)"],
 ])
 
-obj_merveilleux = WeightNode()
+obj_merveilleux = Weight()
 obj_merveilleux.extend([
     ["Plume magique (ancre) (50 po)"],
     ["Solvant universel (50 po)"],
@@ -316,7 +313,7 @@ obj_merveilleux.extend([
 
 ################ ROOT
 
-sel_main = WeightNode()
+sel_main = Weight()
 sel_main.extend([
     [ 4, Title("Armure", obj_bouclier_armure)],
     [ 5, Title("Arme", obj_cac_dist)],

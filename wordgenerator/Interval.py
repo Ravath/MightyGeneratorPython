@@ -41,8 +41,6 @@ class IntervalRow(RowNode) :
         self.argument_conversion.extend([
             ([int], int1),
             ([int,int], int2),
-            ([int,str], conv2),
-            ([int,int,str], conv3),
             ([int,AbsGeneratorNode], conv2),
             ([int,int,AbsGeneratorNode], conv3),
         ])

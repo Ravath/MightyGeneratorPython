@@ -173,7 +173,8 @@ nom_arme = Sequence().extend([
         [" tactique"],
         [" canon"],
         [" glorieux"],
-    ])
+    ]),
+    "\n"
 ])
 
 nom_grenade = Sequence().extend([
@@ -246,7 +247,8 @@ nom_grenade = Sequence().extend([
         [" concentré"],
         [" salsa pimenté"],
         [" plasmatique"],
-    ])
+    ]),
+    "\n"
 ])
 
 nom_bouclier = Sequence().extend([
@@ -321,7 +323,8 @@ nom_bouclier = Sequence().extend([
         [" arcanique"],
         [" occultant"],
         [" de mauvaise facture"],
-    ])
+    ]),
+    "\n"
 ])
 
 #################################################
@@ -357,8 +360,8 @@ def GetWeaponBuilder(weapon_name:str,
     return Title(weapon_name, Sequence().extend([
         nom_arme,
         Label("Dégats",              weapon_damage),
-        Label("Difficulté de visée", Print(weapon_aim)),
-        Label("Magasin",             Print(weapon_magazin)),
+        Label("Difficulté de visée", weapon_aim),
+        Label("Magasin",             weapon_magazin),
         weapon_modes,
     ]))
 
@@ -588,7 +591,7 @@ def GetGrenadeBuilder(weapon_name:str,
     return Title(weapon_name, Sequence().extend([
         nom_grenade,
         Label("Dégats",              weapon_damage),
-        Label("Difficulté de visée", Print(weapon_aim)),
+        Label("Difficulté de visée", weapon_aim),
         weapon_modes,
     ]))
 
@@ -596,32 +599,32 @@ grenade_damage = Print("2D20 + [[1d11+23]]")
 grenade_modes = " - Tir Simple\n"
 
 weapon_generation["GRENADE"] = {}
-weapon_generation["GRENADE"]["COMMUN"] = GetWeaponBuilder(
+weapon_generation["GRENADE"]["COMMUN"] = GetGrenadeBuilder(
     "Grenade Commune", grenade_damage,
     "[[4-1d7]]",
     grenade_modes,
 )
-weapon_generation["GRENADE"]["INCOMMUN"] = GetWeaponBuilder(
+weapon_generation["GRENADE"]["INCOMMUN"] = GetGrenadeBuilder(
     "Grenade Peu Commune", grenade_damage,
     "[[4-1d7]]",
     grenade_modes,
 )
-weapon_generation["GRENADE"]["RARE"] = GetWeaponBuilder(
+weapon_generation["GRENADE"]["RARE"] = GetGrenadeBuilder(
     "Grenade Rare", grenade_damage,
     "[[3-1d6]]",
     grenade_modes,
 )
-weapon_generation["GRENADE"]["EPIQUE"] = GetWeaponBuilder(
+weapon_generation["GRENADE"]["EPIQUE"] = GetGrenadeBuilder(
     "Grenade Epique", grenade_damage,
     "[[3-1d6]]",
     grenade_modes,
 )
-weapon_generation["GRENADE"]["ETECH"] = GetWeaponBuilder(
+weapon_generation["GRENADE"]["ETECH"] = GetGrenadeBuilder(
     "Grenade E-Tech", grenade_damage,
     "[[3-1d5]]",
     grenade_modes,
 )
-weapon_generation["GRENADE"]["LEGENDAIRE"] = GetWeaponBuilder(
+weapon_generation["GRENADE"]["LEGENDAIRE"] = GetGrenadeBuilder(
     "Grenade Légendaire", grenade_damage,
     "[[3-1d5]]",
     grenade_modes,
@@ -635,8 +638,8 @@ shield_intensity = "[[1d11+6]]"
 def GetShieldBuilder(shield_name:str) :
     return Title(shield_name, Sequence().extend([
         nom_bouclier,
-        Label("Capacité", Print(f"[[0-3*{shield_intensity}+84]]+[[1d7]]")),
-        Label("Cadence",  Print(f"[[1d5+{shield_intensity}]]")),
+        Label("Capacité", f"[[0-3*{shield_intensity}+84]]+[[1d7]]"),
+        Label("Cadence",  f"[[1d5+{shield_intensity}]]"),
     ]))
 
 weapon_generation["SHIELD"] = {}
@@ -658,7 +661,5 @@ weapon_generation["SHIELD"]["ETECH"] = GetShieldBuilder(
 weapon_generation["SHIELD"]["LEGENDAIRE"] = GetShieldBuilder(
     "Bouclier Légendaire",
 )
-
-
 
 print(Print._printer.get_text())

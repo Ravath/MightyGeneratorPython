@@ -6,7 +6,7 @@ Created on Fri Apr 15 01:39:26 2022
 """
 
 from wordgenerator.NodeIf import AbsGeneratorNode
-from wordgenerator.Print import PrintNode
+from wordgenerator.Print import CanConvToNode, ConvToNode
 
 #___________________________________________________#
 #                                                   #
@@ -35,7 +35,6 @@ class RowNode :
         def conv1(self, s1) :
             self.set_node(s1)
         self.argument_conversion = [
-            ([str], conv1),
             ([AbsGeneratorNode], conv1),
         ]
 
@@ -53,12 +52,7 @@ class RowNode :
             TypeError
                 The argument must be a string or a node.
         """
-        if isinstance(node, str) :
-            self.node=PrintNode(node)
-        elif isinstance(node, AbsGeneratorNode) :
-            self.node=node
-        else :
-            raise TypeError("Must be a node or some text")
+        self.node = ConvToNode(node)
 
     def put(self, *args, **kargs) :
         """
@@ -98,10 +92,15 @@ class RowNode :
                 else : # compare signature types one by one
                     found=True
                     for it in range(0,len(args)) :
+                        # check if it is a subtype
                         if (signature[it] != types[it] and
-                           not issubclass(types[it], signature[it]) ) :
-                            found=False
-                            break
+                            not issubclass(types[it], signature[it])) :
+                            # or a specific : str and functions are converted
+                            # and must therefore be treated as equivalent as a node
+                            if (signature[it] != AbsGeneratorNode or
+                                not CanConvToNode(args[it])) :
+                                found=False
+                                break
 
                 # if type signature found, do conversion
                 if found :

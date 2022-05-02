@@ -116,10 +116,50 @@ class PrintNode(AbsLeafNode):
         tab_sign="\t"
         print(f"{tab_sign*tabs}{type(self).__name__} : '{self.text}'")
 
+#___________________________________________________#
+#                                                   #
+#                      ActionNode                   #
+#___________________________________________________#
+class ActionNode(AbsLeafNode):
+    """Execute the given function at execution."""
+
+    def __init__(self, func:typing.Callable[[], None]):
+        AbsLeafNode.__init__(self)
+        assert callable(func)
+        self.func = func
+
+    def execute(self):
+        """Execute the given function."""
+        self.func()
+
+#___________________________________________________#
+#                                                   #
+#                    CONV FACILITIES                #
+#___________________________________________________#
+
+def CanConvToNode(conv_from) -> AbsGeneratorNode :
+    return (isinstance(conv_from, str) or
+            callable(conv_from) or
+            isinstance(conv_from, AbsGeneratorNode))
+
+def ConvToNode(conv_from) -> AbsGeneratorNode :
+    if isinstance(conv_from, str) :
+        return PrintNode(conv_from)
+    elif callable(conv_from) :
+        return ActionNode(conv_from)
+    elif isinstance(conv_from, AbsGeneratorNode) :
+        return conv_from
+    else :
+        raise TypeError("Must be a node, some text or a function")
+#___________________________________________________#
+#                                                   #
+#                     STR FORMATING                 #
+#___________________________________________________#
+
 class Title(PrintNode) :
-    def __init__(self, title:str, child:AbsGeneratorNode) :
+    def __init__(self, title:str, child) :
         PrintNode.__init__(self, title)
-        self.child = child
+        self.child = ConvToNode(child)
 
     def execute(self) :
         """Print the title, and then
@@ -137,9 +177,9 @@ class Title(PrintNode) :
         self.child.print_node(tabs+1)
 
 class Label(PrintNode) :
-    def __init__(self, label:str, child:AbsGeneratorNode) :
+    def __init__(self, label:str, child) :
         PrintNode.__init__(self, label + " : ")
-        self.child = child
+        self.child = ConvToNode(child)
 
     def execute(self) :
         """Print the label, and then
@@ -152,19 +192,3 @@ class Label(PrintNode) :
         """Print the node name and printed text."""
         PrintNode.print_node(self, tabs)
         self.child.print_node(tabs+1)
-
-#___________________________________________________#
-#                                                   #
-#                      ActionNode                   #
-#___________________________________________________#
-class ActionNode(AbsLeafNode):
-    """Execute the given function at execution."""
-
-    def __init__(self, func:typing.Callable[[], None]):
-        AbsLeafNode.__init__(self)
-        assert callable(func)
-        self.func = func
-
-    def execute(self):
-        """Execute the given function."""
-        self.func()

@@ -33,6 +33,7 @@ w_ponder.extend([
     [0, "NEVER"],
     [5, "YES"],
     [1, "NO"],
+    [1, lambda : print("papa")],
 ])
 
 """ Executions """
