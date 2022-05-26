@@ -18,11 +18,17 @@ class WeightRow(RowNode):
     def __init__(self):
         RowNode.__init__(self)
         
-        # introduce new attributes
-        self.weight=1
-        self.putBack=1
+        # Introduce new attributes
+        self.weight= 1
+        # putBack indicates how many times a row can be put back in a node
+        # A value <0 for putBack allows an infinite put back in a node by default
+        self.putBack= 0 
+        # putBack indicates how many times a row 
+        # can be put back in a node. A value <0 for putBack allows
+        # an infinite put back in a node
+        self.stopRow = False
         
-        # extend the signature conversion table
+        # Extend the signature conversion table
         def int1(self, i1):
             self.weight=i1
         def int2(self, i1, i2):
@@ -57,7 +63,7 @@ def randint(vmin:int, vmax:int) :
 #___________________________________________________#
 class WeightNode(AbsCollectionNode):
     
-    def __init__(self, mock=0, putBack=0):
+    def __init__(self, numberOfDraw:int = 1, putBack:bool = True) :
         AbsCollectionNode.__init__(self)
         # flag raised if the total weight of the row
         # has changed and must be recomputed
@@ -65,10 +71,10 @@ class WeightNode(AbsCollectionNode):
         self.knowntotal = True
         
         # introduce new attributes
-        self.numberOfDraw=1
-        self.putBack=True
+        self.numberOfDraw = numberOfDraw
+        self.putBack = putBack
         
-    def get_row(self, *args, **kargs) -> WeightRow:
+    def get_row(self, *args, **kargs) -> WeightRow :
         new_row = WeightRow()
         new_row.put(*args, **kargs)
         return new_row
@@ -92,23 +98,44 @@ class WeightNode(AbsCollectionNode):
             self.totalWeight = sum([ c.weight for c in self.children])
         
     def draw(self):
-        
         # Sum the total weight
         self.computeTotal()
+        for child in self.children :
+            child.stopRow = False
+        for child in self.children :
+            child.putBack = child.putBack
             
         if self.totalWeight == 0 : return ""
     
-        # Roll
-        roll = randint(1,self.totalWeight)
-        index = 0
+        for y in range(0, self.numberOfDraw):
+            # Stops if no one can be picked
+            if self.totalWeight == 0 :
+                return
         
-        # Find associated entry
-        roll -= self.children[index].weight
-        while roll > 0:
-            index += 1
-            roll -= self.children[index].weight
+            # Roll
+            roll = randint(1,self.totalWeight) #We ask to get a random number
+            index = 0
+            # Find associated entry
+            # Particular case if first pick of the list has been row 
+            if self.children[index].stopRow == False :
+                roll -= self.children[index].weight
+            else : pass
+
+            while roll > 0:
+                index += 1
+                if self.children[index].stopRow == False :
+                    roll -= self.children[index].weight
+                
+            yield self.children[index].node
             
-        yield self.children[index].node
+            # Conditions for putting back row and how many times it will do it
+            if (self.putBack == False or
+                (self.putBack == True and self.children[index].putBack == 0)):
+                self.children[index].stopRow = True
+                self.totalWeight -= self.children[index].weight
+            elif self.putBack == True and self.children[index].putBack != 0 :
+                 self.children[index].putBack -= 1
+            else: pass
         
     def __str_attributes__(self) -> str :
         # Sum the total weight
@@ -123,6 +150,20 @@ class WeightNode(AbsCollectionNode):
 #                       DEBUG                       #
 #___________________________________________________#
 if __name__ == "__main__" :
+
+    # var = WeightNode(7, True);
+    # var.extend([
+    #     "test",
+    #     [2, PrintNode("yes")],
+    #     [3, 2, "problem"],
+    #     PrintNode("manuel")])
+    # var.append("append")
+    # var.insert(1, 2, node="insert")
+    # var.insert(index=1, weight=2, node="insert2")
+    # var.print_node()
+    # var.execute()
+    # raise "toto"
+    
     from utils.debug import test, print_log
     from Print import ActionNode
 
