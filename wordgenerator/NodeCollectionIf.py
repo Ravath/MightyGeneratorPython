@@ -7,6 +7,7 @@ Created on Fri Apr 15 01:39:26 2022
 
 from wordgenerator.NodeIf import AbsGeneratorNode
 from wordgenerator.Print import CanConvToNode, ConvToNode
+from macro.calc import ValueIf
 
 #___________________________________________________#
 #                                                   #
@@ -20,7 +21,7 @@ class RowNode :
         """ The node child of this row
                 TYPE : AbsGeneratorNode
         """
-        self.node=None
+        self._node=None
         """ Conversion table (signature -> convertor function).
                 A list of signature types associated with the conversion method
                 parsing the arguments given to the row.
@@ -52,7 +53,12 @@ class RowNode :
             TypeError
                 The argument must be a string or a node.
         """
-        self.node = ConvToNode(node)
+        self._node = ConvToNode(node)
+
+    def get_node(self) -> AbsGeneratorNode :
+        return self._node
+
+    node = property(get_node, set_node)
 
     def put(self, *args, **kargs) :
         """
@@ -97,9 +103,14 @@ class RowNode :
                             not issubclass(types[it], signature[it])) :
                             # or a specific : str and functions are converted
                             # and must therefore be treated as equivalent as a node
-                            if (signature[it] != AbsGeneratorNode or
-                                not CanConvToNode(args[it])) :
-                                found=False
+                            if (signature[it] == AbsGeneratorNode and
+                                CanConvToNode(args[it])) :
+                                pass
+                            elif (signature[it] == int and
+                                  issubclass(types[it], ValueIf)) :
+                                  pass
+                            else :
+                                found = False
                                 break
 
                 # if type signature found, do conversion
@@ -111,17 +122,8 @@ class RowNode :
 
         # Do the named arguments
         for (k,v) in kargs.items() :
-            # get ride of trivial case
-            if k == "node":
-                self.set_node(v)
-            # Check if the attribute exists
-            elif k in self.__dict__:
-                # Check if the type is compatible
-                if isinstance(v, type(self.__dict__[k])) :
-                    self.__dict__[k]=v
-                else : raise  TypeError(f"argument '{k}' of type {type(v)} "\
-                                        f"is incompatible with type '{type(self.__dict__[k])}'")
-            else : raise NameError(f"Row has no attribute '{k}'")
+            # use build-in functions to set the correct attribute
+            self.__setattr__(k, v)
 
     #####################################################
     #                  PRINT NODE LOGIC                 #
@@ -136,7 +138,7 @@ class RowNode :
         tab_signs = "\t"*tabs
         print(f"{tab_signs}[ROW : {self.__str_attributes__()}]")
 
-        self.node.print_node(tabs+1)
+        self._node.print_node(tabs+1)
 
 #___________________________________________________#
 #                                                   #

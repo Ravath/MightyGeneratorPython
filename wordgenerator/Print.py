@@ -91,7 +91,7 @@ class PrintToBuffer(PrintDelegationIf):
 
     def del_text(self) :
         """Reset the generated string."""
-        self.str_build = ""
+        self.str_build = io.StringIO()
 
 #___________________________________________________#
 #                                                   #
@@ -131,6 +131,29 @@ class ActionNode(AbsLeafNode):
     def execute(self):
         """Execute the given function."""
         self.func()
+
+    def print_node(self, tabs:int = 0) :
+        """Print the node name and printed text."""
+        tab_sign="\t"
+        print(f"{tab_sign*tabs}{type(self).__name__} : {self.func.__name__ }()")
+
+class SetNode(ActionNode) :
+    """Execute the given setter function at execution
+    with the given argument"""
+
+    def __init__(self, set_function, set_value) :
+        self.set_value = set_value
+        ActionNode.__init__(self, set_function)
+
+    def execute(self):
+        """Execute the given function."""
+        self.func(self.set_value)
+
+    def print_node(self, tabs:int = 0) :
+        """Print the node name and printed text."""
+        tab_sign="\t"
+        print(f"{tab_sign*tabs}{type(self).__name__} : " \
+              f"{self.func.__name__ }({self.set_value})")
 
 #___________________________________________________#
 #                                                   #
@@ -184,9 +207,27 @@ class Label(PrintNode) :
     def execute(self) :
         """Print the label, and then
         execute the children with one tabulation more."""
-        PrintNode.execute(self)
-        self.child.execute()
-        self._printer.end_section()
+
+        last, new = self._printer, PrintToBuffer()
+
+        if last == new :
+            PrintNode.execute(self)
+            self.child.execute()
+            self._printer.end_section()
+        else :
+            PrintNode._printer = new
+            prev_buffer_text = new.get_text()
+            new.del_text()
+    
+            PrintNode.execute(self)
+            self.child.execute()
+    
+            last.do_print(new.get_text())
+            new.del_text()
+    
+            new.do_print(prev_buffer_text)
+            PrintNode._printer = last
+            self._printer.end_section()
 
     def print_node(self, tabs:int = 0) :
         """Print the node name and printed text."""

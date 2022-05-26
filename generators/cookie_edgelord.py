@@ -5,14 +5,13 @@ Created on Tue Sep 15 19:03:13 2020
 @author: Ehlion
 """
 
-from wordgenerator.Weight import WeightNode as weightmap
+from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode
 from wordgenerator.Print import PrintNode, PrintToBuffer
 
 PrintNode._printer = PrintToBuffer()
 
-antagonist = weightmap()
-antagonist.extend([
+antagonist = Weight().extend([
     [3,"An evil wizard"],
     [3,"A dragon"],
     [3,"The drow"],
@@ -49,8 +48,7 @@ antagonist.extend([
     [1,"The DM"],
 ])
 
-action = weightmap()
-action.extend([
+action = Weight().extend([
     [9,"killed"],
     [10,"murdered"],
     [10,"slautered"],
@@ -76,8 +74,7 @@ action.extend([
     [1,"seduced"],
 ])
 
-victim = weightmap()
-victim.extend([
+victim = Weight().extend([
     [4,"my family"],
     [4,"my hometown"],
     [4,"my parents"],
@@ -106,8 +103,7 @@ victim.extend([
 	[1,"my imaginary friends"],
 ])
 
-outcome = weightmap()
-outcome.extend([
+outcome = Weight().extend([
     [29,"And it will have no effect on how I roleplay my character"],
     [10,"And now I'm a murder hobo"],
     [10,"And now I'm a lawful good stick in the mud"],
@@ -127,14 +123,14 @@ outcome.extend([
     [ 1,"And now I'm Batman"],
 ])
 
-sequence = SequenceNode()
-sequence.inbetween_action = PrintNode(" ")
-sequence.extend([
+sequence = SequenceNode().extend([
     antagonist,
     action,
     victim,
     outcome
 ])
+
+sequence.inbetween_action = PrintNode(" ")
 sequence.execute()
 
 print(PrintNode._printer.get_text())

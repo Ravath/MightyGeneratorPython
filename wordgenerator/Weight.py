@@ -9,17 +9,35 @@ import random
 from wordgenerator.NodeCollectionIf import AbsCollectionNode, RowNode
 from wordgenerator.NodeIf import AbsGeneratorNode
 from wordgenerator.Print import PrintNode
+from macro.calc import ValueIf
 
 #___________________________________________________#
 #                                                   #
 #                     WeightRow                     #
 #___________________________________________________#
 class WeightRow(RowNode):
+
+    def set_weight(self, new_weight) :
+        self._weight = new_weight
+        if (not isinstance(new_weight, int) and
+            not isinstance(new_weight, ValueIf)) :
+            raise ValueError("Weight must be 'int' or 'ValueIf'")
+        
+    def get_weight(self) -> int :
+        if isinstance(self._weight, int) :
+            return self._weight
+        elif isinstance(self._weight, ValueIf) :
+            return self._weight.value
+        else :
+            raise ValueError("Weight must be 'int' or 'ValueIf'")
+
+    weight = property(get_weight, set_weight)
+
     def __init__(self):
         RowNode.__init__(self)
         
         # introduce new attributes
-        self.weight=1
+        self._weight=1
         self.putBack=1
         
         # extend the signature conversion table
@@ -41,7 +59,7 @@ class WeightRow(RowNode):
             ([int,AbsGeneratorNode], conv2),
             ([int,int,AbsGeneratorNode], conv3),
         ])
-        
+
     def __str_attributes__(self) -> str :
         return f"Weight={self.weight}  "\
             f"Back={self.putBack}"
@@ -60,8 +78,7 @@ class WeightNode(AbsCollectionNode):
         # flag raised if the total weight of the row
         # has changed and must be recomputed
         self.totalWeight = 0
-        self.knowntotal = True
-        
+
         # introduce new attributes
         self.numberOfDraw=1
         self.putBack=True
@@ -70,24 +87,10 @@ class WeightNode(AbsCollectionNode):
         new_row = WeightRow()
         new_row.put(*args, **kargs)
         return new_row
-        
-    def extend(self, table) :
-        AbsCollectionNode.extend(self, table)
-        self.knowntotal = False
-        
-    def append(self, *args, **kargs) :
-        AbsCollectionNode.append(self, *args, **kargs)
-        self.knowntotal = False
-        
-    def insert(self, index:int, *args, **kargs) :
-        AbsCollectionNode.insert(self, index, *args, **kargs)
-        self.knowntotal = False
-        
-        
+
     def computeTotal(self):
-        if not self.knowntotal:
-            self.knowntotal = True
-            self.totalWeight = sum([ c.weight for c in self.children])
+        self.totalWeight = sum([ c.weight for c in self.children
+                                if c.weight > 0 ])
         
     def draw(self):
         
@@ -101,10 +104,12 @@ class WeightNode(AbsCollectionNode):
         index = 0
         
         # Find associated entry
-        roll -= self.children[index].weight
+        if self.children[index].weight > 0 :
+            roll -= self.children[index].weight
         while roll > 0:
             index += 1
-            roll -= self.children[index].weight
+            if self.children[index].weight > 0 :
+                roll -= self.children[index].weight
             
         yield self.children[index].node
         

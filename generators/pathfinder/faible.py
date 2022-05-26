@@ -103,8 +103,7 @@ def RollArmorProperty() :
     elif armor_type == "SHIELD" :
         spe_bouclier.execute()
     else :
-        pass #raise ValueError(f"Not expected value {armor_type}")
-    armor_type = "NONE"
+        raise ValueError(f"Not expected value {armor_type}")
 
 obj_bouclier_armure = Weight()
 obj_bouclier_armure.extend([

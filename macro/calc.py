@@ -8,7 +8,7 @@ Created on Tue Apr 19 16:40:36 2022
 | Includes mathematical operators and IntReferences.
 """
 
-# We will use many Interfaces for only ony function
+# We will use many Interfaces for only one function
 # pylint: disable-msg=R0903
 
 #___________________________________________________#
@@ -59,13 +59,37 @@ class RefValue(ValueIf) :
 
     value = property(get_value)
 
+class Operator(ValueIf) :
+    """A mathematical operator with 2 arguments"""
+
+    def __init__(self, left, right) :
+        ValueIf.__init__(self)
+
+        if isinstance(left, int) :
+            self.left = Value(left)
+        elif isinstance(left, ValueIf) :
+            self.left = left
+        else :
+            raise ValueError("'Int' or 'ValueIf' expected")
+
+        if isinstance(right, int) :
+            self.right = Value(right)
+        elif isinstance(right, ValueIf) :
+            self.right = right
+        else :
+            raise ValueError("'Int' or 'ValueIf' expected")
+
+    def get_value(self) -> int :
+        """Get the rest."""
+        raise NotImplementedError(f"In class {type(self).__name__}")
+
+    value = property(get_value)
+
 class AddOp(ValueIf) :
     """The addition operation"""
 
-    def __init__(self, left:ValueIf, right:ValueIf) :
-        ValueIf.__init__(self)
-        self.left = left
-        self.right = right
+    def __init__(self, left, right) :
+        Operator.__init__(self, left, right)
 
     def get_value(self) -> int :
         """Get the sum."""
@@ -76,10 +100,8 @@ class AddOp(ValueIf) :
 class SubOp(ValueIf) :
     """The soustraction operation"""
 
-    def __init__(self, left:ValueIf, right:ValueIf) :
-        ValueIf.__init__(self)
-        self.left = left
-        self.right = right
+    def __init__(self, left, right) :
+        Operator.__init__(self, left, right)
 
     def get_value(self) -> int :
         """Get the difference."""
@@ -90,10 +112,8 @@ class SubOp(ValueIf) :
 class MulOp(ValueIf) :
     """The multiplication operation"""
 
-    def __init__(self, left:ValueIf, right:ValueIf) :
-        ValueIf.__init__(self)
-        self.left = left
-        self.right = right
+    def __init__(self, left, right) :
+        Operator.__init__(self, left, right)
 
     def get_value(self) -> int :
         """Get the product."""
@@ -104,10 +124,8 @@ class MulOp(ValueIf) :
 class DivOp(ValueIf) :
     """The multiplication operation"""
 
-    def __init__(self, left:ValueIf, right:ValueIf) :
-        ValueIf.__init__(self)
-        self.left = left
-        self.right = right
+    def __init__(self, left, right) :
+        Operator.__init__(self, left, right)
 
     def get_value(self) -> int :
         """Get the quotient."""
@@ -118,16 +136,19 @@ class DivOp(ValueIf) :
 class ModOp(ValueIf) :
     """The multiplication operation"""
 
-    def __init__(self, left:ValueIf, right:ValueIf) :
-        ValueIf.__init__(self)
-        self.left = left
-        self.right = right
+    def __init__(self, left, right) :
+        Operator.__init__(self, left, right)
 
     def get_value(self) -> int :
         """Get the rest."""
         return self.left.value % self.right.value
 
     value = property(get_value)
+
+#___________________________________________________#
+#                                                   #
+#                       Testing                     #
+#___________________________________________________#
 
 if __name__ == "__main__" :
     from utils.debug import print_log, test
@@ -159,7 +180,7 @@ if __name__ == "__main__" :
     print_log("TEST", "Reference")
     op = RefValue(MulOp(v1, v2))
     test(op.value, 10)
-    print_log("TEST", "Complexe operation")
+    print_log("TEST", "Complex operation")
     op = RefValue(DivOp(
         AddOp(
             MulOp(Value(5), Value(2)),
