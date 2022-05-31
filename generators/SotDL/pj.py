@@ -9,10 +9,6 @@ from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Print import Title, Label
-from macro.dice import Pool, PoolSum
-
-d100 = PoolSum(Pool(1,100))
-_3d6 = PoolSum(Pool(3,6))
 
 ################ HUMAIN
 
@@ -39,7 +35,7 @@ humain_historique = Weight().extend([
     ["Vous avez gagné de l’argent et vous commencez le jeu avec 2d6 sc."],
 ])
 
-humain_personalite = Interval(_3d6).extend([
+humain_personalite = Interval("3d6").extend([
     [ 3,  3, "Vous êtes cruel, mauvais et égoïste. Vous aimez faire souffrir les autres."],
     [ 4,  4, "Vous êtes instable et imprévisible. Vous avez beaucoup de mal à tenir parole et vous avez tendance à être capricieux."],
     [ 5,  6, "La force fait loi. Obéir à l’autorité est le plus grand des idéaux."],
@@ -51,7 +47,7 @@ humain_personalite = Interval(_3d6).extend([
     [18, 18, "Vous vous consacrez entièrement au bien et aux nobles causes et vous restez fidèle à vos croyances même si cela peut vous coûter la vie."],
 ])
 
-humain_religion = Interval(_3d6).extend([
+humain_religion = Interval("3d6").extend([
     [ 3,  3, "Vous appartenez à un culte voué à une sombre puissance."],
     [ 4,  4, "Vous faites partie d’une secte hérétique."],
     [ 5,  6, "Vous avez été élevé selon les enseignements de la sorcellerie."],
@@ -60,7 +56,7 @@ humain_religion = Interval(_3d6).extend([
     [16, 18, "Vous n’avez aucune religion."],
 ])
 
-humain_age = Interval(_3d6).extend([
+humain_age = Interval("3d6").extend([
     [ 3,  3, "Vous êtes un enfant de 11 ans ou plus jeune."],
     [ 4,  7, "Vous êtes un adolescent âgé de 12 à 17 ans."],
     [ 8, 12, "Vous êtes un jeune adulte âgé de 18 à 35 ans."],
@@ -69,7 +65,7 @@ humain_age = Interval(_3d6).extend([
     [18, 18, "Vous êtes un adulte d’âge vénérable d’au moins 76 ans."],
 ])
 
-humain_stature = Interval(_3d6).extend([
+humain_stature = Interval("3d6").extend([
     [ 3,  3, "Vous êtes petit et mince."],
     [ 4,  4, "Vous êtes petit et corpulent."],
     [ 5,  6, "Vous êtes petit."],
@@ -81,7 +77,7 @@ humain_stature = Interval(_3d6).extend([
     [18, 18, "Vous êtes très grand et corpulent."],
 ])
 
-humain_apparence = Interval(_3d6).extend([
+humain_apparence = Interval("3d6").extend([
     [ 3,  3, "Vous êtes hideux. Vous ressemblez à un monstre. Vous faites pleurer les enfants que vous croisez, les personnes sensibles s’évanouissent en vous voyant et un individu a même vomi après vous avoir dévisagé."],
     [ 4,  4, "Vous êtes laid et les gens trouvent votre visage déplaisant à cause d’une cicatrice, un kyste, un front proéminent, des furoncles, d’un oeil larmoyant ou baladeur ou autre chose de ce type."],
     [ 5,  6, "La plupart des gens vous considèrent comme un individu qui n’est pas très beau mais pas non plus laid."],
@@ -95,7 +91,7 @@ humain_apparence = Interval(_3d6).extend([
 
 ################ AUTOMATE
 
-automate_age = Interval(_3d6).extend([
+automate_age = Interval("3d6").extend([
     [ 3,  8, "Vous êtes récent, âgé de 5 ans ou moins."],
     [ 9, 12, "Vous êtes expérimenté, âgé de 6 à 10 ans."],
     [13, 15, "Vous êtes âgé, entre 11 et 50 ans."],
@@ -111,7 +107,7 @@ automate_fonction = Weight().extend([
     ["Vous avez été conçu dans un but inconnu ou incompréhensible. Augmentez l’un de vos attributs de 2."],
 ])
 
-automate_forme = Interval(_3d6).extend([
+automate_forme = Interval("3d6").extend([
     [ 3,  3, "Vous êtes un petit automate ailé. Réduisez votre Santé de 5 points et votre Gabarit à 1/2. Vous pouvez voler mais vous devez atterrir à la fin de votre déplacement ou tomber. Vous mesurez 1 m et vous pesez 25 kilos."],
     [ 4,  5, "Vous êtes un petit automate arachnéen avec des mains fonctionnelles. Réduisez votre Gabarit à 1/2. Vous ignorez les effets d’un terrain difficile quand vous escaladez. Vous mesurez 1 m et vous pesez 25 kilos."],
     [ 6,  9, "Vous êtes un petit automate humanoïde. Réduisez votre Gabarit à 1/2. Vous mesurez 1,2 m et vous pesez 35 kilos."],
@@ -120,7 +116,7 @@ automate_forme = Interval(_3d6).extend([
     [18, 18, "Vous êtes un grand automate et la partie inférieure de votre corps est celle d’un cheval. Augmentez votre Gabarit à 2 et votre Vitesse de 2. Réduisez votre Défense de 3. Vous avez une taille et une longueur de 3 m et vous pesez 340 kilos."],
 ])
 
-automate_apparence = Interval(_3d6).extend([
+automate_apparence = Interval("3d6").extend([
     [ 3,  3, "Vous avez une apparence étrange et perturbante."],
     [ 4,  4, "Votre apparence est grossière et vous êtes mal formé."],
     [ 5,  6, "Vous semblez cabossé, cassé et en mauvais état."],
@@ -155,7 +151,7 @@ automate_historique = Weight().extend([
     ["Vous avez gagné de l’argent et vous commencez le jeu avec 2d6 sc."],
 ])
 
-automate_personalite = Interval(_3d6).extend([
+automate_personalite = Interval("3d6").extend([
     [ 3,  3, "Vous haïssez les êtres vivants et vous prenez plaisir à les démembrer."],
     [ 4,  4, "Vous êtes terrifié à l’idée de vous retrouver dans un état dormant."],
     [ 5,  7, "Votre corps vous octroie force et puissance. Vous les utilisez pour imposer votre volonté aux autres."],
@@ -169,7 +165,7 @@ automate_personalite = Interval(_3d6).extend([
 
 ################ CHANGELIN
 
-changelin_age = Interval(_3d6).extend([
+changelin_age = Interval("3d6").extend([
     [ 3,  3, "Vous êtes un enfant de 8 ans ou plus jeune."],
     [ 4,  7, "Vous êtes un adolescent âgé de 9 à 14 ans."],
     [ 8, 12, "Vous êtes un jeune adulte âgé de 15 à 25 ans."],
@@ -183,7 +179,7 @@ changelin_sexe = Weight().extend([
     ["Vous avez une apparence féminine."],
 ])
 
-changelin_ascendance = Interval(_3d6).extend([
+changelin_ascendance = Interval("3d6").extend([
     [ 3,  4, "Vous avez l’apparence d’un gobelin. Reportez-vous à la section Gobelin pour déterminer votre âge, votre stature et votre apparence."],
     [ 5,  7, "Vous avez l’apparence d’un nain. Reportez-vous à la section Nain pour déterminer votre âge, votre stature et votre apparence."],
     [ 8, 15, "Vous avez l’apparence d’un humain. Reportez-vous à la section Humain pour déterminer votre âge, votre stature et votre apparence."],
@@ -237,7 +233,7 @@ changelin_particularite = Weight().extend([
     ["Les formes que vous prenez n’ont ni cheveux, ni poils, ni ongles."],
 ])
 
-changelin_personalite = Interval(_3d6).extend([
+changelin_personalite = Interval("3d6").extend([
     [ 3,  3, "Vous volez l’apparence des autres pour pouvoir faire ce que vous voulez sans en assumer les conséquences. Vous ne vous souciez pas de la manière dont ça peut les affecter."],
     [ 4,  5, "Vous aimez prendre des formes qui vous permettent de commettre des méfaits."],
     [ 6,  6, "Vous prenez des formes qui vous donnent du pouvoir sur les autres. Le pouvoir renforce votre sécurité."],
@@ -251,7 +247,7 @@ changelin_personalite = Interval(_3d6).extend([
 
 ################ GOBELIN
 
-gobelin_age = Interval(_3d6).extend([
+gobelin_age = Interval("3d6").extend([
     [ 3,  3, "Vous êtes un enfant de 6 ans ou plus jeune."],
     [ 4,  7, "Vous êtes un adolescent âgé de 7 à 10 ans."],
     [ 8, 12, "Vous êtes un jeune adulte âgé de 11 à 25 ans."],
@@ -260,7 +256,7 @@ gobelin_age = Interval(_3d6).extend([
     [18, 18, "Vous êtes un adulte d’âge vénérable d’au moins 76 ans."],
 ])
 
-gobelin_stature = Interval(_3d6).extend([
+gobelin_stature = Interval("3d6").extend([
     [ 3,  3, "Vous êtes petit et frêle."],
     [ 4,  4, "Vous êtes petit et rondelet."],
     [ 5,  6, "Vous êtes petit."],
@@ -341,7 +337,7 @@ gobelin_historique = Weight().extend([
     ["Vous avez gagné de l’argent et vous commencez le jeu avec 2d6 sc."],
 ])
 
-gobelin_personalite = Interval(_3d6).extend([
+gobelin_personalite = Interval("3d6").extend([
     [ 3,  3, "Vous êtes une brute qui aime tyranniser et tourmenter tout ce qui est plus faible que vous."],
     [ 4,  4, "Vous aimez la violence surtout quand elle est gratuite et insensée."],
     [ 5,  6, "Vous essayez d’échapper à la crasse et aux conditions de vie sordides de votre peuple pour faire le bien dans le monde."],
@@ -355,7 +351,7 @@ gobelin_personalite = Interval(_3d6).extend([
 
 ################ NAIN
 
-nain_age = Interval(_3d6).extend([
+nain_age = Interval("3d6").extend([
     [ 3,  3, "Vous êtes un enfant de 20 ans ou plus jeune."],
     [ 4,  7, "Vous êtes un adolescent âgé de 20 à 30 ans."],
     [ 8, 12, "Vous êtes un jeune adulte âgé de 31 à 50 ans."],
@@ -364,7 +360,7 @@ nain_age = Interval(_3d6).extend([
     [18, 18, "Vous êtes un adulte d’âge vénérable d’au moins 151 ans."],
 ])
 
-nain_stature = Interval(_3d6).extend([
+nain_stature = Interval("3d6").extend([
     [ 3,  3, "Vous êtes petit et maigrichon."],
     [ 4,  6, "Vous êtes petit et enveloppé."],
     [ 7,  8, "Vous êtes un peu plus petit que les autres nains."],
@@ -374,7 +370,7 @@ nain_stature = Interval(_3d6).extend([
     [18, 18, "Vous êtes très grand et massif."],
 ])
 
-nain_apparence = Interval(_3d6).extend([
+nain_apparence = Interval("3d6").extend([
     [ 3,  4, "Vous avez une apparence monstrueuse certainement due à vos rudes conditions de vie et à des incidents auxquels vous avez partiellement échappé. Votre visage est couvert de cicatrices et il vous manque probablement une oreille, un oeil ou pire. Vous avez aussi une habitude inhabituelle comme enfoncer des clous dans votre crâne ou huiler votre corps avec de la graisse de troll."],
     [ 5,  6, "Vous avez certaines caractéristiques intéressantes qui se combinent pour vous donner l’aspect d’une brute particulièrement laide. De la crasse incrustée à force de creuser la terre, des mites dans vos cheveux, une peau couverte de cicatrices et une odeur de vomi... tous ces éléments contribuent à votre style particulier."],
     [ 7,  8, "Vous êtes chevelu, corpulent et crasseux."],
@@ -419,7 +415,7 @@ nain_historique = Weight().extend([
     ["Vous avez gagné de l’argent et vous commencez le jeu avec 2d6 sc."],
 ])
 
-nain_personalite = Interval(_3d6).extend([
+nain_personalite = Interval("3d6").extend([
     [ 3,  3, "Votre haine est presque vivante. Elle vous motive, vous donne la force et vous aide à triompher de vos ennemis."],
     [ 4,  4, "Vous cherchez une mort glorieuse en tuant vos ennemis."],
     [ 5,  6, "Vous aimez l’or plus que toute autre chose. Vous aimez sa texture, son tintement et même son goût."],
@@ -433,7 +429,7 @@ nain_personalite = Interval(_3d6).extend([
 
 ################ Orc
 
-orc_age = Interval(_3d6).extend([
+orc_age = Interval("3d6").extend([
     [ 3,  3, "Vous êtes un enfant de 8 ans ou plus jeune."],
     [ 4,  7, "Vous êtes un adolescent âgé de 8 à 12 ans."],
     [ 8, 12, "Vous êtes un jeune adulte âgé de 13 à 18 ans."],
@@ -442,7 +438,7 @@ orc_age = Interval(_3d6).extend([
     [18, 18, "Vous êtes un adulte d’âge vénérable d’au moins 33 ans."],
 ])
 
-orc_stature = Interval(_3d6).extend([
+orc_stature = Interval("3d6").extend([
     [ 3,  3, "Vous êtes petit et maigre."],
     [ 4,  4, "Vous êtes petit et musclé."],
     [ 5,  6, "Vous êtes petit."],
@@ -454,7 +450,7 @@ orc_stature = Interval(_3d6).extend([
     [18, 18, "Vous êtes un géant parmi les orcs."],
 ])
 
-orc_apparence = Interval(_3d6).extend([
+orc_apparence = Interval("3d6").extend([
     [ 3,  5, "Vous êtes grotesque. Votre visage est constellé de cicatrices. Votre corps est couvert de plaies refermées par des sutures rudimentaires en lanière de cuir. De certaines de ces plaies s’écoulent du pu et vous puez les excréments, le sang et la pourriture."],
     [ 6,  8, "Vous êtes monstrueux avec des traits grossiers et brutaux, d’étranges excroissances sur votre peau et de vilaines cicatrices irrégulières sur votre peau épaisse."],
     [ 9, 12, "Vous êtes laid. Vous avez des défenses épaisses qui dépassent de vos larges mâchoires, un front fuyant et deux tout petits yeux enfoncés profondément dans votre crâne."],
@@ -486,7 +482,7 @@ orc_historique = Weight().extend([
     ["Vous avez gagné de l’argent et vous commencez le jeu avec 2d6 sc."],
 ])
 
-orc_personalite = Interval(_3d6).extend([
+orc_personalite = Interval("3d6").extend([
     [ 3,  3, "Vous combattez pour libérer votre peuple de l’esclavage."],
     [ 4,  4, "Les orcs sont bien plus que les tueurs créés par l’empereur. Ils forment un peuple ; ils ont une âme et un coeur ; ils ont des rêves et des ambitions. Il vous faut surmonter votre nature sauvage et trouver votre place dans ce monde."],
     [ 5,  6, "L’Enfer s’abat sur le monde. Qu’il en soit ainsi."],
@@ -622,7 +618,7 @@ pro_marginale = Weight().extend([
 
 ################ EQUIPEMENT
 
-equipement = Interval(_3d6).extend([
+equipement = Interval("3d6").extend([
     [ 3,  4, "Misérable" ],
     [ 5,  8, "Pauvre" ],
     [ 9, 13, "Modeste" ],

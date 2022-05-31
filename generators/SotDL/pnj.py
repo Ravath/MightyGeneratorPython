@@ -6,13 +6,8 @@ Created on Tue Sep 15 19:03:13 2020
 """
 
 from wordgenerator.Weight import WeightNode as Weight
-from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Sequence import SequenceNode as Sequence
-from wordgenerator.Print import Title, Label
-from macro.dice import Pool, PoolSum
-
-d100 = PoolSum(Pool(1,100))
-_3d6 = PoolSum(Pool(3,6))
+from wordgenerator.Print import Title
 
 physique = Weight().extend([
     ["Curieuse odeur"],

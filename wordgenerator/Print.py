@@ -103,6 +103,12 @@ class PrintNode(AbsLeafNode):
     # print delegate """
     _printer = PrintToConsole()
 
+    def print_to_buffer() :
+        PrintNode._printer = PrintToBuffer()
+
+    def print_buffer() :
+        print(PrintNode._printer.get_text())
+
     def __init__(self, text:str = ""):
         AbsLeafNode.__init__(self)
         self.text = text

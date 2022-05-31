@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from wordgenerator.Weight import WeightNode as Weight
-from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Print import Title, Label
-from macro.dice import Pool, PoolSum
-
-d100 = PoolSum(Pool(1,100))
 
 ################ GEOGRAPHIE
 

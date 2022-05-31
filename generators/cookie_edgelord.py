@@ -7,9 +7,9 @@ Created on Tue Sep 15 19:03:13 2020
 
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode
-from wordgenerator.Print import PrintNode, PrintToBuffer
+from wordgenerator.Print import PrintNode
 
-PrintNode._printer = PrintToBuffer()
+PrintNode.print_to_buffer()
 
 antagonist = Weight().extend([
     [3,"An evil wizard"],
@@ -133,4 +133,4 @@ sequence = SequenceNode().extend([
 sequence.inbetween_action = PrintNode(" ")
 sequence.execute()
 
-print(PrintNode._printer.get_text())
+PrintNode.print_buffer()

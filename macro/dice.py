@@ -29,7 +29,7 @@ class RandIf:
         """Get result of the last roll."""
         raise NotImplementedError(f"In class {type(self).__name__}")
 
-class Dice(RandIf) :
+class Dice(RandIf, ValueIf) :
     """A random value drawn from a die."""
     def __init__(self, face:int = 6) :
         self.face = face
@@ -52,8 +52,14 @@ class Dice(RandIf) :
     def get_result(self) -> int :
         """Get the sum result of this die."""
         return self.net_result
+    def get_value(self) -> int :
+        return self.roll()
+    value = property(get_value)
 
-class Interval(RandIf) :
+    def copy(self) :
+        return Dice(self.face)
+
+class Interval(RandIf, ValueIf) :
     """A random value drawn within a given range (inclusive)."""
     def __init__(self, vmin:int = 1, vmax:int = 6) :
         self.min = vmin
@@ -68,6 +74,12 @@ class Interval(RandIf) :
     def get_result(self) -> int :
         """Get the random result."""
         return self.net_result
+    def get_value(self) -> int :
+        return self.roll()
+    value = property(get_value)
+
+    def __str__(self) -> str :
+        return f"{self.min}:{self.max}"
 
 #___________________________________________________#
 #                                                   #
@@ -76,7 +88,7 @@ class Interval(RandIf) :
 
 class PoolIf:
     """Interface for a pool of dice
-    with a specific doll mechanic."""
+    with a specific roll mechanic."""
 
     def roll(self) -> list :
         """
@@ -113,6 +125,7 @@ class Pool(PoolIf) :
     def __init__(self, nbr_dice:int = 1, nbr_face:int = 6) :
         self.children = [] # Dice[]
         self.add_dice(nbr_dice, nbr_face)
+        self.results = None
 
     def add_dice(self, nbr_dice:int = 1, nbr_face:int = 6) :
         """Add a die to the pool"""
@@ -127,10 +140,13 @@ class Pool(PoolIf) :
         list Dice[]
             The results of the roll.
         """
+        self.results = list() # Dice[]
         for die in self.children :
-            die.roll()
-            die.discarded = False
-        return self.children
+            rolled_die = die.copy()
+            rolled_die.roll()
+            rolled_die.discarded = False
+            self.results.append(rolled_die)
+        return self.results
 
     def get_results(self) -> list :
         """Get the result of the roll.
@@ -141,7 +157,27 @@ class Pool(PoolIf) :
             The results of the roll.
 
         """
-        return self.children
+        return self.results
+
+    def __str__(self) -> str :
+        faces = dict()
+
+        # count de number of each dice size
+        for die in self.children :
+            if not die.face in faces.keys() :
+                faces[die.face] = 1
+            else :
+                faces[die.face] += 1
+
+        if len(faces) == 1 :
+            nf, nd = faces.popitem()
+            return f"{nd}d{nf}"
+        else :
+            rep = "{"
+            for nf, nd in faces :
+                rep += f"{nd}d{nf}+"
+            rep[-1] = '}'
+            return rep
 
 #___________________________________________________#
 #                                                   #
@@ -172,6 +208,14 @@ def test_match(pool, die:Dice) :
     return ((pool.higher and die.last_result >= pool.threshold) or
             (not pool.higher and die.last_result <= pool.threshold))
 
+def op_to_str(operator, op_id) -> str :
+        op = op_id
+        if operator.infinite : op = op_id.upper()
+        t_op = ">"
+        if not operator.higher : t_op = "<"
+        if operator.threshold != -1 : t_op += str(operator.threshold)
+        return str(operator.pool) + op + t_op
+
 class ReRoll(PoolIf) :
     """Reroll every die over the given threshold."""
     def __init__(self, pool:PoolIf, threshold:int = -1,
@@ -199,7 +243,7 @@ class ReRoll(PoolIf) :
         self.pool.roll()
 
         for die in self.get_results() :
-            do_test = True
+            do_test = not die.discarded
 
             while do_test :
                 if test_match(self, die) :
@@ -212,6 +256,9 @@ class ReRoll(PoolIf) :
 
     def get_results(self) -> list :
         return self.pool.get_results()
+
+    def __str__(self) -> str :
+        return op_to_str(self, 'r')
 
 class Explode(PoolIf) :
     """Reroll and cumul the new result."""
@@ -239,7 +286,7 @@ class Explode(PoolIf) :
     def roll(self) -> list:
         self.pool.roll()
         for die in self.get_results() :
-            test_reroll = True
+            test_reroll = not die.discarded
 
             while test_reroll :
                 if test_match(self, die) :
@@ -253,9 +300,71 @@ class Explode(PoolIf) :
     def get_results(self) -> list :
         return self.pool.get_results()
 
+    def __str__(self) -> str :
+        return op_to_str(self, 'e')
+
+class CompoundExplode(PoolIf) :
+    """Roll a new die for every result over the given threshold."""
+    def __init__(self, pool:PoolIf, threshold:int = -1,
+                 higher:bool = True, infinite:bool = False) :
+        """Initialize a Compouding Explosion operation of the given pool.
+
+        Parameters
+        ----------
+        pool : PoolIf
+            Pool to reroll.
+        threshold : int, optional
+            Threshold (inclusive) to compare the dice to.
+            If -1, the die is rerolled only if it has the maximum result.
+            The default is -1.
+        higher : bool, optional
+            False for a lower threshold.
+            The default is True.
+        """
+        self.pool = pool
+        self.threshold = threshold
+        self.higher = higher
+        self.infinite = infinite
+
+    def roll(self) -> list:
+        self.pool.roll()
+
+        to_roll = self.get_results()
+        to_roll_next = []
+        do_test = True
+
+        while do_test :
+
+            # Do rerolls
+            for die in to_roll :
+                if (not die.discarded and
+                    test_match(self, die)) :
+    
+                    reroll = die.copy()
+                    reroll.roll()
+                    to_roll_next.append(reroll)
+
+            # add new dice and prepare next iteration
+            self.get_results().extend(to_roll_next)
+            to_roll = to_roll_next
+            to_roll_next = []
+
+            # check if new iteration is needed
+            do_test = (self.infinite and
+                       len(to_roll) > 0)
+
+        return self.get_results()
+
+    def get_results(self) -> list :
+        return self.pool.get_results()
+
+    def __str__(self) -> str :
+        return op_to_str(self, 'a')
+
 class FilterDiceValue(PoolIf) :
     """Discard the dice of the pool
     if they can't meet the given threshold."""
+
     def __init__(self, pool:PoolIf, threshold:int = -1, higher:bool = True) :
         """Initialize an Dice Filter operation on the given pool.
 
@@ -287,6 +396,12 @@ class FilterDiceValue(PoolIf) :
 
     def get_results(self) -> list :
         return self.pool.get_results()
+
+    def __str__(self) -> str :
+        op = ">"
+        if not self.higher : op = "<"
+        if self.threshold != -1 : op += str(self.threshold)
+        return str(self.pool) + op
 
 class FilterDiceCount(PoolIf) :
     """Keep only the given number of dice, higher of lower."""
@@ -331,6 +446,12 @@ class FilterDiceCount(PoolIf) :
     def get_results(self) -> list :
         return self.pool.get_results()
 
+    def __str__(self) -> str :
+        op = "h"
+        if not self.higher : op = "l"
+        if self.threshold != -1 : op += str(self.threshold)
+        return str(self.pool) + op
+
 class SwitchPool(PoolIf) :
     """Uses a different child pool depending of
     the given function return value."""
@@ -346,7 +467,6 @@ class SwitchPool(PoolIf) :
     def get_results(self) -> list :
         use = self.pools[self.int_func()]
         return use.get_results()
-
 
 #___________________________________________________#
 #                                                   #
@@ -375,6 +495,9 @@ class PoolSum(ValueIf, PoolIf) :
 
     value = property(get_value)
 
+    def __str__(self) -> str :
+        return str(self.pool)
+
 class PoolCount(ValueIf, PoolIf) :
     """Count the number of the not discarded dice"""
     def __init__(self, pool:PoolIf) :
@@ -396,6 +519,9 @@ class PoolCount(ValueIf, PoolIf) :
         return self.pool.get_results()
 
     value = property(get_value)
+
+    def __str__(self) -> str :
+        return str(self.pool) + "c"
 
 #___________________________________________________#
 #                                                   #

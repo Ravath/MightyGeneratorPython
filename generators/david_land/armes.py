@@ -4,13 +4,13 @@ from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Print import PrintNode as Print
-from wordgenerator.Print import PrintToBuffer, SetNode, Title, Label
+from wordgenerator.Print import SetNode, Title, Label
 from ponderation import pond_type, pond_fabriquant, pond_element, can_element
 from ponderation import nbr_of_constructor_properties
 from capacite import arme_spe, grenade_spe, bouclier_spe
 from nom import nom_arme, nom_grenade, nom_bouclier
 
-Print._printer = PrintToBuffer()
+Print.print_to_buffer()
 
 #################################################
 #              INIT PROBABILITIES               #
@@ -629,4 +629,4 @@ print("Arme   :", WEAPON_TYPE)
 print("Rareté :", WEAPON_RARITY)
 
 print()
-print(Print._printer.get_text())
+Print.print_buffer()

@@ -5,11 +5,11 @@ Created on Tue Sep 15 17:35:42 2020
 @author: Ehlion
 """
 
-from macro.dice import ValueIf, PoolSum, Pool
-from macro.calc import Value
+from macro.dice import ValueIf
 from wordgenerator.NodeIf import AbsGeneratorNode
 from wordgenerator.NodeCollectionIf import AbsCollectionNode, RowNode
 from wordgenerator.Print import PrintNode
+from macro.dice_macro import get_ValueIf
 
 #___________________________________________________#
 #                                                   #
@@ -91,17 +91,13 @@ class IntervalNode(AbsCollectionNode) :
     if the random is between the min and max interval
     of the given row."""
 
-    def __init__(self, dice:ValueIf, number_of_draw = 1, put_back:bool = True) :
+    def __init__(self, dice, number_of_draw = 1, put_back:bool = True) :
         AbsCollectionNode.__init__(self)
 
         # dice is a ValueIf, or an int
-        self.dice = dice
-        if isinstance(dice, int) :
-            self.dice = Value(dice)
+        self.dice = get_ValueIf(dice)
         # number_of_draw is a ValueIf, or an int
-        self.number_of_draw = number_of_draw
-        if isinstance(number_of_draw, int) :
-            self.number_of_draw = Value(number_of_draw)
+        self.number_of_draw = get_ValueIf(number_of_draw)
         # put_back is a boolean flag
         self.put_back = put_back
 
@@ -136,6 +132,7 @@ class IntervalNode(AbsCollectionNode) :
 #___________________________________________________#
 if __name__ == "__main__" :
     from utils.debug import test, print_log
+    from macro.dice import PoolSum, Pool
 
     var = IntervalNode(PoolSum(Pool(1,4)))
     var.extend([

@@ -16,6 +16,12 @@ Created on Tue Apr 19 16:40:36 2022
 #                  Rand Interface                   #
 #___________________________________________________#
 
+def get_val(other) -> int :
+    if isinstance(other, ValueIf) :
+        return other.value
+    else :#int
+        return other
+
 class ValueIf :
     """Default interface with basic implementation
     of an encapsulated integer value"""
@@ -46,6 +52,56 @@ class Value(ValueIf) :
 
     value = property(get_value, set_value)
 
+    # OVERLOADING OPERATORS
+
+    def __add__(self, other) :
+        return Value(self.value + get_val(other))
+
+    def __radd__(self, other):
+        return self.__add__(other)
+
+    def __sub__(self, other) :
+        return Value(self.value - get_val(other))
+
+    def __rsub__(self, other):
+        return self.__sub__(other)
+
+    def __mul__(self, other) :
+        return Value(self.value * get_val(other))
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def __pow__(self, other) :
+        return Value(self.value ** get_val(other))
+
+    def __rpow__(self, other):
+        return self.__pow__(other)
+
+    def __truediv__(self, other) :
+        return Value(self.value / get_val(other))
+
+    def __rtruediv__(self, other):
+        return self.__truediv__(other)
+
+    def __floordiv__(self, other) :
+        return Value(self.value // get_val(other))
+
+    def __rfloordiv__(self, other):
+        return self.__floordiv__(other)
+
+    def __mod__(self, other) :
+        return Value(self.value % get_val(other))
+
+    def __rmod__(self, other):
+        return self.__mod__(other)
+
+    def __neg__(self) :
+        return Value( -1 * self.value )
+
+    def __str__( self ) :
+        return str(self.value)
+
 class RefValue(ValueIf) :
     """Encapsulate a ValueIf"""
 
@@ -58,6 +114,9 @@ class RefValue(ValueIf) :
         return self.reference.value
 
     value = property(get_value)
+
+    def __str__(self) -> str :
+        return str(self.reference)
 
 class Operator(ValueIf) :
     """A mathematical operator with 2 arguments"""
@@ -85,7 +144,10 @@ class Operator(ValueIf) :
 
     value = property(get_value)
 
-class AddOp(ValueIf) :
+    def value_str(self, op : str) -> str :
+        return str(self.left) + op + str(self.right)
+
+class AddOp(Operator) :
     """The addition operation"""
 
     def __init__(self, left, right) :
@@ -97,7 +159,10 @@ class AddOp(ValueIf) :
 
     value = property(get_value)
 
-class SubOp(ValueIf) :
+    def __str__(self) -> str :
+        return self.value_str('+')
+
+class SubOp(Operator) :
     """The soustraction operation"""
 
     def __init__(self, left, right) :
@@ -109,7 +174,25 @@ class SubOp(ValueIf) :
 
     value = property(get_value)
 
-class MulOp(ValueIf) :
+    def __str__(self) -> str :
+        return self.value_str('-')
+
+class NegOp(Operator) :
+    """The negation operation"""
+
+    def __init__(self, right) :
+        Operator.__init__(self, 0, right)
+
+    def get_value(self) -> int :
+        """Get the negative."""
+        return - self.right.value
+
+    value = property(get_value)
+
+    def __str__(self) -> str :
+        return '-' + str(self.value)
+
+class MulOp(Operator) :
     """The multiplication operation"""
 
     def __init__(self, left, right) :
@@ -121,7 +204,10 @@ class MulOp(ValueIf) :
 
     value = property(get_value)
 
-class DivOp(ValueIf) :
+    def __str__(self) -> str :
+        return self.value_str('*')
+
+class DivOp(Operator) :
     """The multiplication operation"""
 
     def __init__(self, left, right) :
@@ -133,7 +219,10 @@ class DivOp(ValueIf) :
 
     value = property(get_value)
 
-class ModOp(ValueIf) :
+    def __str__(self) -> str :
+        return self.value_str('/')
+
+class ModOp(Operator) :
     """The multiplication operation"""
 
     def __init__(self, left, right) :
@@ -144,6 +233,9 @@ class ModOp(ValueIf) :
         return self.left.value % self.right.value
 
     value = property(get_value)
+
+    def __str__(self) -> str :
+        return self.value_str('%')
 
 #___________________________________________________#
 #                                                   #
