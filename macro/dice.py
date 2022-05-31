@@ -529,7 +529,7 @@ class PoolCount(ValueIf, PoolIf) :
 #___________________________________________________#
 
 if __name__ == "__main__" :
-    from utils.debug import test, print_log
+    from utils.debug import test, print_log, test_result
 
     # for test purpose, we stub the *ing not deterministic function
 # pylint: disable-msg=E0102
@@ -679,4 +679,5 @@ if __name__ == "__main__" :
     test_sum(p, 2)
     p = PoolCount(FilterDiceValue(Pool(4,4), 2, False))
     test_sum(p, 2)
-    
+
+    test_result()

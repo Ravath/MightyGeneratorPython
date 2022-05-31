@@ -243,7 +243,7 @@ class ModOp(Operator) :
 #___________________________________________________#
 
 if __name__ == "__main__" :
-    from utils.debug import print_log, test
+    from utils.debug import print_log, test, test_result
 
     print_log("START", "CALCULATION UNITARY TESTING")
     print_log("TEST", "Value")
@@ -279,3 +279,5 @@ if __name__ == "__main__" :
             SubOp(Value(6), Value(4))),
         Value(6)))
     test(op.value, 2)
+
+    test_result()

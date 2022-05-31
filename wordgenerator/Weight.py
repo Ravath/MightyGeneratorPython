@@ -126,7 +126,7 @@ class WeightNode(AbsCollectionNode):
 #                       DEBUG                       #
 #___________________________________________________#
 if __name__ == "__main__" :
-    from utils.debug import test, print_log
+    from utils.debug import test, print_log, test_result
     from Print import ActionNode
 
     print_log("START", "WEIGHTNODE UNITARY TESTING")
@@ -196,11 +196,13 @@ if __name__ == "__main__" :
 
         print_log("CHECK", f"node at index {index}")
         trow = wmap.children[index]
-        test(True, isinstance(trow, type(WeightRow)))
+        if not test(True, isinstance(trow, WeightRow)) :
+            print(type(trow))
         test(weight, trow.weight)
         test(nbrPutback, trow.putBack)
         if isinstance(node, str) :
-            test(True, isinstance(trow.node, type(PrintNode)))
+            if not test(True, isinstance(trow.node, PrintNode)) :
+                print(type(trow))
             test(node, trow.node.text)
         else :
             test(node, trow.node)
@@ -231,7 +233,7 @@ if __name__ == "__main__" :
 # append a node with a weight and putback
     wmap.append(-1, -2, p3)
     test(3, len(wmap.children))
-    test_print_node(2,p3, -1, -2)
+    test_print_node(2, p3, -1, -2)
     wmap.print_node()
     
     print_log("TEST", "Initialisation : extend")
@@ -331,4 +333,5 @@ if __name__ == "__main__" :
     wmap.numberOfDraw = 6
     wmap.children[1].putBack = -1
     test_map(wmap, [2,2,1,3,2,2], [2,2,1,2,3,1])
-    
+
+    test_result()

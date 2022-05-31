@@ -176,6 +176,9 @@ parser = yacc.yacc()
 #___________________________________________________#
 
 def get_ValueIf(toconvert) -> calc.ValueIf :
+    '''Convert to a ValueIf.
+    | Can convert from int, ValueIf, and str.
+    | The str are parsed using the dice_macro.py grammar.'''
     if isinstance(toconvert, int) :
         return calc.Value(toconvert)
     elif isinstance(toconvert, calc.ValueIf):
@@ -192,7 +195,7 @@ def get_ValueIf(toconvert) -> calc.ValueIf :
 
 if __name__ == '__main__':
     # DEBUG/TEST
-    from utils.debug import test, print_log
+    from utils.debug import test, print_log, test_result
 
     def test_roll(roll : str, expected_value:int = -1) :
         pool = parser.parse(roll)
@@ -227,4 +230,5 @@ if __name__ == '__main__':
     test_roll("5d6E3")
     test_roll("5d6r3")
     test_roll("5d6R3")
-    
+
+    test_result()
