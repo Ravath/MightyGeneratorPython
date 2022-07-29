@@ -9,6 +9,7 @@ import random
 from wordgenerator.NodeCollectionIf import AbsCollectionNode, RowNode
 from wordgenerator.NodeIf import AbsGeneratorNode
 from wordgenerator.Print import PrintNode
+from utils.debug import trace
 
 #___________________________________________________#
 #                                                   #
@@ -95,7 +96,8 @@ class WeightNode(AbsCollectionNode):
     def computeTotal(self):
         if not self.knowntotal:
             self.knowntotal = True
-            self.totalWeight = sum([ c.weight for c in self.children])
+            self.totalWeight = sum([ c.weight for c in self.children
+                                    if c.weight > 0])
         
     def draw(self):
         # Sum the total weight
@@ -105,7 +107,7 @@ class WeightNode(AbsCollectionNode):
         for child in self.children :
             child.putBack = child.putBack
             
-        if self.totalWeight == 0 : return ""
+        if self.totalWeight == 0 : return
     
         for y in range(0, self.numberOfDraw):
             # Stops if no one can be picked
@@ -309,12 +311,13 @@ if __name__ == "__main__" :
     def res2() : received_results.append(2)
     def res3() : received_results.append(3)
 # pylint: disable-msg=E0102
+    @trace
     def randint(vmin:int, vmax:int) :
         """Stub of the random function for unit testing"""
         return ((dice_results.pop(0)-vmin) % vmax)+vmin
 # pylint: enable-msg=E0102
 
-    def test_map(tmap:WeightNode(), expected:list, determined_rand:list = default_dice) :
+    def test_map(tmap:WeightNode, expected:list, determined_rand:list = default_dice) :
         dice_results.clear()
         dice_results.extend(determined_rand)
         received_results.clear()
@@ -338,10 +341,6 @@ if __name__ == "__main__" :
 # Multiple draw
     wmap.numberOfDraw = 3
     test_map(wmap, [2,1,3])
-# Too much draws
-    wmap.numberOfDraw = 4
-    test_map(wmap, [2,1,3])
-    wmap.numberOfDraw = 3
 # Null weight
     wmap.children[1].Weight = 0
     test_map(wmap, [3,1,1])
@@ -356,6 +355,10 @@ if __name__ == "__main__" :
     test_map(wmap, [1,2,3])
 # Behavior is the same the second time (rows are reset)
     test_map(wmap, [1,2,3])
+# Too much draws
+    wmap.numberOfDraw = 4
+    test_map(wmap, [1,2,3])
+    wmap.numberOfDraw = 3
 # With a different individual putback
     wmap.numberOfDraw = 4
     wmap.children[1].putBack = 2

@@ -149,7 +149,7 @@ class AbsCollectionNode(AbsGeneratorNode) :
     @classmethod
     def __subclasshook__(cls, subclass) :
         return (hasattr(subclass, 'draw') and
-                callable(subclass.draw)and
+                callable(subclass.draw) and
                 hasattr(subclass, 'get_row') and
                 callable(subclass.get_row) or
                 NotImplemented)
