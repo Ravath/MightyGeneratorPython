@@ -152,7 +152,7 @@ class WeightNode(AbsCollectionNode):
 #                       DEBUG                       #
 #___________________________________________________#
 if __name__ == "__main__" :
-    from utils.debug import test, print_log, test_result
+    from utils.debug import test, print_log, test_result, test_action
     from Print import ActionNode
 
     print_log("START", "WEIGHTNODE UNITARY TESTING")
@@ -220,43 +220,50 @@ if __name__ == "__main__" :
             expected putback of the row to check.
         """
 
-        print_log("CHECK", f"node at index {index}")
+        print_log("CHECK", f"====== row at index {index} ======")
         trow = wmap.children[index]
-        if not test(True, isinstance(trow, WeightRow)) :
-            print(type(trow))
-        test(weight, trow.weight)
-        test(nbrPutback, trow.putBack)
+        if not test(True, isinstance(trow, WeightRow), f"test row_{index} is a WeightRow") :
+            print_log("DISPLAY", type(trow))
+        test(weight, trow.weight, f"test row_{index}.weight")
+        test(nbrPutback, trow.putBack, f"test row_{index}.putBack")
         if isinstance(node, str) :
-            if not test(True, isinstance(trow.node, PrintNode)) :
-                print(type(trow))
-            test(node, trow.node.text)
+            if not test(True, isinstance(trow.node, PrintNode), f"test row_{index}.node is a PrintNode") :
+                print_log("DISPLAY", type(trow))
+            test(node, trow.node.text, f"test row_{index}.text")
         else :
-            test(node, trow.node)
+            test(node, trow.node, f"test row_{index}'s reference")
 
     print_log("TEST", "Initialisation : append")
     wmap = WeightNode()
 # append a string
+    test_action("Append a String")
     wmap.append("aba")
-    test(1, len(wmap.children))
+    test(1, len(wmap.children), "Length increased")
     test_print_node(0,"aba")
 # append a string with a weight
+    test_action("Append a string with a weight")
     wmap.append(3, "babo")
-    test(2, len(wmap.children))
+    test(2, len(wmap.children), "Length increased")
     test_print_node(1,"babo", 3)
 # append a string with a weight and putback
+    test_action("Append a string with a weight and a putback value")
     wmap.append(4, 2, "babo")
-    test(3, len(wmap.children))
+    test(3, len(wmap.children), "Length increased")
     test_print_node(2,"babo", 4, 2)
 # append a node
+    test_action("Clear Children")
+    test_action("Append a node")
     wmap.children.clear()
     wmap.append(p1)
     test(1, len(wmap.children))
     test_print_node(0,p1)
 # append a node with a weight
+    test_action("append a node with a weight")
     wmap.append(15, p2)
     test(2, len(wmap.children))
     test_print_node(1,p2, 15)
 # append a node with a weight and putback
+    test_action("append a node with a weight and putback")
     wmap.append(-1, -2, p3)
     test(3, len(wmap.children))
     test_print_node(2, p3, -1, -2)
@@ -310,7 +317,7 @@ if __name__ == "__main__" :
         dice_results.extend(determined_rand)
         received_results.clear()
         tmap.execute()
-        test(expected, received_results)
+        test(expected, received_results, "test roll outcome")
 
     print_log("TEST", "Drawing with default values")
 # Empty

@@ -133,3 +133,6 @@ dmypy.json
 
 # links
 *.lnk
+
+# debug logs
+debug.txt

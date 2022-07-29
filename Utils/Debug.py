@@ -6,10 +6,18 @@ Created on Tue Apr 19 20:28:43 2022
 
 | Module with debug and testing tools.
 """
+from datetime import datetime
+
+nbr_success = 0
+nbr_error = 0
+log = open("debug.txt", "w")
+log.write("DEBUG LOG ("+datetime.now().strftime("%Y/%m/%d %H:%M:%S")+")\n")
 
 def print_log(log_name:str, message:str) :
-    """Format and print a log message"""
+    """Format and print a log message in console and debug log."""
+    global log
     print(f"{log_name.upper():<8}| {message}")
+    log.write(f"{log_name.upper():<8}| {message}\n")
 
 def trace(print_arg = True, print_ret = True) :
     """
@@ -29,10 +37,10 @@ def trace(print_arg = True, print_ret = True) :
     def trace_decoration(func):
         def wrapper(*arg, **karg):
             if print_arg:
-                print(f"{func.__name__}({arg} | {karg}) ...")
+                print_log("TRACE", f"{func.__name__}({arg} | {karg}) ...")
             res = func(*arg, *karg)
             if print_ret:
-                print(f"{func.__name__}({arg} | {karg}) = {res}")
+                print_log("TRACE", f"{func.__name__}({arg} | {karg}) = {res}")
             return res
         return wrapper
 
@@ -40,15 +48,12 @@ def trace(print_arg = True, print_ret = True) :
     if callable(print_arg) :
         func = print_arg
         def wrapper(*arg, **karg):
-            print(f"{func.__name__}({arg} | {karg}) ...")
+            print_log("TRACE", f"{func.__name__}({arg} | {karg}) ...")
             res = func(*arg, *karg)
-            print(f"{func.__name__}({arg} | {karg}) = {res}")
+            print_log("TRACE", f"{func.__name__}({arg} | {karg}) = {res}")
             return res
         return wrapper
     return trace_decoration
-
-nbr_success = 0
-nbr_error = 0
 
 def test(expected, received, message = "") -> bool :
     """
@@ -65,6 +70,7 @@ def test(expected, received, message = "") -> bool :
         The message describing the check.
     """
     global nbr_success, nbr_error
+
     if expected == received :
         print_log("SUCCESS", f"{message:30} (Expected : {expected} = Received : {received})")
         nbr_success+=1
@@ -74,8 +80,15 @@ def test(expected, received, message = "") -> bool :
         nbr_error+=1
         return False
 
+def test_action(message) :
+    print_log("ACTION", f"=============>>> {message}")
+
 def test_result() :
+    global log
+
     if nbr_error > 0 :
         print_log("ERROR", f"TEST FINISHED WITH {nbr_success} OK AND {nbr_error} KO")
     else :
         print_log("SUCCESS", f"TEST FINISHED WITH {nbr_success} OK")
+
+    log.close()
