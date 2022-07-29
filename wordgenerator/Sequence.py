@@ -29,6 +29,15 @@ class SequenceNode(AbsCollectionNode):
                 yield self.inbetween_action
             yield row.node
 
+    def print_node(self, tabs:int = 0) :
+        """print the node and its children.
+        Hide the rows"""
+        tab_sign="\t"*tabs
+        print(f"{tab_sign}[{type(self).__name__} : {self.__str_attributes__()}]")
+
+        for row in self.children :
+            row.node.print_node(tabs+1)
+
 #___________________________________________________#
 #                                                   #
 #                       DEBUG                       #
@@ -39,4 +48,7 @@ if __name__ == "__main__" :
         "test",
         "problem",
         "manuel"])
+
+    var.print_node()
+
     var.execute()

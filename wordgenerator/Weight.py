@@ -10,12 +10,30 @@ from wordgenerator.NodeCollectionIf import AbsCollectionNode, RowNode
 from wordgenerator.NodeIf import AbsGeneratorNode
 from wordgenerator.Print import PrintNode
 from utils.debug import trace
+from macro.calc import ValueIf
 
 #___________________________________________________#
 #                                                   #
 #                     WeightRow                     #
 #___________________________________________________#
 class WeightRow(RowNode):
+
+    def set_weight(self, new_weight) :
+        self._weight = new_weight
+        if (not isinstance(new_weight, int) and
+            not isinstance(new_weight, ValueIf)) :
+            raise ValueError("Weight must be 'int' or 'ValueIf'")
+        
+    def get_weight(self) -> int :
+        if isinstance(self._weight, int) :
+            return self._weight
+        elif isinstance(self._weight, ValueIf) :
+            return self._weight.value
+        else :
+            raise ValueError("Weight must be 'int' or 'ValueIf'")
+
+    weight = property(get_weight, set_weight)
+
     def __init__(self):
         RowNode.__init__(self)
         
@@ -45,12 +63,10 @@ class WeightRow(RowNode):
         self.argument_conversion.extend([
             ([int], int1),
             ([int,int], int2),
-            ([int,str], conv2),
-            ([int,int,str], conv3),
             ([int,AbsGeneratorNode], conv2),
             ([int,int,AbsGeneratorNode], conv3),
         ])
-        
+
     def __str_attributes__(self) -> str :
         return f"Weight={self.weight}  "\
             f"Back={self.putBack}"
@@ -69,8 +85,7 @@ class WeightNode(AbsCollectionNode):
         # flag raised if the total weight of the row
         # has changed and must be recomputed
         self.totalWeight = 0
-        self.knowntotal = True
-        
+
         # introduce new attributes
         self.numberOfDraw = numberOfDraw
         self.putBack = putBack
@@ -79,25 +94,10 @@ class WeightNode(AbsCollectionNode):
         new_row = WeightRow()
         new_row.put(*args, **kargs)
         return new_row
-        
-    def extend(self, table) :
-        AbsCollectionNode.extend(self, table)
-        self.knowntotal = False
-        
-    def append(self, *args, **kargs) :
-        AbsCollectionNode.append(self, *args, **kargs)
-        self.knowntotal = False
-        
-    def insert(self, index:int, *args, **kargs) :
-        AbsCollectionNode.insert(self, index, *args, **kargs)
-        self.knowntotal = False
-        
-        
+
     def computeTotal(self):
-        if not self.knowntotal:
-            self.knowntotal = True
-            self.totalWeight = sum([ c.weight for c in self.children
-                                    if c.weight > 0])
+        self.totalWeight = sum([ c.weight for c in self.children
+                                if c.weight > 0 ])
         
     def draw(self):
         # Sum the total weight
@@ -152,21 +152,7 @@ class WeightNode(AbsCollectionNode):
 #                       DEBUG                       #
 #___________________________________________________#
 if __name__ == "__main__" :
-
-    # var = WeightNode(7, True);
-    # var.extend([
-    #     "test",
-    #     [2, PrintNode("yes")],
-    #     [3, 2, "problem"],
-    #     PrintNode("manuel")])
-    # var.append("append")
-    # var.insert(1, 2, node="insert")
-    # var.insert(index=1, weight=2, node="insert2")
-    # var.print_node()
-    # var.execute()
-    # raise "toto"
-    
-    from utils.debug import test, print_log
+    from utils.debug import test, print_log, test_result
     from Print import ActionNode
 
     print_log("START", "WEIGHTNODE UNITARY TESTING")
@@ -236,11 +222,13 @@ if __name__ == "__main__" :
 
         print_log("CHECK", f"node at index {index}")
         trow = wmap.children[index]
-        test(True, isinstance(trow, type(WeightRow)))
+        if not test(True, isinstance(trow, WeightRow)) :
+            print(type(trow))
         test(weight, trow.weight)
         test(nbrPutback, trow.putBack)
         if isinstance(node, str) :
-            test(True, isinstance(trow.node, type(PrintNode)))
+            if not test(True, isinstance(trow.node, PrintNode)) :
+                print(type(trow))
             test(node, trow.node.text)
         else :
             test(node, trow.node)
@@ -271,7 +259,7 @@ if __name__ == "__main__" :
 # append a node with a weight and putback
     wmap.append(-1, -2, p3)
     test(3, len(wmap.children))
-    test_print_node(2,p3, -1, -2)
+    test_print_node(2, p3, -1, -2)
     wmap.print_node()
     
     print_log("TEST", "Initialisation : extend")
@@ -311,7 +299,7 @@ if __name__ == "__main__" :
     def res2() : received_results.append(2)
     def res3() : received_results.append(3)
 # pylint: disable-msg=E0102
-    @trace
+    @trace(False, True)
     def randint(vmin:int, vmax:int) :
         """Stub of the random function for unit testing"""
         return ((dice_results.pop(0)-vmin) % vmax)+vmin
@@ -372,4 +360,5 @@ if __name__ == "__main__" :
     wmap.numberOfDraw = 6
     wmap.children[1].putBack = -1
     test_map(wmap, [2,2,1,3,2,2], [2,2,1,2,3,1])
-    
+
+    test_result()

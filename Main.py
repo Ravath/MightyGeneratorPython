@@ -8,6 +8,7 @@ Created on Tue Sep 15 13:55:17 2020
 from macro.dice import PoolSum, Pool
 from wordgenerator.Weight import WeightNode
 from wordgenerator.Interval import IntervalNode
+from wordgenerator.Sequence import SequenceNode
 
 #___________________________________________________#
 #                                                   #
@@ -32,6 +33,7 @@ w_ponder.extend([
     [0, "NEVER"],
     [5, "YES"],
     [1, "NO"],
+    [1, lambda : print("papa")],
 ])
 
 """ Executions """
@@ -52,7 +54,7 @@ print("- 3 row map, different weight, including 0 (10times) :")
 for i in range(0,10):
     w_ponder.execute()
 
-w_ponder.printNode()
+w_ponder.print_node()
 
 #___________________________________________________#
 #                                                   #
@@ -102,3 +104,24 @@ i_empty.execute()
 i_single.execute()
 i_test.execute()
 
+#___________________________________________________#
+#                                                   #
+#                    SequenceNode                   #
+#___________________________________________________#
+
+""" Declarations """
+
+test = SequenceNode().extend([
+    "ZARA",
+    "ZOMEU"
+])
+
+""" Executions """
+
+print("== Interval maps ==")
+
+print(test[0].print_node())
+for n in test :
+    n.print_node()
+
+test.execute()

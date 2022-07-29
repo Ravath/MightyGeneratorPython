@@ -47,7 +47,10 @@ def trace(print_arg = True, print_ret = True) :
         return wrapper
     return trace_decoration
 
-def test(expected, received) :
+nbr_success = 0
+nbr_error = 0
+
+def test(expected, received, message = "") -> bool :
     """
     Test the result by comparing exoected and received values.
     Good for unitary testing.
@@ -58,8 +61,21 @@ def test(expected, received) :
         The expected result.
     received :
         The value actually received.
+    message :
+        The message describing the check.
     """
+    global nbr_success, nbr_error
     if expected == received :
-        print_log("SUCCESS", f"Expected : {expected} = Received : {received}")
+        print_log("SUCCESS", f"{message:30} (Expected : {expected} = Received : {received})")
+        nbr_success+=1
+        return True
     else :
-        print_log("ERROR", f"Expected : {expected}, Received : {received}")
+        print_log("ERROR", f"{message:30} (Expected : {expected}, Received : {received})")
+        nbr_error+=1
+        return False
+
+def test_result() :
+    if nbr_error > 0 :
+        print_log("ERROR", f"TEST FINISHED WITH {nbr_success} OK AND {nbr_error} KO")
+    else :
+        print_log("SUCCESS", f"TEST FINISHED WITH {nbr_success} OK")

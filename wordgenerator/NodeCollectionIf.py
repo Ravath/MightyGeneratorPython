@@ -6,7 +6,8 @@ Created on Fri Apr 15 01:39:26 2022
 """
 
 from wordgenerator.NodeIf import AbsGeneratorNode
-from wordgenerator.Print import PrintNode
+from wordgenerator.Print import CanConvToNode, ConvToNode
+from macro.calc import ValueIf
 
 #___________________________________________________#
 #                                                   #
@@ -20,7 +21,7 @@ class RowNode :
         """ The node child of this row
                 TYPE : AbsGeneratorNode
         """
-        self.node=None
+        self._node=None
         """ Conversion table (signature -> convertor function).
                 A list of signature types associated with the conversion method
                 parsing the arguments given to the row.
@@ -35,7 +36,6 @@ class RowNode :
         def conv1(self, s1) :
             self.set_node(s1)
         self.argument_conversion = [
-            ([str], conv1),
             ([AbsGeneratorNode], conv1),
         ]
 
@@ -53,12 +53,12 @@ class RowNode :
             TypeError
                 The argument must be a string or a node.
         """
-        if isinstance(node, str) :
-            self.node=PrintNode(node)
-        elif isinstance(node, AbsGeneratorNode) :
-            self.node=node
-        else :
-            raise TypeError("Must be a node or some text")
+        self._node = ConvToNode(node)
+
+    def get_node(self) -> AbsGeneratorNode :
+        return self._node
+
+    node = property(get_node, set_node)
 
     def put(self, *args, **kargs) :
         """
@@ -98,10 +98,20 @@ class RowNode :
                 else : # compare signature types one by one
                     found=True
                     for it in range(0,len(args)) :
+                        # check if it is a subtype
                         if (signature[it] != types[it] and
-                           not issubclass(types[it], signature[it]) ) :
-                            found=False
-                            break
+                            not issubclass(types[it], signature[it])) :
+                            # or a specific : str and functions are converted
+                            # and must therefore be treated as equivalent as a node
+                            if (signature[it] == AbsGeneratorNode and
+                                CanConvToNode(args[it])) :
+                                pass
+                            elif (signature[it] == int and
+                                  issubclass(types[it], ValueIf)) :
+                                  pass
+                            else :
+                                found = False
+                                break
 
                 # if type signature found, do conversion
                 if found :
@@ -112,17 +122,8 @@ class RowNode :
 
         # Do the named arguments
         for (k,v) in kargs.items() :
-            # get ride of trivial case
-            if k == "node":
-                self.set_node(v)
-            # Check if the attribute exists
-            elif k in self.__dict__:
-                # Check if the type is compatible
-                if isinstance(v, type(self.__dict__[k])) :
-                    self.__dict__[k]=v
-                else : raise  TypeError(f"argument '{k}' of type {type(v)} "\
-                                        f"is incompatible with type '{type(self.__dict__[k])}'")
-            else : raise NameError(f"Row has no attribute '{k}'")
+            # use build-in functions to set the correct attribute
+            self.__setattr__(k, v)
 
     #####################################################
     #                  PRINT NODE LOGIC                 #
@@ -137,7 +138,7 @@ class RowNode :
         tab_signs = "\t"*tabs
         print(f"{tab_signs}[ROW : {self.__str_attributes__()}]")
 
-        self.node.print_node(tabs+1)
+        self._node.print_node(tabs+1)
 
 #___________________________________________________#
 #                                                   #
@@ -197,6 +198,7 @@ class AbsCollectionNode(AbsGeneratorNode) :
             else :
                 new_row = self.get_row(*row_args)
             self.children.append(new_row)
+        return self
 
     def append(self, *args, **kargs) :
         """Append a new RowNode.
@@ -204,6 +206,7 @@ class AbsCollectionNode(AbsGeneratorNode) :
         of the appropriate row class."""
         new_row = self.get_row(*args, **kargs)
         self.children.append(new_row)
+        return self
 
     def insert(self, index:int, *args, **kargs) :
         """Insert a new RowNode at the given index.
@@ -211,6 +214,14 @@ class AbsCollectionNode(AbsGeneratorNode) :
         of the appropriate row class."""
         new_row = self.get_row(*args, **kargs)
         self.children.insert(index, new_row)
+        return self
+
+    def __iter__(self) :
+        return [n.node for n in self.children].__iter__()
+    def __getitem__(self, key) :
+        return self.children[key].node
+    def __setitem__(self, key, value) :
+        self.children[key].set_node(value)
 
     #####################################################
     #                  PRINT NODE LOGIC                 #

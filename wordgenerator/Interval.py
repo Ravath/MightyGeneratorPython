@@ -5,10 +5,11 @@ Created on Tue Sep 15 17:35:42 2020
 @author: Ehlion
 """
 
-from macro.dice import ValueIf, PoolSum, Pool
+from macro.dice import ValueIf
 from wordgenerator.NodeIf import AbsGeneratorNode
 from wordgenerator.NodeCollectionIf import AbsCollectionNode, RowNode
 from wordgenerator.Print import PrintNode
+from macro.dice_macro import get_ValueIf
 
 #___________________________________________________#
 #                                                   #
@@ -17,12 +18,44 @@ from wordgenerator.Print import PrintNode
 class IntervalRow(RowNode) :
     """The row of an IntervalNode. Encapsulates a node,
     and uses a min-max interval to determine the odds of getting drawn."""
+
+    def set_min(self, new_min) :
+        self._min = new_min
+        if (not isinstance(new_min, int) and
+            not isinstance(new_min, ValueIf)) :
+            raise ValueError("Min must be 'int' or 'ValueIf'")
+
+    def get_min(self) -> int :
+        if isinstance(self._min, int) :
+            return self._min
+        elif isinstance(self._min, ValueIf) :
+            return self._min.value
+        else :
+            raise ValueError("Min must be 'int' or 'ValueIf'")
+
+    def set_max(self, new_max) :
+        self._max = new_max
+        if (not isinstance(new_max, int) and
+            not isinstance(new_max, ValueIf)) :
+            raise ValueError("Max must be 'int' or 'ValueIf'")
+
+    def get_max(self) -> int :
+        if isinstance(self._max, int) :
+            return self._max
+        elif isinstance(self._max, ValueIf) :
+            return self._max.value
+        else :
+            raise ValueError("Max must be 'int' or 'ValueIf'")
+
+    min = property(get_min, set_min)
+    max = property(get_max, set_max)
+
     def __init__(self) :
         RowNode.__init__(self)
 
         # introduce new attributes
-        self.min=1
-        self.max=1
+        self._min=1
+        self._max=1
 
         # extend the signature conversion table
 # pylint: disable-msg=C0103
@@ -41,8 +74,6 @@ class IntervalRow(RowNode) :
         self.argument_conversion.extend([
             ([int], int1),
             ([int,int], int2),
-            ([int,str], conv2),
-            ([int,int,str], conv3),
             ([int,AbsGeneratorNode], conv2),
             ([int,int,AbsGeneratorNode], conv3),
         ])
@@ -60,12 +91,14 @@ class IntervalNode(AbsCollectionNode) :
     if the random is between the min and max interval
     of the given row."""
 
-    def __init__(self, dice:ValueIf, number_of_draw:int = 1, put_back:bool = True) :
+    def __init__(self, dice, number_of_draw = 1, put_back:bool = True) :
         AbsCollectionNode.__init__(self)
 
-        # introduce new attributes
-        self.dice = dice
-        self.number_of_draw = number_of_draw
+        # dice is a ValueIf, or an int
+        self.dice = get_ValueIf(dice)
+        # number_of_draw is a ValueIf, or an int
+        self.number_of_draw = get_ValueIf(number_of_draw)
+        # put_back is a boolean flag
         self.put_back = put_back
 
     def get_row(self, *args, **kargs) -> IntervalRow :
@@ -91,13 +124,16 @@ class IntervalNode(AbsCollectionNode) :
                 yield row.node
 
     def __str_attributes__(self) -> str :
-        return f"Draws={self.number_of_draw} PutBack={self.put_back}"
+        return f"Draws={self.number_of_draw.value} PutBack={self.put_back}"
 
 #___________________________________________________#
 #                                                   #
 #                       DEBUG                       #
 #___________________________________________________#
 if __name__ == "__main__" :
+    from utils.debug import test, print_log
+    from macro.dice import PoolSum, Pool
+
     var = IntervalNode(PoolSum(Pool(1,4)))
     var.extend([
         [0, 4, "test"],
