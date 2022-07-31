@@ -8,7 +8,7 @@ from wordgenerator.Print import SetNode, Title, Label
 from wordgenerator.Generator import Generator
 from ponderation import pond_type, pond_fabriquant, pond_element, can_element
 from ponderation import nbr_of_constructor_properties
-from capacite import arme_spe, grenade_spe, bouclier_spe
+from capacite import arme_spe
 from nom import nom_arme, nom_grenade, nom_bouclier
 
 Print.print_to_buffer()
@@ -54,7 +54,8 @@ ODD_BOU = 1
 #################################################
 
 WEAPON_TYPE = "PISTOLET"
-WEAPON_RARITY = "COMMUN"
+WEAPON_RARITY = ""
+WEAPON_CONSTRUCTOR = "TEST"
 
 def SetWeaponType(weapon_type) :
     # update the flag
@@ -77,6 +78,8 @@ def SetWeaponConstructor(weapon_constructor) :
     for v in pond_fabriquant.values() :
         v.value = 0
     pond_fabriquant[weapon_constructor].value = 1
+    global WEAPON_CONSTRUCTOR
+    WEAPON_CONSTRUCTOR = weapon_constructor
 
 def SetWeaponElement(weapon_element) :
     # update the ponderations
@@ -122,7 +125,7 @@ sel_fabriquant["PISTOLET"] = Weight().extend([
     SetNode(SetWeaponConstructor, "Tediore"),
     SetNode(SetWeaponConstructor, "Torgue"),
 ])
-    
+
 sel_fabriquant["MITRAILLETTE"] = {}
 sel_fabriquant["MITRAILLETTE"] = Weight().extend([
     SetNode(SetWeaponConstructor, "Maliwan"),
@@ -217,11 +220,12 @@ spe_fabriquant = Interval(1).extend([
     [0, pond_fabriquant["Tesla"],   inhibit_element],
     [0, pond_fabriquant["Tesla"],   pretirage_one],
     # resolve the constructor specific capacity
-    # FUSILS
+    # ARMES
     [0, pond_fabriquant["Bandit"], "*Chargeur X2*\n"],
     [0, pond_fabriquant["Dahl"], "*Mode Rafale et Automatique: possibilité d'alterner 2 cartes successives d'un tir*\n"],
     [0, pond_fabriquant["Hyperion"], "*Bouclier d'énergie avec [[1d20+10]]PV*\n"],
     [0, pond_fabriquant["Jakobs"], "*Tir ricochant si critique*\n"],
+
     [0, pond_fabriquant["Maliwan"], sel_element],
     [0, pond_fabriquant["Tediore"], "*Lancer l'arme pour recharger, dégâts similaire à une balle en zone*\n"],
     [0, pond_fabriquant["Torgue"], "*Arme Explosive*\n"],
@@ -281,7 +285,6 @@ pistol_modes = Weight(2, False).extend([
     [" - Tir Rafale\n"],
     [" - Tir Automatique\n"],
 ])
-# TODO check it works (execution and printing) after weighNode fully implemented
 
 weapon_generation["PISTOLET"] = {}
 weapon_generation["PISTOLET"]["COMMUN"] = GetWeaponBuilder(
@@ -535,7 +538,6 @@ weapon_generation["GRENADE"]["LEGENDAIRE"] = GetGrenadeBuilder(
 
 ############# SHIELD
 
-# TODO resolve this roll at runtime ?
 shield_intensity = "(1d11+6)"
 
 def GetShieldBuilder(shield_name:str) :
@@ -619,9 +621,7 @@ generation = Sequence().extend([
     DictionaryNode(weapon_generation, "WEAPON_TYPE", "WEAPON_RARITY"),
     Title("Propriétés", Sequence().extend([
         spe_fabriquant,
-        DictionaryNode(arme_spe, "WEAPON_RARITY"),
-        DictionaryNode(grenade_spe, "WEAPON_RARITY"),
-        DictionaryNode(bouclier_spe, "WEAPON_RARITY"),
+        DictionaryNode(arme_spe, "WEAPON_RARITY", "WEAPON_TYPE")
     ])),
 ])
 
@@ -638,10 +638,10 @@ g_handler.variable_converter = var_converter
 # Do generation
 g_handler.execute()
 
-# Print debug info
 print("Coffre :", globals()["CHEST_TYPE"])
-print("Arme   :", WEAPON_TYPE)
+print("Arme   :", WEAPON_TYPE) 
 print("Rareté :", WEAPON_RARITY)
+print("Constructeur :", WEAPON_CONSTRUCTOR )
 print()
 
 # print generation result

@@ -46,9 +46,24 @@ class IntervalRow(RowNode) :
             return self._max.value
         else :
             raise ValueError("Max must be 'int' or 'ValueIf'")
+            
+    def set_nbr_pick(self, new_nbr_pick) :
+            self._nbr_pick = new_nbr_pick
+            if (not isinstance(new_nbr_pick, int) and
+                not isinstance(new_nbr_pick, ValueIf)) :
+                raise ValueError("Nbr_pick must be 'int' or 'ValueIf'")
+
+    def get_nbr_pick(self) -> int :
+            if isinstance(self._nbr_pick, int) :
+                return self._nbr_pick
+            elif isinstance(self._nbr_pick, ValueIf) :
+                return self._nbr_pick.value
+            else :
+                raise ValueError("Nbr_pick must be 'int' or 'ValueIf'")
 
     min = property(get_min, set_min)
     max = property(get_max, set_max)
+    nbr_pick = property(get_nbr_pick, set_nbr_pick)
 
     def __init__(self) :
         RowNode.__init__(self)
@@ -56,6 +71,7 @@ class IntervalRow(RowNode) :
         # introduce new attributes
         self._min=1
         self._max=1
+        self._nbr_pick=-1
 
         # extend the signature conversion table
 # pylint: disable-msg=C0103
@@ -71,16 +87,22 @@ class IntervalRow(RowNode) :
             self.min=i1
             self.max=i2
             self.set_node(s1)
+        def conv4(self, i1, i2, i3, s1) :
+            self.min=i1
+            self.max=i2
+            self.nbr_pick=i3
+            self.set_node(s1)
         self.argument_conversion.extend([
             ([int], int1),
             ([int,int], int2),
             ([int,AbsGeneratorNode], conv2),
             ([int,int,AbsGeneratorNode], conv3),
+            ([int,int,int,AbsGeneratorNode], conv4)
         ])
 # pylint: enable-msg=C0103
 
     def __str_attributes__(self) -> str :
-        return f"Min={self.min} Max={self.max}"
+        return f"Min={self.min} Max={self.max}; Pick={self.nbr_pick}"
 
 #___________________________________________________#
 #                                                   #
@@ -91,16 +113,18 @@ class IntervalNode(AbsCollectionNode) :
     if the random is between the min and max interval
     of the given row."""
 
-    def __init__(self, dice, number_of_draw = 1, put_back:bool = True) :
+    def __init__(self, dice, nbr_draw= 1, put_back:bool = True, nbr_pick = -1) :
         AbsCollectionNode.__init__(self)
 
         # dice is a ValueIf, or an int
         self.dice = get_ValueIf(dice)
-        # number_of_draw is a ValueIf, or an int
-        self.number_of_draw = get_ValueIf(number_of_draw)
+        self.nbr_draw = nbr_draw
         # put_back is a boolean flag
         self.put_back = put_back
-
+        # nbr_pick gives the number of time a row can be picked
+        # a -1 default value means infinite pick
+        self.nbr_pick = nbr_pick
+        
     def get_row(self, *args, **kargs) -> IntervalRow :
         """Instanciate the proper row with the given arguments"""
         new_row=IntervalRow()
@@ -114,38 +138,24 @@ class IntervalNode(AbsCollectionNode) :
     def draw(self) :
         """Draw a random value from the given random generation
         and draw rows consequently."""
-        res=self.dice.value
-        return self.draw_from_result(res)
+        for y in range(0, self.nbr_draw) :
+            res = self.dice.value
+            results = self.draw_from_result(res)
+            for x in results :
+                yield x
+            
 
     def draw_from_result(self, roll:int) :
         """Get the result for the given value."""
-        for row in self.children:
-            if row.min <= roll <= row.max:
+        for child in self.children :
+            child.pick_node = True
+        for row in self.children :
+            if row.min <= roll <= row.max and row.pick_node == True \
+            and row.nbr_pick != 0 :
                 yield row.node
+                row.nbr_pick -= 1
+                if row.nbr_pick == 0 :
+                    row.pick_node = False
 
     def __str_attributes__(self) -> str :
-        return f"Draws={self.number_of_draw.value} PutBack={self.put_back}"
-
-#___________________________________________________#
-#                                                   #
-#                       DEBUG                       #
-#___________________________________________________#
-if __name__ == "__main__" :
-    from utils.debug import test, print_log
-    from macro.dice import PoolSum, Pool
-
-    var = IntervalNode(PoolSum(Pool(1,4)))
-    var.extend([
-        [0, 4, "test"],
-        [1, 2, PrintNode("yes")],
-        [3, 2, "problem"],
-        [5,10, PrintNode("manuel")]
-    ])
-    var.print_node()
-    #can't do because have to implement roll
-    #var.execute()
-    for i in range(0,6) :
-        print(f"== {i} ==")
-        for resNode in var.draw_from_result(i) :
-            resNode.execute()
-    var.execute()
+        return f"Draws={self.nbr_draw} PutBack={self.put_back}"

@@ -37,18 +37,3 @@ class SequenceNode(AbsCollectionNode):
 
         for row in self.children :
             row.node.print_node(tabs+1)
-
-#___________________________________________________#
-#                                                   #
-#                       DEBUG                       #
-#___________________________________________________#
-if __name__ == "__main__" :
-    var = SequenceNode()
-    var.extend([
-        "test",
-        "problem",
-        "manuel"])
-
-    var.print_node()
-
-    var.execute()

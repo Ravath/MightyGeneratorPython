@@ -22,6 +22,7 @@ w_empty = WeightNode()
 w_single = WeightNode()
 w_easy = WeightNode()
 w_ponder = WeightNode()
+w_back = WeightNode(8)
 
 w_single.extend([
     [1, "The best one in the world"],
@@ -36,6 +37,12 @@ w_ponder.extend([
     [1, "NO"],
     [1, lambda : print("papa")],
 ])
+w_back.extend([
+    [0,-1, "I won't be there"],
+    [5,2, "I will be seen max 3 times"],
+    [3,0, "I'm the only one"],
+    [1, "You can see me often"],
+    ])
 
 """ Executions """
 
@@ -56,6 +63,10 @@ for i in range(0,10):
     w_ponder.execute()
 
 w_ponder.print_node()
+
+print("- 4 row map, 1 time but 8 draw in the same execution, with different put back :")
+w_back.execute()
+w_back.print_node()
 
 #___________________________________________________#
 #                                                   #

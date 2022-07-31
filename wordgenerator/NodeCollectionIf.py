@@ -247,6 +247,6 @@ class AbsCollectionNode(AbsGeneratorNode) :
         with an incremented indentation."""
         tab_sign="\t"*tabs
         print(f"{tab_sign}[{type(self).__name__} : {self.__str_attributes__()}]")
-
+        
         for row in self.children :
             row.print_node(tabs+1)
