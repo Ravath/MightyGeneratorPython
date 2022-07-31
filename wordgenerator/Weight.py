@@ -88,7 +88,8 @@ class WeightNode(AbsCollectionNode):
 
         # introduce new attributes
         self.numberOfDraw = numberOfDraw
-        self.putBack = putBack
+        self.putBack = putBack #Test
+        
         
     def get_row(self, *args, **kargs) -> WeightRow :
         new_row = WeightRow()
