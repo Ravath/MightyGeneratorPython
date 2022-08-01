@@ -39,11 +39,11 @@ class WeightRow(RowNode):
         
         # Introduce new attributes
         self.weight= 1
-        # putBack indicates how many times a row can be put back in a node
-        # A value <0 for putBack allows an infinite put back in a node by default
-        self.putBack= 0 
-        # putBack indicates how many times a row 
-        # can be put back in a node. A value <0 for putBack allows
+        # nbr_put_back indicates how many times a row can be put back in a node
+        # A value <0 for nbr_put_back allows an infinite put back in a node by default
+        self.nbr_put_back= 0 
+        # nbr_put_back indicates how many times a row 
+        # can be put back in a node. A value <0 for nbr_put_back allows
         # an infinite put back in a node
         self.stopRow = False
         
@@ -52,13 +52,13 @@ class WeightRow(RowNode):
             self.weight=i1
         def int2(self, i1, i2):
             self.weight=i1
-            self.putBack=i2
+            self.nbr_put_back=i2
         def conv2(self, i1, s1) :
             self.weight=i1
             self.set_node(s1)
         def conv3(self, i1, i2, s1) :
             self.weight=i1
-            self.putBack=i2
+            self.nbr_put_back=i2
             self.set_node(s1)
         self.argument_conversion.extend([
             ([int], int1),
@@ -69,7 +69,7 @@ class WeightRow(RowNode):
 
     def __str_attributes__(self) -> str :
         return f"Weight={self.weight}  "\
-            f"Back={self.putBack}"
+            f"Back={self.nbr_put_back}"
 
 def randint(vmin:int, vmax:int) :
     return random.randint(vmin, vmax)
@@ -80,17 +80,17 @@ def randint(vmin:int, vmax:int) :
 #___________________________________________________#
 class WeightNode(AbsCollectionNode):
     
-    def __init__(self, numberOfDraw:int = 1, putBack:bool = True) :
+    def __init__(self, nbr_draw:int = 1, do_put_back:bool = True, nbr_put_back:int = -1) :
         AbsCollectionNode.__init__(self)
         # flag raised if the total weight of the row
         # has changed and must be recomputed
         self.totalWeight = 0
 
         # introduce new attributes
-        self.numberOfDraw = numberOfDraw
-        self.putBack = putBack #Test
-        
-        
+        self.nbr_draw = nbr_draw
+        self.do_put_back = do_put_back
+        self.nbr_put_back = nbr_put_back
+
     def get_row(self, *args, **kargs) -> WeightRow :
         new_row = WeightRow()
         new_row.put(*args, **kargs)
@@ -106,11 +106,11 @@ class WeightNode(AbsCollectionNode):
         for child in self.children :
             child.stopRow = False
         for child in self.children :
-            child.putBack = child.putBack
+            child.nbr_put_back = child.nbr_put_back
             
         if self.totalWeight == 0 : return
     
-        for y in range(0, self.numberOfDraw):
+        for y in range(0, self.nbr_draw):
             # Stops if no one can be picked
             if self.totalWeight == 0 :
                 return
@@ -132,12 +132,12 @@ class WeightNode(AbsCollectionNode):
             yield self.children[index].node
             
             # Conditions for putting back row and how many times it will do it
-            if (self.putBack == False or
-                (self.putBack == True and self.children[index].putBack == 0)):
+            if (self.do_put_back == False or
+                (self.do_put_back == True and self.children[index].nbr_put_back == 0)):
                 self.children[index].stopRow = True
                 self.totalWeight -= self.children[index].weight
-            elif self.putBack == True and self.children[index].putBack != 0 :
-                 self.children[index].putBack -= 1
+            elif self.do_put_back == True and self.children[index].nbr_put_back != 0 :
+                 self.children[index].nbr_put_back -= 1
             else: pass
         
     def __str_attributes__(self) -> str :
@@ -145,8 +145,8 @@ class WeightNode(AbsCollectionNode):
         self.computeTotal()
         
         return f"TotalWeight={self.totalWeight} "\
-               f"Draws={self.numberOfDraw} " \
-               f"PutBack={self.putBack}"
+               f"Draws={self.nbr_draw} " \
+               f"PutBack={self.nbr_put_back}"
 
 #___________________________________________________#
 #                                                   #
@@ -163,28 +163,33 @@ if __name__ == "__main__" :
 # initial values
     wmap = WeightNode()
     test(0, len(wmap.children))
-    test(1, wmap.numberOfDraw)
-    test(True, wmap.putBack)
+    test(1, wmap.nbr_draw)
+    test(True, wmap.do_put_back)
     wmap.print_node()
 
     print_log("TEST", "Initialisation : Constructors")
 # Different number of draws
     wmap = WeightNode(7)
     test(0, len(wmap.children))
-    test(7, wmap.numberOfDraw)
-    test(True, wmap.putBack)
-# Different number of draws and putback
+    test(7, wmap.nbr_draw)
+    test(True, wmap.do_put_back)
+# Different number of draws and do put back
     wmap = WeightNode(7, False)
     test(0, len(wmap.children))
-    test(7, wmap.numberOfDraw)
-    test(False, wmap.putBack)
-# Different putback
-    wmap = WeightNode(putBack = False)
+    test(7, wmap.nbr_draw)
+    test(False, wmap.do_put_back)
+# Different do putback
+    wmap = WeightNode(do_put_back = False)
     test(0, len(wmap.children))
-    test(1, wmap.numberOfDraw)
-    test(False, wmap.putBack)
+    test(1, wmap.nbr_draw)
+    test(False, wmap.do_put_back)
+# Different number of putback
+    wmap = WeightNode(nbr_put_back=8)
+    test(0, len(wmap.children))
+    test(8, wmap.nbr_put_back)
+    test(True, wmap.do_put_back)
     wmap.print_node()
-
+    
     print_log("TEST", "Initialisation : Adding rows")
 # Extend 3 rows
     wmap.extend([p2,p1,p3])
@@ -205,7 +210,7 @@ if __name__ == "__main__" :
     test(0, len(wmap.children))
     wmap.print_node()
 
-    def test_print_node(index:int, node, weight:int = 1, nbrPutback:int = 1) :
+    def test_print_node(index:int, node, weight:int = 1, nbr_put_back:int = -1) :
         """Test function of a weightrow.
 
         Parameters
@@ -217,7 +222,7 @@ if __name__ == "__main__" :
             or expected string of a printnode to check.
         weight : int, optional, The default is 1.
             expected weight of the row to check.
-        nbrPutback : int, optional, The default is 1.
+        nbr_put_back : int, optional, The default is -1 (infinite put back).
             expected putback of the row to check.
         """
 
@@ -226,7 +231,7 @@ if __name__ == "__main__" :
         if not test(True, isinstance(trow, WeightRow), f"test row_{index} is a WeightRow") :
             print_log("DISPLAY", type(trow))
         test(weight, trow.weight, f"test row_{index}.weight")
-        test(nbrPutback, trow.putBack, f"test row_{index}.putBack")
+        test(nbr_put_back, trow.nbr_put_back, f"test row_{index}.nbr_put_back")
         if isinstance(node, str) :
             if not test(True, isinstance(trow.node, PrintNode), f"test row_{index}.node is a PrintNode") :
                 print_log("DISPLAY", type(trow))
@@ -236,6 +241,7 @@ if __name__ == "__main__" :
 
     print_log("TEST", "Initialisation : append")
     wmap = WeightNode()
+    wmap.print_node()
 # append a string
     test_action("Append a String")
     wmap.append("aba")
@@ -248,9 +254,9 @@ if __name__ == "__main__" :
     test_print_node(1,"babo", 3)
 # append a string with a weight and putback
     test_action("Append a string with a weight and a putback value")
-    wmap.append(4, 2, "babo")
+    wmap.append(4, 6, "babo")
     test(3, len(wmap.children), "Length increased")
-    test_print_node(2,"babo", 4, 2)
+    test_print_node(2,"babo", 4, 6)
 # append a node
     test_action("Clear Children")
     test_action("Append a node")
@@ -295,7 +301,7 @@ if __name__ == "__main__" :
     test_print_node(4, "bobo", 2)
     wmap.insert(1, 2, 5, "bibi")
     test_print_node(1, "bibi", 2, 5)
-    wmap.insert(index=2, putBack=-9, weight=3, node="insert2")
+    wmap.insert(index=2, nbr_put_back=-9, weight=3, node="insert2")
     test_print_node(2, "insert2", 3, -9)
     wmap.print_node()
 
@@ -335,7 +341,7 @@ if __name__ == "__main__" :
     test_map(wmap, [2])
     print_log("TEST", "Multiple draws")
 # Multiple draw
-    wmap.numberOfDraw = 3
+    wmap.nbr_draw = 3
     test_map(wmap, [2,1,3])
 # Null weight
     wmap.children[1].Weight = 0
@@ -346,18 +352,18 @@ if __name__ == "__main__" :
     wmap.children[1].Weight = 1
     print_log("TEST", "Putback behaviors")
 # No putback
-    wmap.putBack = False
+    wmap.do_put_back = False
     default_dice = [1,1,1]
     test_map(wmap, [1,2,3])
 # Behavior is the same the second time (rows are reset)
     test_map(wmap, [1,2,3])
 # Too much draws
-    wmap.numberOfDraw = 4
+    wmap.nbr_draw = 4
     test_map(wmap, [1,2,3])
-    wmap.numberOfDraw = 3
+    wmap.nbr_draw = 3
 # With a different individual putback
-    wmap.numberOfDraw = 4
-    wmap.children[1].putBack = 2
+    wmap.nbr_draw = 4
+    wmap.children[1].nbr_put_back = 2
     test_map(wmap, [1,2,2,3])
 # With a different weight
     wmap.children[0].Weight = 3
@@ -365,8 +371,8 @@ if __name__ == "__main__" :
     test_map(wmap, [3,2,1,1], [5,4,3,1])
     wmap.children[0].Weight = 1
 # Infinite putback
-    wmap.numberOfDraw = 6
-    wmap.children[1].putBack = -1
+    wmap.nbr_draw = 6
+    wmap.children[1].nbr_put_back = -1
     test_map(wmap, [2,2,1,3,2,2], [2,2,1,2,3,1])
 
     test_result()
