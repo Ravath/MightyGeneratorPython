@@ -235,6 +235,5 @@ class AbsCollectionNode(AbsGeneratorNode) :
         """print the node and its children."""
         tab_sign="\t"*tabs
         print(f"{tab_sign}[{type(self).__name__} : {self.__str_attributes__()}]")
-
         for row in self.children :
             row.print_node(tabs+1)

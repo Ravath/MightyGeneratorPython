@@ -39,12 +39,9 @@ class WeightRow(RowNode):
         
         # Introduce new attributes
         self.weight= 1
-        # nbr_put_back indicates how many times a row can be put back in a node
-        # A value <0 for nbr_put_back allows an infinite put back in a node by default
-        self.nbr_put_back= 0 
-        # nbr_put_back indicates how many times a row 
-        # can be put back in a node. A value <0 for nbr_put_back allows
-        # an infinite put back in a node
+        self.nbr_put_back = -1 #nbr_put_back indicates how many times a row 
+        #can be put back in a node, a value <0 for nbr_put_back allows
+        #an infinite put back in a node by default
         self.stopRow = False
         
         # Extend the signature conversion table
@@ -75,7 +72,7 @@ def randint(vmin:int, vmax:int) :
     return random.randint(vmin, vmax)
 
 #___________________________________________________#
-#                                                   #
+#                                            (ᵔᴥᵔ)  #
 #                     WeightNode                    #
 #___________________________________________________#
 class WeightNode(AbsCollectionNode):
@@ -87,9 +84,9 @@ class WeightNode(AbsCollectionNode):
         self.totalWeight = 0
 
         # introduce new attributes
-        self.nbr_draw = nbr_draw
-        self.do_put_back = do_put_back
-        self.nbr_put_back = nbr_put_back
+        self.nbr_draw = nbr_draw #number of time we will start WeightNode
+        self.do_put_back = do_put_back #do we put back a picked child
+        self.nbr_put_back = nbr_put_back #how many times we put back a picked child
 
     def get_row(self, *args, **kargs) -> WeightRow :
         new_row = WeightRow()
@@ -146,10 +143,10 @@ class WeightNode(AbsCollectionNode):
         
         return f"TotalWeight={self.totalWeight} "\
                f"Draws={self.nbr_draw} " \
-               f"PutBack={self.nbr_put_back}"
+               f"PutBack={self.do_put_back}"
 
 #___________________________________________________#
-#                                                   #
+#     ಠ_ಠ                                                                                          #
 #                       DEBUG                       #
 #___________________________________________________#
 if __name__ == "__main__" :
@@ -184,7 +181,7 @@ if __name__ == "__main__" :
     test(1, wmap.nbr_draw)
     test(False, wmap.do_put_back)
 # Different number of putback
-    wmap = WeightNode(nbr_put_back=8)
+    wmap = WeightNode(nbr_draw=4, nbr_put_back=8)
     test(0, len(wmap.children))
     test(8, wmap.nbr_put_back)
     test(True, wmap.do_put_back)
@@ -197,7 +194,7 @@ if __name__ == "__main__" :
     test(p2, wmap.children[0].node)
     test(p1, wmap.children[1].node)
     test(p3, wmap.children[2].node)
-# Append
+# AppendDebug
     wmap.append(p1)
     test(4, len(wmap.children))
     test(p1, wmap.children[3].node)
@@ -247,6 +244,7 @@ if __name__ == "__main__" :
     wmap.append("aba")
     test(1, len(wmap.children), "Length increased")
     test_print_node(0,"aba")
+    wmap.print_node()
 # append a string with a weight
     test_action("Append a string with a weight")
     wmap.append(3, "babo")
@@ -328,49 +326,61 @@ if __name__ == "__main__" :
 
     print_log("TEST", "Drawing with default values")
 # Empty
+    print_log("TEST", "Empty")
     wmap = WeightNode()
     test_map(wmap, [])
 # One row
+    print_log("TEST", "One row")
     wmap.append(ActionNode(res1))
     test_map(wmap, [1])
 # Multiple rows
+    print_log("TEST", "Multiple rows")
     wmap.extend([
         ActionNode(res2),
         ActionNode(res3),
     ])
     test_map(wmap, [2])
-    print_log("TEST", "Multiple draws")
 # Multiple draw
+    print_log("TEST", "Multiple draws")
     wmap.nbr_draw = 3
     test_map(wmap, [2,1,3])
 # Null weight
-    wmap.children[1].Weight = 0
+    print_log("TEST", "Null weight")
+    wmap.children[1].weight = 0
     test_map(wmap, [3,1,1])
 # Superior weight
-    wmap.children[1].Weight = 2
+    print_log("TEST", "Superior Weight")
+    wmap.children[1].weight = 2
     test_map(wmap, [2,1,2])
-    wmap.children[1].Weight = 1
+    wmap.children[1].weight = 1
+    
     print_log("TEST", "Putback behaviors")
-# No putback
+# No put back
+    print_log("TEST", "No put back")
     wmap.do_put_back = False
-    default_dice = [1,1,1]
-    test_map(wmap, [1,2,3])
+    #default_dice = [1,1,1]
+    test_map(wmap, [1,2,3], [1,1,1])
 # Behavior is the same the second time (rows are reset)
-    test_map(wmap, [1,2,3])
+    print_log("TEST", "No put back, second time")
+    test_map(wmap, [1,2,3], [1,1,1])
 # Too much draws
+    print_log("TEST", "Too much draws")
     wmap.nbr_draw = 4
-    test_map(wmap, [1,2,3])
+    test_map(wmap, [1,2,3], [1,1,1])
     wmap.nbr_draw = 3
 # With a different individual putback
+    print_log("TEST", "4 Draws, individual put back")
     wmap.nbr_draw = 4
     wmap.children[1].nbr_put_back = 2
     test_map(wmap, [1,2,2,3])
 # With a different weight
+    print_log("TEST", "4 Draws, individual put back, and different weight")
     wmap.children[0].Weight = 3
     test_map(wmap, [1,2,2,3])
     test_map(wmap, [3,2,1,1], [5,4,3,1])
     wmap.children[0].Weight = 1
 # Infinite putback
+    print_log("TEST", "Infinite put back")
     wmap.nbr_draw = 6
     wmap.children[1].nbr_put_back = -1
     test_map(wmap, [2,2,1,3,2,2], [2,2,1,2,3,1])
