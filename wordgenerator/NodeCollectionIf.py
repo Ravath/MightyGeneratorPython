@@ -3,6 +3,10 @@
 Created on Fri Apr 15 01:39:26 2022
 
 @author: Ehlion
+
+| AbsCollectionNode is the parent of every collection Node in the generation structure.
+| The collections are not managing the nodes directly,
+| a RowNode class has to be implemented to encapsulate the children nodes.
 """
 
 from wordgenerator.NodeIf import AbsGeneratorNode
@@ -56,6 +60,7 @@ class RowNode :
         self._node = ConvToNode(node)
 
     def get_node(self) -> AbsGeneratorNode :
+        """Get the node of this Row"""
         return self._node
 
     node = property(get_node, set_node)
@@ -149,6 +154,9 @@ class AbsCollectionNode(AbsGeneratorNode) :
 
     @classmethod
     def __subclasshook__(cls, subclass) :
+        """
+        Check every instance implements an draw and a get_row function.
+        """
         return (hasattr(subclass, 'draw') and
                 callable(subclass.draw) and
                 hasattr(subclass, 'get_row') and
@@ -217,10 +225,13 @@ class AbsCollectionNode(AbsGeneratorNode) :
         return self
 
     def __iter__(self) :
+        """Implements spectific iteration access for the class."""
         return [n.node for n in self.children].__iter__()
     def __getitem__(self, key) :
+        """Implements spectific '[]' access for the class."""
         return self.children[key].node
     def __setitem__(self, key, value) :
+        """Implements spectific '[]' access for the class."""
         self.children[key].set_node(value)
 
     #####################################################
@@ -232,7 +243,8 @@ class AbsCollectionNode(AbsGeneratorNode) :
         return ""
 
     def print_node(self, tabs:int = 0) :
-        """print the node and its children."""
+        """print the node and its children
+        with an incremented indentation."""
         tab_sign="\t"*tabs
         print(f"{tab_sign}[{type(self).__name__} : {self.__str_attributes__()}]")
 

@@ -3,6 +3,12 @@
 Created on Wed Apr 13 18:02:57 2022
 
 @author: Ehlion
+
+| Upmost module of wordgenerator nodes.
+| AbsGeneratorNode is the parent of every Node in the generation structure.
+| AbsLeafNode is the parent of every leafNode in the generation structure.
+|  - Leaf means the node shall not have any more chilren.
+| The the collections nodes, see AbsCollectionNode in the NodeCollectionIf module.
 """
 
 #___________________________________________________#
@@ -10,13 +16,17 @@ Created on Wed Apr 13 18:02:57 2022
 #                  AbsGeneratorNode                 #
 #___________________________________________________#
 class AbsGeneratorNode :
-    """Parent of every node of the word generator."""
+    """Parent of every node of the word generator.
+    Implements a composite pattern with AbsLeafNode and AbsCollectionNode."""
 
     def __init__(self) :
         pass
 
     @classmethod
     def __subclasshook__(cls, subclass) :
+        """
+        Check every instance implements an execute and a printNode function.
+        """
         return (hasattr(subclass, 'execute') and
                 callable(subclass.execute) and
                 hasattr(subclass, 'print_node') and
@@ -37,7 +47,7 @@ class AbsGeneratorNode :
 #___________________________________________________#
 class AbsLeafNode(AbsGeneratorNode):
     """
-    A generic leaf node for the composite pattern.
+    A generic terminal node for the composite pattern.
     """
 
     def __init__(self) :

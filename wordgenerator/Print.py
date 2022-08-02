@@ -40,10 +40,14 @@ class PrintDelegationIf:
     """A delegation for managing a given string."""
 
     def __init__(self) :
+        # The current indentation level.
         PrintDelegationIf.tabs = 0
 
     @classmethod
     def __subclasshook__(cls, subclass) :
+        """
+        The instance must instanciate a do_print function.
+        """
         return (hasattr(subclass, 'do_print') and
                 callable(subclass.do_print) or
                 NotImplemented)
@@ -70,7 +74,10 @@ class PrintToConsole(PrintDelegationIf):
 
 @singleton
 class PrintToBuffer(PrintDelegationIf):
-    """Concatene the text in a single string."""
+    """Concatene the text in a single string.
+    Have to manage endOfLine and indentation by hand
+    in order to be consistent with the PrintToConsole class behavior.
+    """
 
     def __init__(self) :
         self.str_build = io.StringIO()
@@ -148,6 +155,14 @@ class SetNode(ActionNode) :
     with the given argument"""
 
     def __init__(self, set_function, set_value) :
+        """
+        Initiate set SetNode class.
+
+        Parameters
+        ----------
+        set_function : A setter function.
+        set_value : The value to set à execution.
+        """
         self.set_value = set_value
         ActionNode.__init__(self, set_function)
 
@@ -167,11 +182,20 @@ class SetNode(ActionNode) :
 #___________________________________________________#
 
 def CanConvToNode(conv_from) -> AbsGeneratorNode :
+    """Check if the given value is of a type the current implementation
+    can mange/convert into a executable node.
+    See 'ConvToNode' function.
+    """
     return (isinstance(conv_from, str) or
             callable(conv_from) or
             isinstance(conv_from, AbsGeneratorNode))
 
 def ConvToNode(conv_from) -> AbsGeneratorNode :
+    """Convert a value to a managable node.
+        str->PrintNode
+        callable(function)->ActoinNode
+        Already a Node -> no need to convert it.
+    """
     if isinstance(conv_from, str) :
         return PrintNode(conv_from)
     elif callable(conv_from) :
@@ -186,6 +210,12 @@ def ConvToNode(conv_from) -> AbsGeneratorNode :
 #___________________________________________________#
 
 class Title(PrintNode) :
+    """
+    At execution, prints a Title
+    before printing the main text.
+    The main text is indented, and starts at a new line.
+    """
+
     def __init__(self, title:str, child) :
         PrintNode.__init__(self, title)
         self.child = ConvToNode(child)
@@ -206,6 +236,12 @@ class Title(PrintNode) :
         self.child.print_node(tabs+1)
 
 class Label(PrintNode) :
+    """
+    At execution, prints a text label
+    before printing the main text.
+    The main text is concatened directly after the label and a ':'.
+    """
+
     def __init__(self, label:str, child) :
         PrintNode.__init__(self, label + " : ")
         self.child = ConvToNode(child)
@@ -214,23 +250,31 @@ class Label(PrintNode) :
         """Print the label, and then
         execute the children with one tabulation more."""
 
+        # We need to use the PrintToBuffer delegate in order to
+        # handle the concatenation. because The PrintToConsole
+        # delegate will otherwise insert unwanted newLine at each print.
         last, new = self._printer, PrintToBuffer()
 
         if last == new :
+            # The current Print delegation is already a PrintToBuffer.
             PrintNode.execute(self)
             self.child.execute()
             self._printer.end_section()
         else :
+            # Use the PrintToBuffer
             PrintNode._printer = new
             prev_buffer_text = new.get_text()
             new.del_text()
-    
+
+            # Do the Printing
             PrintNode.execute(self)
             self.child.execute()
-    
+
+             # flush to the actual Print delegate.
             last.do_print(new.get_text())
             new.del_text()
-    
+
+            # Tidy
             new.do_print(prev_buffer_text)
             PrintNode._printer = last
             self._printer.end_section()
