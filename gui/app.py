@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from tkinter import *
 from random import *
+from kivy.app import App
+from kivy.uix.button import Button
 
 
-root = Tk()
+class TestApp(App):
+    def build(self):
+        return Button(text='Hello World')
 
-# entrée
-value = StringVar() 
-value.set("texte par défaut")
-entree = Entry(root, textvariable=value, width=30)
-entree.pack()
-
-root.mainloop()
+TestApp().run()

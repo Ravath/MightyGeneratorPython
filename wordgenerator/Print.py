@@ -161,7 +161,7 @@ class SetNode(ActionNode) :
         Parameters
         ----------
         set_function : A setter function.
-        set_value : The value to set à execution.
+        set_value : The value to set at execution.
         """
         self.set_value = set_value
         ActionNode.__init__(self, set_function)
