@@ -75,7 +75,9 @@ lexer = lex.lex()
 precedence = (
     ( 'left', 'PLUS', 'MINUS' ),
     ( 'left', 'TIMES', 'DIV' ),
-    # ( 'left', 'RAND' ),
+    ( 'left', 'POOL_COUNT'),
+    ( 'left', 'RAND_DECORATOR'),
+    ( 'left', 'RAND_DICE', 'RAND_INTERVAL'),
     ( 'nonassoc', 'UMINUS' )
 )
 
@@ -199,6 +201,7 @@ if __name__ == '__main__':
 
     def test_roll(roll : str, expected_value:int = -1) :
         pool = parser.parse(roll)
+        pool
         result = pool.value
         dice = pool.get_results()
         pstr = ""

@@ -9,6 +9,7 @@ from macro.dice import PoolSum, Pool
 from wordgenerator.Weight import WeightNode
 from wordgenerator.Interval import IntervalNode
 from wordgenerator.Sequence import SequenceNode
+from wordgenerator.Generator import Generator
 
 #___________________________________________________#
 #                                                   #
@@ -113,15 +114,46 @@ i_test.execute()
 
 test = SequenceNode().extend([
     "ZARA",
-    "ZOMEU"
+    "ZOMEU",
+    "{TOUTATIS}",
+    "{BELENOS}"
 ])
 
 """ Executions """
 
-print("== Interval maps ==")
+print("== Sequence Node ==")
 
-print(test[0].print_node())
+test.print_node()
+
 for n in test :
     n.print_node()
 
 test.execute()
+
+#___________________________________________________#
+#                                                   #
+#                     GENERATOR                     #
+#___________________________________________________#
+
+""" Declarations """
+
+# The root of the generator is the SequenceNode from the SequenceNode step
+gen = Generator(test)
+
+global TOUTATIS
+TOUTATIS = "-GABUZOMEU"
+
+# use a variable converter from the global variables
+def var_converter(name) -> str :
+    if name in globals().keys() :
+        return globals()[name]
+    else :
+        return "{" + name + "}"
+gen.variable_converter = var_converter
+
+""" Executions """
+
+print("== Generator ==")
+
+gen.execute()
+gen.print_to_console()

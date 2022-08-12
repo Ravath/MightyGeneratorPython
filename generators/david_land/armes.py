@@ -5,6 +5,7 @@ from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Print import PrintNode as Print
 from wordgenerator.Print import SetNode, Title, Label
+from wordgenerator.Generator import Generator
 from ponderation import pond_type, pond_fabriquant, pond_element, can_element
 from ponderation import nbr_of_constructor_properties
 from capacite import arme_spe, grenade_spe, bouclier_spe
@@ -259,12 +260,13 @@ def GetWeaponBuilder(weapon_name:str,
                      weapon_aim:str,
                      weapon_magazin:str,
                      weapon_modes) :
-    return Title(weapon_name, Sequence().extend([
-        nom_arme,
-        Label("Dégats",              weapon_damage),
-        Label("Difficulté de visée", weapon_aim),
-        Label("Magasin",             weapon_magazin),
-        weapon_modes,
+    return Title(weapon_name+" {WEAPON_CONSTRUCTOR}",
+                 Sequence().extend([
+                    nom_arme,
+                    Label("Dégats",              weapon_damage),
+                    Label("Difficulté de visée", weapon_aim),
+                    Label("Magasin",             weapon_magazin),
+                    weapon_modes,
     ]))
 
 ############# PISTOL
@@ -534,13 +536,13 @@ weapon_generation["GRENADE"]["LEGENDAIRE"] = GetGrenadeBuilder(
 ############# SHIELD
 
 # TODO resolve this roll at runtime ?
-shield_intensity = "[[1d11+6]]"
+shield_intensity = "(1d11+6)"
 
 def GetShieldBuilder(shield_name:str) :
     return Title(shield_name, Sequence().extend([
         nom_bouclier,
-        Label("Capacité", f"[[0-3*{shield_intensity}+84]]+[[1d7]]"),
-        Label("Cadence",  f"[[1d5+{shield_intensity}]]"),
+        Label("Capacité", f"[[84 - 3*{shield_intensity} + 1d7]]"),
+        Label("Cadence",  f"[[1d5 + {shield_intensity}]]"),
     ]))
 
 weapon_generation["BOUCLIER"] = {}
@@ -613,8 +615,8 @@ class DictionaryNode(AbsLeafNode) :
 generation = Sequence().extend([
     sel_type,
     sel_rarity,
+    DictionaryNode(sel_fabriquant, "WEAPON_TYPE"),
     DictionaryNode(weapon_generation, "WEAPON_TYPE", "WEAPON_RARITY"),
-    DictionaryNode(sel_fabriquant, "WEAPON_TYPE"), # nothing to display for constructor yet
     Title("Propriétés", Sequence().extend([
         spe_fabriquant,
         DictionaryNode(arme_spe, "WEAPON_RARITY"),
@@ -623,10 +625,27 @@ generation = Sequence().extend([
     ])),
 ])
 
-generation.execute()
+g_handler = Generator(generation)
+
+# text var converter
+def var_converter(name) -> str :
+    if name in globals().keys() :
+        return globals()[name]
+    else :
+        return "{" + name + "}"
+g_handler.variable_converter = var_converter
+
+# Do generation
+g_handler.execute()
+
+# Print debug info
 print("Coffre :", globals()["CHEST_TYPE"])
 print("Arme   :", WEAPON_TYPE)
 print("Rareté :", WEAPON_RARITY)
-
 print()
-Print.print_buffer()
+
+# print generation result
+g_handler.print_to_console()
+
+# TODO Solve Maliwan bug adding 1 property in each weapon
+# TODO Add PROP_ELEMENTAIRE properly

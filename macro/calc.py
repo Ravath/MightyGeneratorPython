@@ -18,7 +18,7 @@ Created on Tue Apr 19 16:40:36 2022
 
 def get_val(other) -> int :
     if isinstance(other, ValueIf) :
-        return other.value
+        return get_val(other.value)
     else :#int
         return other
 
@@ -35,22 +35,9 @@ class ValueIf :
 
     value = property(get_value)
 
-class Value(ValueIf) :
-    """Encapsulate an integer value"""
-
-    def __init__(self, value:int = 0) :
-        ValueIf.__init__(self)
-        self._value = value
-
-    def get_value(self) -> int :
-        """Get the value."""
-        return self._value
-
-    def set_value(self, value:int=0) -> None :
-        """Set the value."""
-        self._value = value
-
-    value = property(get_value, set_value)
+    # OVERLOADING INT CASTING
+    def __int__(self) -> int :
+        return get_val((self))
 
     # OVERLOADING OPERATORS
 
@@ -101,6 +88,23 @@ class Value(ValueIf) :
 
     def __str__( self ) :
         return str(self.value)
+
+class Value(ValueIf) :
+    """Encapsulate an integer value"""
+
+    def __init__(self, value:int = 0) :
+        ValueIf.__init__(self)
+        self._value = value
+
+    def get_value(self) -> int :
+        """Get the value."""
+        return self._value
+
+    def set_value(self, value:int=0) -> None :
+        """Set the value."""
+        self._value = value
+
+    value = property(get_value, set_value)
 
 class RefValue(ValueIf) :
     """Encapsulate a ValueIf"""

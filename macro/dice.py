@@ -38,7 +38,7 @@ class Dice(RandIf, ValueIf) :
         self.discarded = False
     def roll(self) -> int :
         """Roll the die. Replace the previous results."""
-        self.last_result = roll_dice(self.face)
+        self.last_result = roll_dice(int(self.face))
         self.net_result = self.last_result
         return self.last_result
     def cumulate(self) -> int :
