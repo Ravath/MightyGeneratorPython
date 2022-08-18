@@ -7,11 +7,9 @@ Created on Tue Sep 15 19:03:13 2020
 
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode
-from wordgenerator.Print import PrintNode
+from wordgenerator.Generator import Generator
 
-PrintNode.print_to_buffer()
-
-antagonist = Weight().extend([
+antagonist = Weight() << [
     [3,"An evil wizard"],
     [3,"A dragon"],
     [3,"The drow"],
@@ -46,9 +44,9 @@ antagonist = Weight().extend([
     [3,"The bard"],
     [3,"Natural selection"],
     [1,"The DM"],
-])
+]
 
-action = Weight().extend([
+action = Weight() << [
     [9,"killed"],
     [10,"murdered"],
     [10,"slautered"],
@@ -72,9 +70,9 @@ action = Weight().extend([
     [3,"cursed"],
     [2,"befriended"],
     [1,"seduced"],
-])
+]
 
-victim = Weight().extend([
+victim = Weight() << [
     [4,"my family"],
     [4,"my hometown"],
     [4,"my parents"],
@@ -101,9 +99,9 @@ victim = Weight().extend([
 	[4,"my confidence"],
 	[3,"my honor"],
 	[1,"my imaginary friends"],
-])
+]
 
-outcome = Weight().extend([
+outcome = Weight() << [
     [29,"And it will have no effect on how I roleplay my character"],
     [10,"And now I'm a murder hobo"],
     [10,"And now I'm a lawful good stick in the mud"],
@@ -121,16 +119,16 @@ outcome = Weight().extend([
     [ 3,"And now I'm an alcoholic"],
     [ 3,"And now I have multiclassed into warlock"],
     [ 1,"And now I'm Batman"],
-])
+]
 
-sequence = SequenceNode().extend([
+sequence = SequenceNode() << [
     antagonist,
     action,
     victim,
     outcome
-])
+]
+sequence.inbetween_action = " "
 
-sequence.inbetween_action = PrintNode(" ")
-sequence.execute()
-
-PrintNode.print_buffer()
+generation = Generator(sequence)
+generation.execute()
+generation.print_to_console()

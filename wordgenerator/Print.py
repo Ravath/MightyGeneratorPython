@@ -196,14 +196,16 @@ def ConvToNode(conv_from) -> AbsGeneratorNode :
         callable(function)->ActoinNode
         Already a Node -> no need to convert it.
     """
-    if isinstance(conv_from, str) :
+    if conv_from is None :
+        return None
+    elif isinstance(conv_from, str) :
         return PrintNode(conv_from)
     elif callable(conv_from) :
         return ActionNode(conv_from)
     elif isinstance(conv_from, AbsGeneratorNode) :
         return conv_from
     else :
-        raise TypeError("Must be a node, some text or a function")
+        raise TypeError(f"Must be a node, some text or a function, but is {type(conv_from)}")
 #___________________________________________________#
 #                                                   #
 #                     STR FORMATING                 #
@@ -216,9 +218,9 @@ class Title(PrintNode) :
     The main text is indented, and starts at a new line.
     """
 
-    def __init__(self, title:str, child) :
+    def __init__(self, title:str, child = None) :
         PrintNode.__init__(self, title)
-        self.child = ConvToNode(child)
+        self.child = child
 
     def execute(self) :
         """Print the title, and then
@@ -235,6 +237,19 @@ class Title(PrintNode) :
         PrintNode.print_node(self, tabs)
         self.child.print_node(tabs+1)
 
+    def set_child(self, new_child) :
+        self._child = ConvToNode(new_child)
+
+    def get_child(self) :
+        return self._child
+
+    child = property(get_child, set_child)
+
+    def __lshift__(self, other) :
+        """Use '<<' as shortcut for the 'set_child' operation."""
+        self.set_child(other)
+        return self
+
 class Label(PrintNode) :
     """
     At execution, prints a text label
@@ -242,9 +257,9 @@ class Label(PrintNode) :
     The main text is concatened directly after the label and a ':'.
     """
 
-    def __init__(self, label:str, child) :
+    def __init__(self, label:str, child = None) :
         PrintNode.__init__(self, label + " : ")
-        self.child = ConvToNode(child)
+        self.child = child
 
     def execute(self) :
         """Print the label, and then
@@ -283,3 +298,16 @@ class Label(PrintNode) :
         """Print the node name and printed text."""
         PrintNode.print_node(self, tabs)
         self.child.print_node(tabs+1)
+
+    def set_child(self, new_child) :
+        self._child = ConvToNode(new_child)
+
+    def get_child(self) :
+        return self._child
+
+    child = property(get_child, set_child)
+
+    def __lshift__(self, other) :
+        """Use '<<' as shortcut for the 'set_child' operation."""
+        self.set_child(other)
+        return self

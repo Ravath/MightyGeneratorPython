@@ -11,8 +11,6 @@ from ponderation import nbr_of_constructor_properties
 from capacite import arme_spe
 from nom import nom_arme, nom_grenade, nom_bouclier
 
-Print.print_to_buffer()
-
 #################################################
 #              INIT PROBABILITIES               #
 #################################################
@@ -88,7 +86,7 @@ def SetWeaponElement(weapon_element) :
     pond_element[weapon_element].value = 1
 
 
-sel_type = Weight().extend([
+sel_type = Weight() << [
     [ODD_PIS, SetNode(SetWeaponType, "PISTOLET")],
     [ODD_FAS, SetNode(SetWeaponType, "ASSAUT")],
     [ODD_MIT, SetNode(SetWeaponType, "MITRAILLETTE")],
@@ -96,119 +94,105 @@ sel_type = Weight().extend([
     [ODD_FSN, SetNode(SetWeaponType, "SNIPER")],
     [ODD_GRE, SetNode(SetWeaponType, "GRENADE")],
     [ODD_BOU, SetNode(SetWeaponType, "BOUCLIER")],
-])
+]
 
-sel_rarity = Weight().extend([
+sel_rarity = Weight() << [
     [ODD_COM,   SetNode(SetWeaponRarity, "COMMUN")],
     [ODD_UNCOM, SetNode(SetWeaponRarity, "INCOMMUN")],
     [ODD_RAR,   SetNode(SetWeaponRarity, "RARE")],
     [ODD_EPIC,  SetNode(SetWeaponRarity, "EPIQUE")],
     [ODD_ETECH, SetNode(SetWeaponRarity, "ETECH")],
     [ODD_LEG,   SetNode(SetWeaponRarity, "LEGENDAIRE")],
-])
+]
 
 #################################################
 #               SELECT CONSTRUCTOR              #
 #################################################
 
-sel_fabriquant = {"" : {"" : Sequence() }}
-sel_fabriquant .clear()
-
-sel_fabriquant["PISTOLET"] = {}
-sel_fabriquant["PISTOLET"] = Weight().extend([
-    SetNode(SetWeaponConstructor, "Maliwan"),
-    SetNode(SetWeaponConstructor, "Jakobs"),
-    SetNode(SetWeaponConstructor, "Hyperion"),
-    SetNode(SetWeaponConstructor, "Dahl"),
-    SetNode(SetWeaponConstructor, "Vladof"),
-    SetNode(SetWeaponConstructor, "Bandit"),
-    SetNode(SetWeaponConstructor, "Tediore"),
-    SetNode(SetWeaponConstructor, "Torgue"),
-])
-
-sel_fabriquant["MITRAILLETTE"] = {}
-sel_fabriquant["MITRAILLETTE"] = Weight().extend([
-    SetNode(SetWeaponConstructor, "Maliwan"),
-    SetNode(SetWeaponConstructor, "Hyperion"),
-    SetNode(SetWeaponConstructor, "Dahl"),
-    SetNode(SetWeaponConstructor, "Bandit"),
-    SetNode(SetWeaponConstructor, "Tediore"),
-])
-    
-sel_fabriquant["ASSAUT"  ] = {}
-sel_fabriquant["ASSAUT"] = Weight().extend([
-    SetNode(SetWeaponConstructor, "Jakobs"),
-    SetNode(SetWeaponConstructor, "Dahl"),
-    SetNode(SetWeaponConstructor, "Bandit"),
-    SetNode(SetWeaponConstructor, "Torgue"),
-])
-    
-sel_fabriquant["POMPE"] = {}
-sel_fabriquant["POMPE"] = Weight().extend([
-    SetNode(SetWeaponConstructor, "Jakobs"),
-    SetNode(SetWeaponConstructor, "Hyperion"),
-    SetNode(SetWeaponConstructor, "Bandit"),
-    SetNode(SetWeaponConstructor, "Tediore"),
-    SetNode(SetWeaponConstructor, "Torgue"),
-])
-    
-sel_fabriquant["SNIPER"  ] = {}
-sel_fabriquant["SNIPER"] = Weight().extend([
-    SetNode(SetWeaponConstructor, "Maliwan"),
-    SetNode(SetWeaponConstructor, "Jakobs"),
-    SetNode(SetWeaponConstructor, "Hyperion"),
-    SetNode(SetWeaponConstructor, "Vladof"),
-])
-
-sel_fabriquant["GRENADE"] = {}
-sel_fabriquant["GRENADE"] = Weight().extend([
-    SetNode(SetWeaponConstructor, "Classic"),
-    SetNode(SetWeaponConstructor, "Contact"),
-    SetNode(SetWeaponConstructor, "Proximity"),
-    SetNode(SetWeaponConstructor, "MIRV"),
-    SetNode(SetWeaponConstructor, "Singularity"),
-    SetNode(SetWeaponConstructor, "Tesla"),
-    SetNode(SetWeaponConstructor, "Transfusion"),
-    SetNode(SetWeaponConstructor, "Betty"),
-])
-
-sel_fabriquant["BOUCLIER"] = {}
-sel_fabriquant["BOUCLIER"] = Weight().extend([
-    SetNode(SetWeaponConstructor, "Absorb"),
-    SetNode(SetWeaponConstructor, "Adaptive"),
-    SetNode(SetWeaponConstructor, "Amplify"),
-    SetNode(SetWeaponConstructor, "Booster"),
-    SetNode(SetWeaponConstructor, "Lifeline"),
-    SetNode(SetWeaponConstructor, "Nova"),
-    SetNode(SetWeaponConstructor, "Raid"),
-    SetNode(SetWeaponConstructor, "Shield"),
-    SetNode(SetWeaponConstructor, "Spike"),
-    SetNode(SetWeaponConstructor, "Turtle"),
-])
+sel_fabriquant = {
+    "PISTOLET" : Weight() << [
+        SetNode(SetWeaponConstructor, "Maliwan"),
+        SetNode(SetWeaponConstructor, "Jakobs"),
+        SetNode(SetWeaponConstructor, "Hyperion"),
+        SetNode(SetWeaponConstructor, "Dahl"),
+        SetNode(SetWeaponConstructor, "Vladof"),
+        SetNode(SetWeaponConstructor, "Bandit"),
+        SetNode(SetWeaponConstructor, "Tediore"),
+        SetNode(SetWeaponConstructor, "Torgue"),
+    ],
+    "MITRAILLETTE" : Weight() << [
+        SetNode(SetWeaponConstructor, "Maliwan"),
+        SetNode(SetWeaponConstructor, "Hyperion"),
+        SetNode(SetWeaponConstructor, "Dahl"),
+        SetNode(SetWeaponConstructor, "Bandit"),
+        SetNode(SetWeaponConstructor, "Tediore"),
+    ],
+    "ASSAUT" : Weight() << [
+        SetNode(SetWeaponConstructor, "Jakobs"),
+        SetNode(SetWeaponConstructor, "Dahl"),
+        SetNode(SetWeaponConstructor, "Bandit"),
+        SetNode(SetWeaponConstructor, "Torgue"),
+    ],
+    "POMPE" : Weight() << [
+        SetNode(SetWeaponConstructor, "Jakobs"),
+        SetNode(SetWeaponConstructor, "Hyperion"),
+        SetNode(SetWeaponConstructor, "Bandit"),
+        SetNode(SetWeaponConstructor, "Tediore"),
+        SetNode(SetWeaponConstructor, "Torgue"),
+    ],
+    "SNIPER" : Weight() << [
+        SetNode(SetWeaponConstructor, "Maliwan"),
+        SetNode(SetWeaponConstructor, "Jakobs"),
+        SetNode(SetWeaponConstructor, "Hyperion"),
+        SetNode(SetWeaponConstructor, "Vladof"),
+    ],
+    "GRENADE" : Weight() << [
+        SetNode(SetWeaponConstructor, "Classic"),
+        SetNode(SetWeaponConstructor, "Contact"),
+        SetNode(SetWeaponConstructor, "Proximity"),
+        SetNode(SetWeaponConstructor, "MIRV"),
+        SetNode(SetWeaponConstructor, "Singularity"),
+        SetNode(SetWeaponConstructor, "Tesla"),
+        SetNode(SetWeaponConstructor, "Transfusion"),
+        SetNode(SetWeaponConstructor, "Betty"),
+    ],
+    "BOUCLIER" : Weight() << [
+        SetNode(SetWeaponConstructor, "Absorb"),
+        SetNode(SetWeaponConstructor, "Adaptive"),
+        SetNode(SetWeaponConstructor, "Amplify"),
+        SetNode(SetWeaponConstructor, "Booster"),
+        SetNode(SetWeaponConstructor, "Lifeline"),
+        SetNode(SetWeaponConstructor, "Nova"),
+        SetNode(SetWeaponConstructor, "Raid"),
+        SetNode(SetWeaponConstructor, "Shield"),
+        SetNode(SetWeaponConstructor, "Spike"),
+        SetNode(SetWeaponConstructor, "Turtle"),
+    ],
+}
 
 #################################################
 #              ELEMENT GENERATION               #
 #################################################
 
-sel_element = Sequence().extend([
+sel_element = Sequence() << [
     " - Effet élémentaire: ",
-    Weight().extend([
-        Sequence().extend(["incendiaire", SetNode(SetWeaponElement, "FEU")]),
-        Sequence().extend(["électrique" , SetNode(SetWeaponElement, "ELEC")]),
-        Sequence().extend(["slag"       , SetNode(SetWeaponElement, "SLAG")]),
-        Sequence().extend(["corrosif"   , SetNode(SetWeaponElement, "COR")]),
-        Sequence().extend(["radiation"  , SetNode(SetWeaponElement, "RAD")]),
-        Sequence().extend(["cryogénique", SetNode(SetWeaponElement, "CRYO")]),
-    ]),
+    Weight() << [
+        Sequence() << ["incendiaire", SetNode(SetWeaponElement, "FEU")],
+        Sequence() << ["électrique" , SetNode(SetWeaponElement, "ELEC")],
+        Sequence() << ["slag"       , SetNode(SetWeaponElement, "SLAG")],
+        Sequence() << ["corrosif"   , SetNode(SetWeaponElement, "COR")],
+        Sequence() << ["radiation"  , SetNode(SetWeaponElement, "RAD")],
+        Sequence() << ["cryogénique", SetNode(SetWeaponElement, "CRYO")],
+    ],
     "\n"
-])
+]
 
 def inhibit_element() :
     can_element.value = 0
 def pretirage_one() :
     nbr_of_constructor_properties.value = 1
 
-spe_fabriquant = Interval(1).extend([
+spe_fabriquant = Interval(1) << [
     # update ponderation to :
     # - inhibit elementary weapon if needed
     # - make the constructor capacity count as a regular one
@@ -250,7 +234,7 @@ spe_fabriquant = Interval(1).extend([
     [0, pond_fabriquant["Shield"], "*Cadence de rechargement +10, Capacité -15*\n"],
     [0, pond_fabriquant["Spike"], "*Si attaque subie à courte distance, inflige [[1d10]] dégâts élémentaires à l'attaquant*\n"],
     [0, pond_fabriquant["Turtle"], "*Bouclier +[[1d20+10]] PV, Vie max -[[1d20]]*\n"],
-])
+]
 
 #################################################
 #               WEAPON GENERATION               #
@@ -262,231 +246,116 @@ weapon_generation .clear()
 def GetWeaponBuilder(weapon_name:str,
                      weapon_damage,
                      weapon_aim:str,
-                     weapon_magazin:str,
+                     weapon_magazine:str,
                      weapon_modes) :
     return Title(weapon_name+" {WEAPON_CONSTRUCTOR}",
-                 Sequence().extend([
+                 Sequence() << [
                     nom_arme,
                     Label("Dégats",              weapon_damage),
                     Label("Difficulté de visée", weapon_aim),
-                    Label("Magasin",             weapon_magazin),
+                    Label("Magasin",             weapon_magazine),
                     weapon_modes,
-    ]))
+    ])
 
 ############# PISTOL
 
-pistol_damage = Weight().extend([
-    [25, "1D4 + [[1d5+5]]"],
-    [50, "1D6 + [[1d5+4]]"],
-    [25, "1D8 + [[1d5+3]]"],
-])
-pistol_modes = Weight(2, False).extend([
+pistol_damage = Weight() << [
+    [25, "1D4 << [[1d5+5]]"],
+    [50, "1D6 << [[1d5+4]]"],
+    [25, "1D8 << [[1d5+3]]"],
+]
+pistol_modes = Weight(2, False) << [
     [" - Tir Simple\n"],
     [" - Tir Rafale\n"],
     [" - Tir Automatique\n"],
-])
+]
 
-weapon_generation["PISTOLET"] = {}
-weapon_generation["PISTOLET"]["COMMUN"] = GetWeaponBuilder(
-    "Pistolet Commun", pistol_damage,
-    "[[3-1d5]]", "[[1d5+3]]",
-    pistol_modes,
-)
-weapon_generation["PISTOLET"]["INCOMMUN"] = GetWeaponBuilder(
-    "Pistolet Peu Commun", pistol_damage,
-    "[[3-1d5]]", "[[1d5+4]]",
-    pistol_modes,
-)
-weapon_generation["PISTOLET"]["RARE"] = GetWeaponBuilder(
-    "Pistolet Rare", pistol_damage,
-    "[[2-1d4]]", "[[1d5+4]]",
-    pistol_modes,
-)
-weapon_generation["PISTOLET"]["EPIQUE"] = GetWeaponBuilder(
-    "Pistolet Epique", pistol_damage,
-    "[[2-1d4]]", "[[1d5+5]]",
-    pistol_modes,
-)
-weapon_generation["PISTOLET"]["ETECH"] = GetWeaponBuilder(
-    "Pistolet E-Tech", pistol_damage,
-    "[[1-1d4]]", "[[1d5+5]]",
-    pistol_modes,
-)
-weapon_generation["PISTOLET"]["LEGENDAIRE"] = GetWeaponBuilder(
-    "Pistolet Légendaire", pistol_damage,
-    "[[1-1d4]]", "[[1d5+6]]",
-    pistol_modes,
-)
+weapon_generation["PISTOLET"] = {
+    "COMMUN":     GetWeaponBuilder("Pistolet Commun",     pistol_damage, "[[3-1d5]]", "[[1d5+3]]", pistol_modes),
+    "INCOMMUN":   GetWeaponBuilder("Pistolet Peu Commun", pistol_damage, "[[3-1d5]]", "[[1d5+4]]", pistol_modes),
+    "RARE":       GetWeaponBuilder("Pistolet Rare",       pistol_damage, "[[2-1d4]]", "[[1d5+4]]", pistol_modes),
+    "EPIQUE":     GetWeaponBuilder("Pistolet Epique",     pistol_damage, "[[2-1d4]]", "[[1d5+5]]", pistol_modes),
+    "ETECH":      GetWeaponBuilder("Pistolet E-Tech",     pistol_damage, "[[1-1d4]]", "[[1d5+5]]", pistol_modes),
+    "LEGENDAIRE": GetWeaponBuilder("Pistolet Légendaire", pistol_damage, "[[1-1d4]]", "[[1d5+6]]", pistol_modes),
+}
 
 ############# RIFLE
 
-rifle_damage = Weight().extend([
-    [15, "1D4 + [[1d7+9]]"],
-    [30, "1D6 + [[1d7+8]]"],
-    [40, "1D8 + [[1d7+6]]"],
-    [15, "1D10 + [[1d7+5]]"],
-])
+rifle_damage = Weight() << [
+    [15, "1D4 << [[1d7+9]]"],
+    [30, "1D6 << [[1d7+8]]"],
+    [40, "1D8 << [[1d7+6]]"],
+    [15, "1D10 << [[1d7+5]]"],
+]
 rifle_modes = pistol_modes
 
-weapon_generation["ASSAUT"] = {}
-weapon_generation["ASSAUT"]["COMMUN"] = GetWeaponBuilder(
-    "Fusil d'assaut Commun", rifle_damage,
-    "[[4-1d7]]", "[[1d5+6]]",
-    rifle_modes,
-)
-weapon_generation["ASSAUT"]["INCOMMUN"] = GetWeaponBuilder(
-    "Fusil d'assaut Peu Commun", rifle_damage,
-    "[[4-1d7]]", "[[1d5+8]]",
-    rifle_modes,
-)
-weapon_generation["ASSAUT"]["RARE"] = GetWeaponBuilder(
-    "Fusil d'assaut Rare", rifle_damage,
-    "[[3-1d6]]", "[[1d5+8]]",
-    rifle_modes,
-)
-weapon_generation["ASSAUT"]["EPIQUE"] = GetWeaponBuilder(
-    "Fusil d'assaut Epique", rifle_damage,
-    "[[3-1d6]]", "[[1d5+10]]",
-    rifle_modes,
-)
-weapon_generation["ASSAUT"]["ETECH"] = GetWeaponBuilder(
-    "Fusil d'assaut E-Tech", rifle_damage,
-    "[[3-1d5]]", "[[1d5+10]]",
-    rifle_modes,
-)
-weapon_generation["ASSAUT"]["LEGENDAIRE"] = GetWeaponBuilder(
-    "Fusil d'assaut Légendaire", rifle_damage,
-    "[[3-1d5]]", "[[1d5+12]]",
-    rifle_modes,
-)
+weapon_generation["ASSAUT"] = {
+    "COMMUN":     GetWeaponBuilder("Fusil d'assaut Commun",     rifle_damage, "[[4-1d7]]", "[[1d5+6]]",  rifle_modes),
+    "INCOMMUN":   GetWeaponBuilder("Fusil d'assaut Peu Commun", rifle_damage, "[[4-1d7]]", "[[1d5+8]]",  rifle_modes),
+    "RARE":       GetWeaponBuilder("Fusil d'assaut Rare",       rifle_damage, "[[3-1d6]]", "[[1d5+8]]",  rifle_modes),
+    "EPIQUE":     GetWeaponBuilder("Fusil d'assaut Epique",     rifle_damage, "[[3-1d6]]", "[[1d5+10]]", rifle_modes),
+    "ETECH":      GetWeaponBuilder("Fusil d'assaut E-Tech",     rifle_damage, "[[3-1d5]]", "[[1d5+10]]", rifle_modes),
+    "LEGENDAIRE": GetWeaponBuilder("Fusil d'assaut Légendaire", rifle_damage, "[[3-1d5]]", "[[1d5+12]]", rifle_modes),
+}
 
 ############# SUB-MACHINEGUN
 
-machinegun_damage = Weight().extend([
-    [20, "1D8 + [[1d7]]"],
-    [40, "1D10 + [[1d7-1]]"],
-    [40, "1D12 + [[1d7-2]]"],
-])
-machinegun_modes = Sequence().extend([
+machinegun_damage = Weight() << [
+    [20, "1D8 << [[1d7]]"],
+    [40, "1D10 << [[1d7-1]]"],
+    [40, "1D12 << [[1d7-2]]"],
+]
+machinegun_modes = Sequence() << [
     " - Tir Simple\n",
     " - Tir Rafale\n",
     " - Tir Automatique\n"
-])
+]
 
-weapon_generation["MITRAILLETTE"] = {}
-weapon_generation["MITRAILLETTE"]["COMMUN"] = GetWeaponBuilder(
-    "Mitraillette Commune", machinegun_damage,
-    "[[4-1d7]]", "[[1d7+9]]",
-    machinegun_modes,
-)
-weapon_generation["MITRAILLETTE"]["INCOMMUN"] = GetWeaponBuilder(
-    "Mitraillette Peu Commune", machinegun_damage,
-    "[[4-1d7]]", "[[1d7+11]]",
-    machinegun_modes,
-)
-weapon_generation["MITRAILLETTE"]["RARE"] = GetWeaponBuilder(
-    "Mitraillette Rare", machinegun_damage,
-    "[[3-1d6]]", "[[1d7+11]]",
-    machinegun_modes,
-)
-weapon_generation["MITRAILLETTE"]["EPIQUE"] = GetWeaponBuilder(
-    "Mitraillette Epique", machinegun_damage,
-    "[[3-1d6]]", "[[1d7+13]]",
-    machinegun_modes,
-)
-weapon_generation["MITRAILLETTE"]["ETECH"] = GetWeaponBuilder(
-    "Mitraillette E-Tech", machinegun_damage,
-    "[[3-1d5]]", "[[1d7+13]]",
-    machinegun_modes,
-)
-weapon_generation["MITRAILLETTE"]["LEGENDAIRE"] = GetWeaponBuilder(
-    "Mitraillette Légendaire", machinegun_damage,
-    "[[3-1d5]]", "[[1d7+15]]",
-    machinegun_modes,
-)
+weapon_generation["MITRAILLETTE"] = {
+    "COMMUN":     GetWeaponBuilder("Mitraillette Commune",     machinegun_damage, "[[4-1d7]]", "[[1d7+9]]",  machinegun_modes),
+    "INCOMMUN":   GetWeaponBuilder("Mitraillette Peu Commune", machinegun_damage, "[[4-1d7]]", "[[1d7+11]]", machinegun_modes),
+    "RARE":       GetWeaponBuilder("Mitraillette Rare",        machinegun_damage, "[[3-1d6]]", "[[1d7+11]]", machinegun_modes),
+    "EPIQUE":     GetWeaponBuilder("Mitraillette Epique",      machinegun_damage, "[[3-1d6]]", "[[1d7+13]]", machinegun_modes),
+    "ETECH":      GetWeaponBuilder("Mitraillette E-Tech",      machinegun_damage, "[[3-1d5]]", "[[1d7+13]]", machinegun_modes),
+    "LEGENDAIRE": GetWeaponBuilder("Mitraillette Légendaire",  machinegun_damage, "[[3-1d5]]", "[[1d7+15]]", machinegun_modes),
+}
 
 ############# SHOTGUN
 
-pompe_damage = Weight().extend([
-    [10, "2D8 + [[1d9+14]]"],
-    [40, "2D10 + [[1d9+12]]"],
-    [40, "2D12 + [[1d9+10]]"],
-    [10, "2D20 + [[1d9+2]]"],
-])
+pompe_damage = Weight() << [
+    [10, "2D8 << [[1d9+14]]"],
+    [40, "2D10 << [[1d9+12]]"],
+    [40, "2D12 << [[1d9+10]]"],
+    [10, "2D20 << [[1d9+2]]"],
+]
 pompe_modes = " - Tir Simple\n"
 
-weapon_generation["POMPE"] = {}
-weapon_generation["POMPE"]["COMMUN"] = GetWeaponBuilder(
-    "Fusil à pompe Commun", pompe_damage,
-    "[[6-1d7]]", "[[1d3]]",
-    pompe_modes,
-)
-weapon_generation["POMPE"]["INCOMMUN"] = GetWeaponBuilder(
-    "Fusil à pompe Peu Commun", pompe_damage,
-    "[[6-1d7]]", "[[1d3+1]]",
-    pompe_modes,
-)
-weapon_generation["POMPE"]["RARE"] = GetWeaponBuilder(
-    "Fusil à pompe Rare", pompe_damage,
-    "[[5-1d7]]", "[[1d3+1]]",
-    pompe_modes,
-)
-weapon_generation["POMPE"]["EPIQUE"] = GetWeaponBuilder(
-    "Fusil à pompe Epique", pompe_damage,
-    "[[5-1d7]]", "[[1d3+2]]",
-    pompe_modes,
-)
-weapon_generation["POMPE"]["ETECH"] = GetWeaponBuilder(
-    "Fusil à pompe E-Tech", pompe_damage,
-    "[[4-1d7]]", "[[1d3+2]]",
-    pompe_modes,
-)
-weapon_generation["POMPE"]["LEGENDAIRE"] = GetWeaponBuilder(
-    "Fusil à pompe Légendaire", pompe_damage,
-    "[[4-1d7]]", "[[1d3+3]]",
-    pompe_modes,
-)
+weapon_generation["POMPE"] = {
+    "COMMUN":     GetWeaponBuilder("Fusil à pompe Commun",     pompe_damage, "[[6-1d7]]", "[[1d3]]",   pompe_modes),
+    "INCOMMUN":   GetWeaponBuilder("Fusil à pompe Peu Commun", pompe_damage, "[[6-1d7]]", "[[1d3+1]]", pompe_modes),
+    "RARE":       GetWeaponBuilder("Fusil à pompe Rare",       pompe_damage, "[[5-1d7]]", "[[1d3+1]]", pompe_modes),
+    "EPIQUE":     GetWeaponBuilder("Fusil à pompe Epique",     pompe_damage, "[[5-1d7]]", "[[1d3+2]]", pompe_modes),
+    "ETECH":      GetWeaponBuilder("Fusil à pompe E-Tech",     pompe_damage, "[[4-1d7]]", "[[1d3+2]]", pompe_modes),
+    "LEGENDAIRE": GetWeaponBuilder("Fusil à pompe Légendaire", pompe_damage, "[[4-1d7]]", "[[1d3+3]]", pompe_modes),
+}
 
 ############# SNIPER
 
-sniper_damage = Weight().extend([
-    [60, "1D4 + [[1d7+35]]"],
-    [25, "1D6 + [[1d7+34]]"],
-    [15, "1D8 + [[1d7+33]]"],
-])
+sniper_damage = Weight() << [
+    [60, "1D4 << [[1d7+35]]"],
+    [25, "1D6 << [[1d7+34]]"],
+    [15, "1D8 << [[1d7+33]]"],
+]
 sniper_modes = " - Tir Simple\n"
 
-weapon_generation["SNIPER"] = {}
-weapon_generation["SNIPER"]["COMMUN"] = GetWeaponBuilder(
-    "Sniper Commun", sniper_damage,
-    "[[3-1d5]]", "[[1d4]]",
-    sniper_modes,
-)
-weapon_generation["SNIPER"]["INCOMMUN"] = GetWeaponBuilder(
-    "Sniper Peu Commun", sniper_damage,
-    "[[3-1d5]]", "[[1d4+1]]",
-    sniper_modes,
-)
-weapon_generation["SNIPER"]["RARE"] = GetWeaponBuilder(
-    "Sniper Rare", sniper_damage,
-    "[[2-1d4]]", "[[1d4+1]]",
-    sniper_modes,
-)
-weapon_generation["SNIPER"]["EPIQUE"] = GetWeaponBuilder(
-    "Sniper Epique", sniper_damage,
-    "[[2-1d4]]", "[[1d4+2]]",
-    sniper_modes,
-)
-weapon_generation["SNIPER"]["ETECH"] = GetWeaponBuilder(
-    "Sniper E-Tech", sniper_damage,
-    "[[1-1d4]]", "[[1d4+2]]",
-    sniper_modes,
-)
-weapon_generation["SNIPER"]["LEGENDAIRE"] = GetWeaponBuilder(
-    "Sniper Légendaire", sniper_damage,
-    "[[1-1d4]]", "[[1d4+3]]",
-    sniper_modes,
-)
+weapon_generation["SNIPER"] = {
+    "COMMUN":     GetWeaponBuilder("Sniper Commun",     sniper_damage, "[[3-1d5]]", "[[1d4]]",   sniper_modes),
+    "INCOMMUN":   GetWeaponBuilder("Sniper Peu Commun", sniper_damage, "[[3-1d5]]", "[[1d4+1]]", sniper_modes),
+    "RARE":       GetWeaponBuilder("Sniper Rare",       sniper_damage, "[[2-1d4]]", "[[1d4+1]]", sniper_modes),
+    "EPIQUE":     GetWeaponBuilder("Sniper Epique",     sniper_damage, "[[2-1d4]]", "[[1d4+2]]", sniper_modes),
+    "ETECH":      GetWeaponBuilder("Sniper E-Tech",     sniper_damage, "[[1-1d4]]", "[[1d4+2]]", sniper_modes),
+    "LEGENDAIRE": GetWeaponBuilder("Sniper Légendaire", sniper_damage, "[[1-1d4]]", "[[1d4+3]]", sniper_modes),
+}
 
 ############# GRENADE
 
@@ -494,78 +363,44 @@ def GetGrenadeBuilder(weapon_name:str,
                      weapon_damage,
                      weapon_aim:str,
                      weapon_modes) :
-    return Title(weapon_name, Sequence().extend([
+    return Title(weapon_name, Sequence() << [
         nom_grenade,
         Label("Dégats",              weapon_damage),
         Label("Difficulté de visée", weapon_aim),
         weapon_modes,
-    ]))
+    ])
 
-grenade_damage = Print("2D20 + [[1d11+23]]")
+grenade_damage = Print("2D20 << [[1d11+23]]")
 grenade_modes = " - Tir Simple\n"
 
-weapon_generation["GRENADE"] = {}
-weapon_generation["GRENADE"]["COMMUN"] = GetGrenadeBuilder(
-    "Grenade Commune", grenade_damage,
-    "[[4-1d7]]",
-    grenade_modes,
-)
-weapon_generation["GRENADE"]["INCOMMUN"] = GetGrenadeBuilder(
-    "Grenade Peu Commune", grenade_damage,
-    "[[4-1d7]]",
-    grenade_modes,
-)
-weapon_generation["GRENADE"]["RARE"] = GetGrenadeBuilder(
-    "Grenade Rare", grenade_damage,
-    "[[3-1d6]]",
-    grenade_modes,
-)
-weapon_generation["GRENADE"]["EPIQUE"] = GetGrenadeBuilder(
-    "Grenade Epique", grenade_damage,
-    "[[3-1d6]]",
-    grenade_modes,
-)
-weapon_generation["GRENADE"]["ETECH"] = GetGrenadeBuilder(
-    "Grenade E-Tech", grenade_damage,
-    "[[3-1d5]]",
-    grenade_modes,
-)
-weapon_generation["GRENADE"]["LEGENDAIRE"] = GetGrenadeBuilder(
-    "Grenade Légendaire", grenade_damage,
-    "[[3-1d5]]",
-    grenade_modes,
-)
+weapon_generation["GRENADE"] = {
+    "COMMUN":     GetGrenadeBuilder("Grenade Commune",     grenade_damage, "[[4-1d7]]", grenade_modes),
+    "INCOMMUN":   GetGrenadeBuilder("Grenade Peu Commune", grenade_damage, "[[4-1d7]]", grenade_modes),
+    "RARE":       GetGrenadeBuilder("Grenade Rare",        grenade_damage, "[[3-1d6]]", grenade_modes),
+    "EPIQUE":     GetGrenadeBuilder("Grenade Epique",      grenade_damage, "[[3-1d6]]", grenade_modes),
+    "ETECH":      GetGrenadeBuilder("Grenade E-Tech",      grenade_damage, "[[3-1d5]]", grenade_modes),
+    "LEGENDAIRE": GetGrenadeBuilder("Grenade Légendaire",  grenade_damage, "[[3-1d5]]", grenade_modes),
+}
 
 ############# SHIELD
 
 shield_intensity = "(1d11+6)"
 
 def GetShieldBuilder(shield_name:str) :
-    return Title(shield_name, Sequence().extend([
+    return Title(shield_name, Sequence() << [
         nom_bouclier,
         Label("Capacité", f"[[84 - 3*{shield_intensity} + 1d7]]"),
         Label("Cadence",  f"[[1d5 + {shield_intensity}]]"),
-    ]))
+    ])
 
-weapon_generation["BOUCLIER"] = {}
-weapon_generation["BOUCLIER"]["COMMUN"] = GetShieldBuilder(
-    "Bouclier Commun",
-)
-weapon_generation["BOUCLIER"]["INCOMMUN"] = GetShieldBuilder(
-    "Bouclier Peu Commun",
-)
-weapon_generation["BOUCLIER"]["RARE"] = GetShieldBuilder(
-    "Bouclier Rare",
-)
-weapon_generation["BOUCLIER"]["EPIQUE"] = GetShieldBuilder(
-    "Bouclier Epique",
-)
-weapon_generation["BOUCLIER"]["ETECH"] = GetShieldBuilder(
-    "Bouclier E-Tech",
-)
-weapon_generation["BOUCLIER"]["LEGENDAIRE"] = GetShieldBuilder(
-    "Bouclier Légendaire",
-)
+weapon_generation["BOUCLIER"] = {
+    "COMMUN":     GetShieldBuilder("Bouclier Commun"),
+    "INCOMMUN":   GetShieldBuilder("Bouclier Peu Commun"),
+    "RARE":       GetShieldBuilder("Bouclier Rare"),
+    "EPIQUE":     GetShieldBuilder("Bouclier Epique"),
+    "ETECH":      GetShieldBuilder("Bouclier E-Tech"),
+    "LEGENDAIRE": GetShieldBuilder("Bouclier Légendaire"),
+}
 
 #################################################
 #                   GENERATION                  #
@@ -614,18 +449,17 @@ class DictionaryNode(AbsLeafNode) :
         else :
             dico_node.print_node(tabs)
 
-generation = Sequence().extend([
-    sel_type,
-    sel_rarity,
-    DictionaryNode(sel_fabriquant, "WEAPON_TYPE"),
-    DictionaryNode(weapon_generation, "WEAPON_TYPE", "WEAPON_RARITY"),
-    Title("Propriétés", Sequence().extend([
-        spe_fabriquant,
-        DictionaryNode(arme_spe, "WEAPON_RARITY", "WEAPON_TYPE")
-    ])),
+generation = Generator(
+    Sequence() << [
+        sel_type,
+        sel_rarity,
+        DictionaryNode(sel_fabriquant, "WEAPON_TYPE"),
+        DictionaryNode(weapon_generation, "WEAPON_TYPE", "WEAPON_RARITY"),
+        Title("Propriétés",
+            Sequence() << [
+                spe_fabriquant,
+                DictionaryNode(arme_spe, "WEAPON_RARITY", "WEAPON_TYPE")]),
 ])
-
-g_handler = Generator(generation)
 
 # text var converter
 def var_converter(name) -> str :
@@ -633,10 +467,10 @@ def var_converter(name) -> str :
         return globals()[name]
     else :
         return "{" + name + "}"
-g_handler.variable_converter = var_converter
+generation.variable_converter = var_converter
 
 # Do generation
-g_handler.execute()
+generation.execute()
 
 print("Coffre :", globals()["CHEST_TYPE"])
 print("Arme   :", WEAPON_TYPE) 
@@ -645,7 +479,7 @@ print("Constructeur :", WEAPON_CONSTRUCTOR )
 print()
 
 # print generation result
-g_handler.print_to_console()
+generation.print_to_console()
 
 # TODO Solve Maliwan bug adding 1 property in each weapon
 # TODO Add PROP_ELEMENTAIRE properly

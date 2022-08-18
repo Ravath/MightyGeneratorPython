@@ -7,8 +7,8 @@ from wordgenerator.Sequence import SequenceNode as Sequence
 #                NAME GENERATION                #
 #################################################
 
-nom_arme = Sequence().extend([
-    Weight().extend([
+nom_arme = Sequence() << [
+    Weight() << [
         ["Dévastateur"],
         ["Dézingueur"],
         ["Mitrailleur"],
@@ -48,8 +48,8 @@ nom_arme = Sequence().extend([
         ["Appareil"],
         ["Employé"],
         ["Éclaireur"],
-    ]),
-    Weight().extend([
+    ],
+    Weight() << [
         [" de mamans"],
         [" impitoyable"],
         [" motorisé"],
@@ -92,12 +92,12 @@ nom_arme = Sequence().extend([
         [" tactique"],
         [" canon"],
         [" glorieux"],
-    ]),
+    ],
     "\n"
-])
+]
 
-nom_grenade = Sequence().extend([
-    Weight().extend([
+nom_grenade = Sequence() << [
+    Weight() << [
         ["Caillou"],
         ["Etoile du matin"],
         ["Samourai"],
@@ -128,8 +128,8 @@ nom_grenade = Sequence().extend([
         ["Bagel"],
         ["Taco"],
         ["Patate"],
-    ]),
-    Weight().extend([
+    ],
+    Weight() << [
         [" dévastateur"],
         ["-bombe"],
         ["-tomate ketchup"],
@@ -166,12 +166,12 @@ nom_grenade = Sequence().extend([
         [" concentré"],
         [" salsa pimenté"],
         [" plasmatique"],
-    ]),
+    ],
     "\n"
-])
+]
 
-nom_bouclier = Sequence().extend([
-    Weight().extend([
+nom_bouclier = Sequence() << [
+    Weight() << [
         ["Gardien"],
         ["Policier"],
         ["Mur"],
@@ -204,8 +204,8 @@ nom_bouclier = Sequence().extend([
         ["Tuk-tuk"],
         ["Impôt"],
         ["Grand sorcier"],
-    ]),
-    Weight().extend([
+    ],
+    Weight() << [
         [" de la trève passagère"],
         ["-pangolin"],
         [" agent de la paix avant tout"],
@@ -242,6 +242,6 @@ nom_bouclier = Sequence().extend([
         [" arcanique"],
         [" occultant"],
         [" de mauvaise facture"],
-    ]),
+    ],
     "\n"
-])
+]

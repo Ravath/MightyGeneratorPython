@@ -8,8 +8,9 @@ Created on Tue Sep 15 19:03:13 2020
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Print import Title
+from wordgenerator.Generator import Generator
 
-physique = Weight().extend([
+physique = Weight() << [
     ["Curieuse odeur"],
     ["Air crasseux"],
     ["Bouche en forme étrange"],
@@ -28,9 +29,9 @@ physique = Weight().extend([
     ["Taches de rousseur"],
     ["Tatouage"],
     ["Estropié"],
-])
+]
 
-motivation = Weight().extend([
+motivation = Weight() << [
     ["Aventure"],
     ["Expiation"],
     ["Chaos"],
@@ -50,9 +51,9 @@ motivation = Weight().extend([
     ["Reconnaissance"],
     ["Vengeance"],
     ["Richesse"],
-])
+]
 
-charactere = Weight().extend([
+charactere = Weight() << [
     ["Fou"],
     ["Méchant"],
     ["Cruel"],
@@ -73,18 +74,20 @@ charactere = Weight().extend([
     ["Bienveillant"],
     ["Vertueux"],
     ["Concentré"],
-])
+]
 
 
 ################ ROOT
 
 def S(*args) :
-    return Sequence().extend([*args])
+    return Sequence()<< [*args]
 
-sel_main = S(
-    Title("Trait Physique", S(physique)),
-    Title("Motivation", S(motivation)),
-    Title("Trait de Charactère", S(charactere)),
+root = S(
+    Title("Trait Physique") << physique,
+    Title("Motivation") << motivation,
+    Title("Trait de Charactère") << charactere,
 )
 
-sel_main.execute()
+generation = Generator(root)
+generation.execute()
+generation.print_to_console()

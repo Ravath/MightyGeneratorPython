@@ -6,6 +6,7 @@ Created on Fri Apr 15 01:40:29 2022
 """
 
 from wordgenerator.NodeCollectionIf import AbsCollectionNode
+from wordgenerator.Print import ConvToNode
 
 #___________________________________________________#
 #                                                   #
@@ -37,3 +38,11 @@ class SequenceNode(AbsCollectionNode):
 
         for row in self.children :
             row.node.print_node(tabs+1)
+
+    def set_inbetween_action(self, new_inbetween) :
+        self._inbetween_action = ConvToNode(new_inbetween)
+
+    def get_inbetween_action(self) :
+        return self._inbetween_action
+
+    inbetween_action = property(get_inbetween_action, set_inbetween_action)

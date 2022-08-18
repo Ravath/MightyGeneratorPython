@@ -4,21 +4,22 @@ from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Print import Title
+from wordgenerator.Generator import Generator
 from macro.dice import Pool, PoolSum
 
 d100 = PoolSum(Pool(1,100))
 
 def DoubleRelance(rel_node) :
     seq = Sequence()
-    seq.extend([
+    seq << [
         rel_node,
         rel_node,
-    ])
+    ]
     return seq
 
 ################ PROP SPE ARMES & ARMURES
 
-spe_armure = Interval(d100).extend([
+spe_armure = Interval(d100) << [
     [ 1,  3, "Mimétisme (+2 700 po)"],
     [ 4,  4, "Défense légère (bonus de +1)"],
     [ 5,  7, "Graisseuse supérieure (+15 000 po)"],
@@ -38,10 +39,10 @@ spe_armure = Interval(d100).extend([
     [91, 92, "Défense lourde (bonus de +5)"],
     [93, 94, "Résistance à la magie (19) (bonus de +5)"],
     [95, 99, "Résistance aux énergies suprême (+66 000 po)"],
-])# 00 : relance 2 fois
+]# 00 : relance 2 fois
 spe_armure.append(100, 100, DoubleRelance(spe_armure))
 
-spe_bouclier = Interval(d100).extend([
+spe_bouclier = Interval(d100) << [
     [ 1,  5, "Interception de projectiles (bonus de +1)"],
     [ 6,  8, "Attaque (bonus de +1)"],
     [ 9, 10, "Aveuglant (bonus de +1)"],
@@ -60,10 +61,10 @@ spe_bouclier = Interval(d100).extend([
     [92, 93, "Réfléchissant (bonus de +5)"],
     [94, 94, "Résistance à la magie (19) (bonus de +5)"],
     [95, 99, "Résistance aux énergies suprême (+66 000 po)"],
-])# 00 : relance 2 fois
+]# 00 : relance 2 fois
 spe_bouclier.append(91, 100, DoubleRelance(spe_bouclier))
 
-spe_cac = Interval(d100).extend([
+spe_cac = Interval(d100) << [
     [ 1,  3, "Tueuse (bonus de +1)"],
     [ 4,  6, "Feu (bonus de +1)"],
     [ 7,  9, "Froid (bonus de +1)"],
@@ -88,10 +89,10 @@ spe_cac = Interval(d100).extend([
     [84, 86, "Lumière (bonus de +4)"],
     [87, 88, "Dansante (bonus de +4)"],
     [89, 90, "Vorpale (bonus de +5)"],
-])# 00 : relance 2 fois
+]# 00 : relance 2 fois
 spe_cac.append(91, 100, DoubleRelance(spe_cac))
 
-spe_dist = Interval(d100).extend([
+spe_dist = Interval(d100) << [
     [ 1,  4, "Tueuse (bonus de +1)"],
     [ 5,  8, "Longue portée (bonus de +1)"],
     [ 9, 12, "Feu (bonus de +1)"],
@@ -109,12 +110,12 @@ spe_dist = Interval(d100).extend([
     [75, 79, "Impie (bonus de +2)"],
     [80, 84, "Rapidité (bonus de +3)"],
     [85, 90, "Lumière (bonus de +4)"],
-])# 00 : relance 2 fois
+]# 00 : relance 2 fois
 spe_dist.append(91, 100, DoubleRelance(spe_dist))
 
 ################ ARMURES & BOUCLIERS
 
-obj_armure_spe = Interval(d100).extend([
+obj_armure_spe = Interval(d100) << [
     [ 1, 10, "Cuirasse en adamantium (10 200 po)"],
     [11, 20, "Harnois nain (16 500 po)"],
     [21, 32, "Crevice de la seconde chance (18 900 po)"],
@@ -123,15 +124,15 @@ obj_armure_spe = Interval(d100).extend([
     [61, 75, "Cuirasse de commandement (25 400 po)"],
     [76, 90, "Harnois en mithral de vitesse (26 500 po)"],
     [91, 100, "Armure démoniaque (52 260 po)"],
-])
+]
 
-obj_bouclier_spe = Interval(d100).extend([
+obj_bouclier_spe = Interval(d100) << [
     [ 1, 20, "Bouclier des arcanes (3 153 po)"],
     [21, 40, "Bouclier de la manticore (5 580 po)"],
     [41, 60, "Bouclier du lion (9 170 po)"],
     [61, 90, "Bouclier ailé (17 257 po)"],
     [91, 100, "Bouclier phagocyte (50 170 po)"],
-])
+]
 
 armor_type = "NONE"
 def setArmor() :
@@ -151,42 +152,42 @@ def RollArmorProperty() :
         pass #raise ValueError(f"Not expected value {armor_type}")
     armor_type = "NONE"
 
-obj_bouclier_armure = Weight().extend([
-    [ 8, Sequence().extend([
+obj_bouclier_armure = Weight() << [
+    [ 8, Sequence() << [
         "Bouclier +3 (+9 000po)",
-        setShield])],
-    [ 8, Sequence().extend([
+        setShield]],
+    [ 8, Sequence() << [
         "Armure +3 (+9 000po)",
-        setArmor])],
-    [11, Sequence().extend([
+        setArmor]],
+    [11, Sequence() << [
         "Bouclier +4 (+16 000po)",
-        setShield])],
-    [11, Sequence().extend([
+        setShield]],
+    [11, Sequence() << [
         "Armure +4 (+16 000po)",
-        setArmor])],
-    [11, Sequence().extend([
+        setArmor]],
+    [11, Sequence() << [
         "Bouclier +5 (+25 000po)",
-        setShield])],
-    [ 8, Sequence().extend([
+        setShield]],
+    [ 8, Sequence() << [
         "Armure +5 (+25 000po)",
-        setArmor])],
-])
+        setArmor]],
+]
 
 obj_bouclier_armure_reroll = Weight()
 obj_bouclier_armure_reroll.children = [c for c in obj_bouclier_armure.children]
 
-obj_bouclier_armure.extend([
+obj_bouclier_armure << [
     [ 3, obj_armure_spe],
     [ 3, obj_bouclier_spe],
     # reroll and add a special property
-    [37, Sequence().extend([
+    [37, Sequence() << [
         obj_bouclier_armure_reroll,
-        Title("Propriété", RollArmorProperty)])]
-])
+        Title("Propriété", RollArmorProperty)]]
+]
 
 ################ ARMES CAC & DIST
 
-obj_arme_spe = Interval(d100).extend([
+obj_arme_spe = Interval(d100) << [
     [ 1,  4, "Dague de l’assassin (10 302 po)"],
     [ 5,  7, "Regret du changeant (12 780 po)"],
     [ 8,  9, "Trident de domination aquatique (18 650 po)"],
@@ -209,34 +210,34 @@ obj_arme_spe = Interval(d100).extend([
     [96, 97, "Épée de bonne fortune (2 souhaits) (102 660 po)"],
     [98, 99, "Épée de justice (120 630 po)"],
     [100, 100, "Épée de bonne fortune (3 souhaits) (142 960 po)"],
-])
+]
 
-obj_cac_dist = Weight().extend([
+obj_cac_dist = Weight() << [
     [20, "Arme +3	(+18 000 po)"],
     [18, "Arme +4	(+32 000 po)"],
     [11, "Arme +5	(+50 000 po)"],
-])
+]
 
 obj_arme_reroll = Weight()
 obj_arme_reroll.children = [c for c in obj_cac_dist.children]
 
-obj_cac_dist.extend([
+obj_cac_dist << [
     [14, obj_arme_spe],
     # reroll and add a special property
-    [37, Sequence().extend([
+    [37, Sequence() << [
         obj_arme_reroll,
         Title("Propriété Cac", spe_cac),
-        Title("Propriété Dist", spe_dist)])]
-])
+        Title("Propriété Dist", spe_dist)]]
+]
 
 ################ AUTRES
 
-obj_potion = Weight().extend([
+obj_potion = Weight() << [
     [20, "Sort de niveau 2 (300 po)"],
     [80, "Sort de niveau 3 (750 po)"],
-])
+]
 
-obj_anneaux = Interval(d100).extend([
+obj_anneaux = Interval(d100) << [
     [ 3,  7, "Protection +3 (18 000 po)"],
     [ 8, 10, "Stockage de sorts mineurs (18 000 po)"],
     [11, 15, "Invisibilité (20 000 po)"],
@@ -265,9 +266,9 @@ obj_anneaux = Interval(d100).extend([
     [98, 98, "Contrôle des éléments (Feu) (200 000 po)"],
     [99, 99, "Contrôle des éléments (Eau) (200 000 po)"],
     [100, 100, "Stockage de sorts supérieur (200 000 po)"],
-])
+]
 
-obj_sceptre = Interval(d100).extend([
+obj_sceptre = Interval(d100) << [
     [ 1,  4, "Oblitération (11 000 po)"],
     [ 5,  6, "Métamagie modérée, Extension de portée (11 000 po)"],
     [ 7,  8, "Métamagie modérée, Extension de durée (11 000 po)"],
@@ -297,18 +298,18 @@ obj_sceptre = Interval(d100).extend([
     [97, 98, "Éternelle vigilance (85 000 po)"],
     [99, 99, "Métamagie majeure, Quintessence des sorts (121 500 po)"],
     [100, 100, "Métamagie majeure, Incantation rapide (170 000 po)"],
-])
+]
 
-obj_parchemin = Interval(d100).extend([
+obj_parchemin = Interval(d100) << [
     [ 1,  5, "Sort de niveau 4 (700 po)"],
     [ 6, 50, "Sort de niveau 5 (1125 po)"],
     [51, 70, "Sort de niveau 6 (1650 po)"],
     [71, 85, "Sort de niveau 7 (2275 po)"],
     [86, 95, "Sort de niveau 8 (3000 po)"],
     [96, 100, "Sort de niveau 9 (3825 po)"],
-])
+]
 
-obj_baton = Interval(d100).extend([
+obj_baton = Interval(d100) << [
     [ 1,  3, "Envoûtement (17 600 po)"],
     [ 4,  9, "Feu (18 950 po)"],
     [10, 11, "Grand essaim (22 800 po)"],
@@ -330,14 +331,14 @@ obj_baton = Interval(d100).extend([
     [91, 95, "Vie (109 400 po)"],
     [96, 98, "Transport (206 900 po)"],
     [99, 100, "Surpuissance (235 000 po)"],
-])
+]
 
-obj_baguette = Weight().extend([
+obj_baguette = Weight() << [
     [60, "Sort de niveau 2 (4 500 po)"],
     [40, "Sort de niveau 3 (11 250 po)"]
-])
+]
 
-obj_merveilleux = Weight().extend([
+obj_merveilleux = Weight() << [
     ["Chaînes dimensionnelles (28 000 po)"],
     ["Statuette merveilleuse (destrier d’obsidienne) (28 500 po)"],
     ["Timbales de panique (30 000 po)"],
@@ -438,12 +439,11 @@ obj_merveilleux = Weight().extend([
     ["Cube des plans (164 000 po)"],
     ["Flasque de fer (170 000 po)"],
     ["Miroir d’emprisonnement (200 000 po)"],
-])
+]
 
 ################ ROOT
 
-sel_main = Weight()
-sel_main.extend([
+root = Weight() << [
     [10, Title("Armure", obj_bouclier_armure)],
     [10, Title("Arme", obj_cac_dist)],
     [ 5, Title("Potion", obj_potion)],
@@ -453,6 +453,8 @@ sel_main.extend([
     [20, Title("Baton", obj_baton)],
     [ 5, Title("Baguette", obj_baguette)],
     [20, Title("Objet Merveilleux", obj_merveilleux)],
-])
+]
 
-sel_main.execute()
+generation = Generator(root)
+generation.execute()
+generation.print_to_console()

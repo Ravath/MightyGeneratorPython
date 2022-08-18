@@ -208,6 +208,10 @@ class AbsCollectionNode(AbsGeneratorNode) :
             self.children.append(new_row)
         return self
 
+    def __lshift__(self, other) :
+        """Use '<<' as shortcut for the 'extend' operation."""
+        return self.extend(other)
+
     def append(self, *args, **kargs) :
         """Append a new RowNode.
         Arguments are managed by the argument_conversion table

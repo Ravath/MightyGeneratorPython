@@ -3,10 +3,11 @@
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Print import Title, Label
+from wordgenerator.Generator import Generator
 
 ################ GEOGRAPHIE
 
-elevation = Weight().extend([
+elevation = Weight() << [
     ["Plaine"],
     ["Vallées"],
     ["Collines"],
@@ -16,15 +17,15 @@ elevation = Weight().extend([
     ["Grottes"],
     ["Pilliers"],
     ["Falaises"],
-])
+]
 
-climat = Weight().extend([
+climat = Weight() << [
     ["Froid"],
     ["Tempéré"],
     ["Chaud"],
-])
+]
 
-hydrometrie = Weight().extend([
+hydrometrie = Weight() << [
     ["Sec"],
     ["Humide"],
     ["Fleuve"],
@@ -42,11 +43,11 @@ hydrometrie = Weight().extend([
     ["Mer"],
     ["Glacier"],
     ["Neige"],
-])
+]
 
 ################ METEO
 
-meteo = Weight().extend([
+meteo = Weight() << [
     ["Sans"],
     ["Brise"],
     ["Vent Fort"],
@@ -54,25 +55,25 @@ meteo = Weight().extend([
     ["Tempête"],
     ["Ouragan"],
     ["Cyclone"],
-])
+]
 
-précipitations = Weight().extend([
+précipitations = Weight() << [
     ["Sans"],
     ["Sècheresse"],
     ["Inondation"],
     ["Pluie"],
     ["Brouillard"],
     ["Tempête"],
-])
+]
 
-autres = Weight().extend([
+autres = Weight() << [
     ["Non"],
     ["Orage"],
     ["Coulées de Boue"],
     ["Tremblement de Terre"],
-])
+]
 
-element = Weight().extend([
+element = Weight() << [
     ["Magie"],
     ["Onirique"],
     ["Entité Surnaturelle"],
@@ -113,11 +114,11 @@ element = Weight().extend([
     ["Enchantements"],
     ["Féérique"],
     ["Température Anormale"],
-])
+]
 
 ################ FLORE
 
-flore = Weight().extend([
+flore = Weight() << [
     ["Stérile/Désolé"],
     ["Sable"],
     ["Boue"],
@@ -129,9 +130,9 @@ flore = Weight().extend([
     ["Buissons"],
     ["Champs/prairies"],
     ["Brousailles"],
-])
+]
 
-flore_type = Weight().extend([
+flore_type = Weight() << [
     ["Herbe"],
     ["Buisson"],
     ["Liane"],
@@ -141,30 +142,30 @@ flore_type = Weight().extend([
     ["Mousse"],
     ["Algues"],
     ["Champignons"],
-])
+]
 
-feuillage = Weight().extend([
+feuillage = Weight() << [
     ["Inexistant"],
     ["Epars"],
     ["Dru"],
     ["Sec et Mort"],
-])
+]
 
-feuille = Weight().extend([
+feuille = Weight() << [
     ["Simples"],
     ["Composées"],
     ["Aiguille"],
     ["Ecaille"],
-])
+]
 
-fruit = Weight().extend([
+fruit = Weight() << [
     ["Pollen"],
     ["Fruits"],
     ["Grappes"],
     ["Graines"],
-])
+]
 
-flore_autre = Weight().extend([
+flore_autre = Weight() << [
     ["Epineux"],
     ["Carnivore"],
     ["Mobile"],
@@ -176,31 +177,31 @@ flore_autre = Weight().extend([
     ["Parasite/Symbiote Animal/Végétal/Minéral"],
     ["Sort"],
     ["Gaz"],
-])
+]
 
 ################ Faune
 
-faune = Weight().extend([
+faune = Weight() << [
     ["Déserte/Rare"],
     ["Normale"],
     ["Abondante"],
-])
+]
 
-faune_taille = Weight().extend([
+faune_taille = Weight() << [
     ["Petit"],
     ["Moyen"],
     ["Grand"],
-])
+]
 
-faune_type = Weight().extend([
+faune_type = Weight() << [
     ["Animal"],
     ["Insecte"],
     ["Créature Magique"],
     ["Monstre/Aberration"],
     ["Saurien/Dragon"],
-])
+]
 
-faune_regime = Weight().extend([
+faune_regime = Weight() << [
     ["Herbivore"],
     ["Prédateur"],
     ["Charognard"],
@@ -208,64 +209,64 @@ faune_regime = Weight().extend([
     ["Mange-Magie"],
     ["Fouille-Terre"],
     ["Insectivore"],
-])
+]
 
-faune_reproduction = Weight().extend([
+faune_reproduction = Weight() << [
     ["Mammifère"],
     ["Ovipare"],
     ["Clonage"],
     ["Parasitisme"],
-])
+]
 
-faune_locomotion = Weight().extend([
+faune_locomotion = Weight() << [
     ["Bipère"],
     ["Quadripède"],
     ["Beaucoup de pattes"],
     ["Reptation"],
     ["Ailes"],
-])
+]
 
-faune_autre = Weight().extend([
+faune_autre = Weight() << [
     ["C'est tout"],
     ["Ailes"],
     ["Amphibien"],
     ["Creusement"],
-])
+]
 
 ################ Faune - Suite
 
-faune_milieu_naturel = Weight().extend([
+faune_milieu_naturel = Weight() << [
     ["Surface"],
     ["Aquatique"],
     ["Amphibie"],
     ["Arboricole"],
     ["Souterrain"],
-])
+]
 
-faune_organisation_sociale = Weight().extend([
+faune_organisation_sociale = Weight() << [
     ["Solitaire"],
     ["Couple"],
     ["Groupe (4-6)"],
     ["Meute (10-20)"],
     ["Troupeau (10-100)"],
     ["Horde (100-500+)"],
-])
+]
 
-faune_comportement = Weight().extend([
+faune_comportement = Weight() << [
     ["Territorial"],
     ["Nomade"],
     ["Colonie"],
     ["Parasite"],
-])
+]
 
-faune_attitude = Weight().extend([
+faune_attitude = Weight() << [
     ["Peureux"],
     ["Curieux"],
     ["Aggressif"],
     ["Placide"],
-])
+]
 
-faune_aspect = Weight().extend([
+faune_aspect = Weight() << [
     ["Carapace"],
     ["Venin"],
     ["Souffle"],
@@ -273,11 +274,11 @@ faune_aspect = Weight().extend([
     ["Tentacules"],
     ["Cornes"],
     ["Pince/Dard"],
-])
+]
 
 ################ Population
 
-population_type = Weight().extend([
+population_type = Weight() << [
     ["Aucune"],
     ["Campement"],
     ["Tribale"],
@@ -287,16 +288,16 @@ population_type = Weight().extend([
     ["Bastide"],
     ["Forteresse"],
     ["Urbaine"],
-])
+]
 
-population_race = Weight().extend([
+population_race = Weight() << [
     ["Humanoide"],
     ["Humanoide Monstrueuse"],
     ["Monstrueuse"],
     ["Magique"],
-])
+]
 
-population_organisatoin_sociale = Weight().extend([
+population_organisatoin_sociale = Weight() << [
     ["Libérale"],
     ["Méritocratie/Aristocratie"],
     ["Monarchie"],
@@ -307,22 +308,22 @@ population_organisatoin_sociale = Weight().extend([
     ["Démocratie"],
     ["Caste"],
     ["Dictature"],
-])
+]
 
 ################ Minéraux
 
-minéraux = Weight().extend([
+minéraux = Weight() << [
     ["Sable"],
     ["Terre"],
     ["Boue"],
     ["Pierre"],
     ["Métaux"],
     ["Gemmes"],
-])
+]
 
 ################ Magie
 
-magie = Weight().extend([
+magie = Weight() << [
     ["Morte"],
     ["Faible"],
     ["Normale"],
@@ -331,11 +332,11 @@ magie = Weight().extend([
     ["Chaotique"],
     ["Tempête"],
     ["Altérée (Element, ...)"],
-])
+]
 
 ################ Point d'interet
 
-point_interet = Weight().extend([
+point_interet = Weight() << [
     ["Volcan"],
     ["Geysers"],
     ["Volcan"],
@@ -348,42 +349,42 @@ point_interet = Weight().extend([
     ["Zone de Migration"],
     ["Zone de Cimetière"],
     ["Zone"],
-])
+]
 
 ################ ROOT
 
 def S(*args) :
-    return Sequence().extend([*args])
+    return Sequence() << [*args]
 
-sel_main = Sequence().extend([
+root = Sequence() << [
     # Geographie
-    Title("Terrain", S(
+    Title("Terrain") << S(
         Label("Elevation  ", elevation),
         Label("Climat     ", climat),
         Label("Hydrometrie", hydrometrie)
-    )),
+    ),
     # Meteo
-    Title("Climat", S(
+    Title("Climat") << S(
         Label("Meteo         ", meteo),
         Label("Précipitations", précipitations),
         Label("Autres        ", autres),
         Label("Element       ", element),
-    )),
+    ),
     # Flore
-    Title("Flore", S(
+    Title("Flore") << S(
         flore,
-        Title("Specimen", S(
+        Title("Specimen") << S(
             Label("Type      ", flore_type),
             Label("Feuillage ", feuillage),
             Label("Feuilles  ", feuille),
             Label("Fruit     ", fruit),
             Label("Autre     ", flore_autre),
-        )),
-    )),
+        ),
+    ),
     # Faune
-    Title("Faune", S(
+    Title("Faune") << S(
         faune,
-        Title("Specimen", S(
+        Title("Specimen") << S(
             Label("Taille    ", faune_taille),
             Label("Type      ", faune_type),
             Label("Regime    ", faune_regime),
@@ -395,26 +396,30 @@ sel_main = Sequence().extend([
             Label("Comportement", faune_comportement),
             Label("Attitude    ", faune_attitude),
             Label("Aspect     ", faune_aspect),
-        )),
-    )),
+        ),
+    ),
     # Population
-    Title("Population", S(
+    Title("Population") << S(
         Label("Type      ", population_type),
         Label("Race      ", population_race),
         Label("Organisation Sociale", population_organisatoin_sociale),
-    )),
+    ),
     # Minéraux
-    Title("Minéraux", S(
+    Title("Minéraux") << S(
         Label("Minéraux      ", minéraux),
-    )),
+    ),
     # Magie
-    Title("Magie", S(
+    Title("Magie") << S(
         Label("Magie ", magie),
-    )),
+    ),
     # Point d'interet
-    Title("Point d'interet", S(
+    Title("Point d'interet") << S(
         point_interet,
-    )),
-])
+    ),
+]
 
-sel_main.execute()
+################ Generation
+
+generator = Generator(root)
+generator.execute()
+generator.print_to_console()

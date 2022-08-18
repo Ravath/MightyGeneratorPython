@@ -9,13 +9,14 @@ from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Print import Title, Label
+from wordgenerator.Generator import Generator
 
 #################################################
 #                   EVENEMENT                  #
 #################################################
 
 #Table 2A
-chance = Interval("1d100").extend([
+chance = Interval("1d100") << [
     [ 1,  5, "Rentrée financière ([[1d5]] x 100 Euro)"],
     [ 6, 10, "Grosse affaire ! ([[1d10]] x 100 Euro)"],
     [11, 15, "Gagnez [[1d10]] x 100 Euro en matériel ou cyberware"],
@@ -36,11 +37,11 @@ chance = Interval("1d100").extend([
     [86, 90, "Vous vous faites un nouvel ami (à créer sur la table AEC)"],
     [91, 95, "Un ennemi disparaît/meurs (choisissez en un, si vous n'avez pas d'ennemis relancez)"],
     [96, 100, "Vous avez fait quelque chose de vraiment impressionnant (+2 Réputation positive)"],
-])
+]
 
 #Table 3B
-malchance_blessure = Sequence().extend([
-    Interval("1d100").extend([
+malchance_blessure = Sequence() << [
+    Interval("1d100") << [
         [ 1,  5, "Brûlures mineures *3*"],
         [ 6, 10, "Brûlures sérieuses *1* *3*"],
         [11, 15, "Perforation(s) *3*"],
@@ -61,15 +62,15 @@ malchance_blessure = Sequence().extend([
         [86, 90, "Main/pied/membre tranché *1*"],
         [91, 95, "Blessure au dos *2*"],
         [96, 100, "Cicatrice impressionnante *3*"],
-    ]),
+    ],
     # Légende
     "*1* - La blessure peut être guérie avec un remplacement cybernétique ou développé en cuve.",
     "*2* - La chirurgie peut remédier au problème en extrayant quelque chose ou en soignant directement.",
     "*3* - Une reconstruction faciale et/ou de la chirurgie esthétique peuvent corriger certains effets de cette blessure. Voir les règles de CP2020 sur l'amélioration de la BT.",
-])
+]
 
 #Table 3A
-malchance = Interval("1d100").extend([
+malchance = Interval("1d100") << [
     [ 1,  5, "Perte financière ([[1d5]] x 100 Euro)"],
     [ 6, 10, "Dette ([[1d10]] x 100 Euro - payez maintenant, ou vous le payerez plus tard !)"],
     [11, 15, "Vous contractez une maladie; une caractéristique au hasard est réduite de 1"],
@@ -90,10 +91,10 @@ malchance = Interval("1d100").extend([
     [86, 90, "Vous devez une faveur à quelqu'un (à créer sur la table AEC)"],
     [91, 95, "Blâmé pour quelque chose que vous avez fait... ou pas (+1 Réputation négative)"],
     [96, 100, "Grossesse imprévue ! Il va falloir gérer, Choomba."],
-])
+]
 
 #Table 4A
-ami = Interval("1d100").extend([
+ami = Interval("1d100") << [
     [ 1,  4, "Un partenaire"],
     [ 5,  8, "Un collègue"],
     [ 9, 12, "Un contact"],
@@ -119,11 +120,11 @@ ami = Interval("1d100").extend([
     [89, 92, "Vous lui avez vendu quelque chose"],
     [93, 96, "Il vous a fait une faveur"],
     [97, 100, "Vous lui avez fait une faveur"],
-])
+]
 
 #Table 5A
-ennemi = Sequence().extend([
-    Title("LE CONNAISSIEZ-VOUS ?", Interval("1d100").extend([
+ennemi = Sequence() << [
+    Title("LE CONNAISSIEZ-VOUS ?", Interval("1d100") << [
         [ 1, 10, "Ex-ami"],
         [11, 20, "Ex-amant ou ex-maîtresse"],
         [21, 30, "Un membre de la famille"],
@@ -131,12 +132,12 @@ ennemi = Sequence().extend([
         [41, 50, "Une personne travaillant pour vous"],
         [51, 60, "Un partenaire ou un collègue"],
         [61, 100, "Un étranger complet"],
-    ])),
-    Title("QUI A COMMIS LA FAUTE ?", Interval("1d100").extend([
+    ]),
+    Title("QUI A COMMIS LA FAUTE ?", Interval("1d100") << [
         [ 1, 50, "C'est vous."],
         [51, 100, "C'est lui ou elle."],
-    ])),
-    Title("QUE S'EST-IL PASSÉ ?", Interval("1d100").extend([
+    ]),
+    Title("QUE S'EST-IL PASSÉ ?", Interval("1d100") << [
         [ 1,  4, "A tenté de tuer l'autre"],
         [ 5,  8, "A essayé de faire chanter l'autre"],
         [ 9, 12, "A révélé un secret"],
@@ -162,13 +163,13 @@ ennemi = Sequence().extend([
         [89, 92, "A tenté de séduire l'amant ou la maîtresse de l'autre"],
         [93, 96, "A couché avec l'amant ou la maîtresse de l'autre"],
         [97, 100, "A fait échouer le plan de l'autre"],
-    ])),
-    Title("QUI EST L'OFFENSÉ ?", Interval("1d100").extend([
+    ]),
+    Title("QUI EST L'OFFENSÉ ?", Interval("1d100") << [
         [ 1, 25, "Vous le ou la haïssez"],
         [26, 50, "Il ou elle vous hait"],
         [51, 100, "Le sentiment est mutuel"],
-    ])),
-    Title("QU'ALLEZ VOUS FAIRE (Si offensé uniquement) ?", Weight().extend([
+    ]),
+    Title("QU'ALLEZ VOUS FAIRE (Si offensé uniquement) ?", Weight() << [
         ["Dire du mal de lui ou d'elle dans son dos."],
         ["Le crucifier verbalement à la moindre opportunité."],
         ["Le tabasser jusqu'à le laisser à moitié mort."],
@@ -179,12 +180,12 @@ ennemi = Sequence().extend([
         ["Le blesser de la même manière qu'il vous a blessé, oeil pour oeil."],
         ["Sympathiser avec lui en attendant le meilleur moment pour le trahir."],
         ["Il n'est pas digne de votre attention. Ignorez le et faites comme s'il n'existait pas."],
-    ])),
-])
+    ]),
+]
 
-amour = Sequence().extend([
+amour = Sequence() << [
     #Table 6A
-    Title("COMMENT VOUS ÊTES VOUS RENCONTRÉS ?", Interval("1d100").extend([
+    Title("COMMENT VOUS ÊTES VOUS RENCONTRÉS ?", Interval("1d100") << [
         [ 1,  5, "Un(e) partenaire"],
         [ 6, 10, "Un(e) collègue"],
         [11, 15, "Un contact"],
@@ -205,13 +206,13 @@ amour = Sequence().extend([
         [86, 90, "Dans un bar"],
         [91, 95, "Dans un centre commercial"],
         [96, 100, "Vous vous rencontrez grâce à un amant ou une maîtresse commun"],
-    ])),
+    ]),
     Title("DÉROULEMENT ?",
-        Weight().extend([
+        Weight() << [
             [3, "Histoire rapide et rendez-vous brûlants."],
             [4, "Histoire d'amour heureuse."],
             #Table 6B
-            [1, Title("Histoire d'amour tragique.", Interval("1d100").extend([
+            [1, Title("Histoire d'amour tragique.", Interval("1d100") << [
                 [ 1, 16, "Cela n'a pas collé entre vous"],
                 [17, 22, "La personne aimée vous a laissé une lettre et a filé"],
                 [23, 28, "La personne aimée est morte d'une maladie incurable"],
@@ -227,9 +228,9 @@ amour = Sequence().extend([
                 [83, 88, "La personne aimée vous a quitté pour un ennemi (choisissez lequel)"],
                 [89, 94, "La personne aimée vous manipulait"],
                 [95, 100, "La personne aimée vous a volé [[1d10]] x 100 Euro et s'est sauvée"],
-            ]))],
+            ])],
             #Table 6C
-            [2, Title("Histoire d'amour problématique.", Interval("1d100").extend([
+            [2, Title("Histoire d'amour problématique.", Interval("1d100") << [
                 [ 1,  7, "La famille de la personne aimée vous hait"],
                 [ 8, 14, "Les amis de la personne aimée vous haïssent"],
                 [15, 21, "Votre famille hait la personne que vous aimez"],
@@ -245,11 +246,10 @@ amour = Sequence().extend([
                 [81, 87, "La personne aimée est dépendante à une drogue"],
                 [88, 93, "La personne aimée est dans le coma"],
                 [94, 100, "La personne aimée est mariée"],
-            ]))],
-        ])
-    ),
+            ])],
+    ]),
     #Table 6D
-    Title("SENTIMENTS MUTUELS ?(si Applicable)", Weight().extend([
+    Title("SENTIMENTS MUTUELS ?(si Applicable)", Weight() << [
         ["La personne aimée vous aime toujours"],
         ["Vous l'aimez toujours"],
         ["Vous vous aimez toujours"],
@@ -260,31 +260,31 @@ amour = Sequence().extend([
         ["Plus de sentiment des deux côtés, c'est fini"],
         ["Vous l'aimez mais il ou elle vous déteste"],
         ["Il ou elle vous aime mais vous le ou la haïssez"],
-    ])),
-])
+    ]),
+]
 
 #Table 1A
-evenement = Weight().extend([
+evenement = Weight() << [
     [3, Title("Vous avez de la chance", chance)],
     [3, Title("Un désastre frappe!", malchance)],
     [3, Title("Vous vous faites un ami", ami)],
     [3, Title("Vous vous faites un ennemi", ennemi)],
     [4, Title("Vie romantique", amour)],
     [4, "Rien ne vous est arrivé"]
-])
+]
 
 #################################################
 #                     AEC 1.0                   #
 #################################################
 
-sexe = Weight().extend([
+sexe = Weight() << [
     "Masculin",
     "Feminin"
-])
+]
 
 
 # Sous-Table 1.1
-division_police = Interval("1d100").extend([
+division_police = Interval("1d100") << [
     [ 1,  3, "Divisions des Affaire Internes (DIA)"],
     [ 4,  8, "Administration"],
     [ 9, 13, "Section Sécurité du Réseau (NetSec)"],
@@ -300,10 +300,10 @@ division_police = Interval("1d100").extend([
     [68, 82, "Circulation"],
     [83, 98, "Patrouille à pieds"],
     [99, 100, "Autoroute"],
-])
+]
 
-occupation = Interval("1d100").extend([
-    [ 1, 20, Label("Emploi légal", Interval("1d100").extend([
+occupation = Interval("1d100") << [
+    [ 1, 20, Label("Emploi légal", Interval("1d100") << [
         [ 1,  6, "Comptable"],
         [ 7, 13, "Employé (vente ou autre)"],
         [14, 19, "Ouvrier du bâtiment"],
@@ -320,8 +320,8 @@ occupation = Interval("1d100").extend([
         [81, 87, "Professeur, lycée"],
         [88, 93, "Professeur, université"],
         [94, 100, "Chauffeur de bus/camion"],
-    ]))],
-    [21, 35, Label("Street Trash", Interval("1d100").extend([
+    ])],
+    [21, 35, Label("Street Trash", Interval("1d100") << [
         [ 1,  2, "Assassin"],
         [ 3,  7, "Barman"],
         [ 8, 11, "Garde du corps"],
@@ -348,8 +348,8 @@ occupation = Interval("1d100").extend([
         [89, 90, "Techie"],
         [91, 94, "Voleur/Cambrioleur"],
         [95, 100, "Vagabond"],
-    ]))],
-    [36, 50, Label("Loi/Secours", Interval("1d100").extend([
+    ])],
+    [36, 50, Label("Loi/Secours", Interval("1d100") << [
         [ 1,  5, "Chasseur de primes"],
         [ 6, 20, Label("Flic", division_police)],
         [21, 36, "Pompier"],
@@ -360,9 +360,9 @@ occupation = Interval("1d100").extend([
         [76, 90, "Vigile"],
         [91, 95, Label("Flic à la retraite", division_police)],
         [96, 100, "Milicien"],
-    ]))],
-    [51, 65, Sequence().extend([
-        Label("Crime Organisé", Weight().extend([
+    ])],
+    [51, 65, Sequence() << [
+        Label("Crime Organisé", Weight() << [
             [1, "Assassin"],
             [2, "Garde du corps"],
             [1, "Bookmaker"],
@@ -370,17 +370,17 @@ occupation = Interval("1d100").extend([
             [3, "Homme de main"],
             [1, "Petit caïd"],
             [1, "Netrunner"],
-        ])),
+        ]),
         # Sous-Table 1.2
-        Label("Organisation  ", Weight().extend([
+        Label("Organisation  ", Weight() << [
             [4, "Les Yakuza (japonais)"],
             [3, "La Mafia (surtout italiens)"],
             [2, "Les Triades (chinois)"],
             [1, "Les Colombiens (et autres sud-américains)"],
-        ])),
-    ])],
-    [66, 79, Sequence().extend([
-        Label("Corporatiste", Weight().extend([
+        ]),
+    ]],
+    [66, 79, Sequence() << [
+        Label("Corporatiste", Weight() << [
             [1, "Assassin/Ninja"],
             [1, "Police corpo/sécurité"],
             [1, "Médecin/MedTech"],
@@ -390,9 +390,9 @@ occupation = Interval("1d100").extend([
             [1, "Netrunner"],
             [1, "Samuraï"],
             [1, "Technicien"],
-        ])),
+        ]),
         # Sous-Table 1.3
-        Label("Corporation ", Interval("1d100").extend([
+        Label("Corporation ", Interval("1d100") << [
             [ 1,  3, "Arasaka (CP, CR1)"],
             [ 4,  5, "BioMass Laboratories Group, GMbH (ERI)"],
             [ 6,  8, "Biotechnicia (CP)"],
@@ -434,14 +434,14 @@ occupation = Interval("1d100").extend([
             [93, 95, "World News Service (CP)"],
             [96, 98, "WorldSat Communications Network (CP)"],
             [99, 100, "ZetaTech (CP)"],
-        ])),
-    ])],
-    [80, 89, Label("Divertissement", Weight().extend([
+        ]),
+    ]],
+    [80, 89, Label("Divertissement", Weight() << [
         [1, "Acteur"],
         [2, "Artiste"],
         [1, "Athlète"],
         [1, "Disk Jockey"],
-        [1, Label("Média", Weight().extend([
+        [1, Label("Média", Weight() << [
             # Sous-Table 1.4
             [1, "Reporter journal TV"],
             [2, "Journaliste"],
@@ -451,13 +451,13 @@ occupation = Interval("1d100").extend([
             [1, "Technicien du son"],
             [1, "Commentateur sportif"],
             [1, "Correspondant de guerre"],
-        ]))],
+        ])],
         [2, "Rocker"],
         [1, "Danseur"],
         [1, "Écrivain"],
-    ]))],
-    [90, 100, Label("Gouvernement", Weight().extend([
-        [1, Label("Agent du LEDiv", Weight().extend([
+    ])],
+    [90, 100, Label("Gouvernement", Weight() << [
+        [1, Label("Agent du LEDiv", Weight() << [
             # Sous-Table 1.5
             [1, "Administration"],
             [1, "Enquêtes Corporatistes"],
@@ -469,9 +469,9 @@ occupation = Interval("1d100").extend([
             [1, "Science/Tech"],
             [1, "Service Secret"],
             [1, "Opérations Spéciales"],
-        ]))],
+        ])],
         [1, "Assassin"],
-        [4, Label("Militaire", Interval("1d100").extend([
+        [4, Label("Militaire", Interval("1d100") << [
             # Sous-Table 1.6
             [ 1, 17, "Air Force, engagé"],
             [18, 20, "Air Force, officer"],
@@ -483,27 +483,31 @@ occupation = Interval("1d100").extend([
             [78, 80, "Navy, officer"],
             [81, 97, "Forces de l'État, engagé"],
             [98, 100, "Forces de l'État, officer"],
-        ]))],
+        ])],
         [1, "Netrunner"],
         [1, "Officiel/Politicien"],
         [2, "Techie"],
-    ]))],
-])
+    ])],
+]
 
 # Table AEC 1.0
-aec = Sequence().extend([
+aec = Sequence() << [
     Label("- Sexe", sexe),
     Title("- Occupation", occupation),
-])
+]
 
 #################################################
 #                   GENERATION                  #
 #################################################
 
-sequence = Sequence()
-sequence.extend([
-    Title("Evènement de la vie", evenement),
+root = Sequence() << [
+    Title("Evènement de la vie") << evenement,
     "\r",
-    Title("PNJ", aec),
-])
-sequence.execute()
+    Title("PNJ") << aec,
+]
+
+################ Generation
+
+generator = Generator(root)
+generator.execute()
+generator.print_to_console()
