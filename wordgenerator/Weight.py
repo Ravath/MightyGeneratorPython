@@ -39,9 +39,9 @@ class WeightRow(RowNode):
         
         # Introduce new attributes
         self.weight= 1
-        self.nbr_put_back = -1 #nbr_put_back indicates how many times a row 
-        #can be put back in a node, a value <0 for nbr_put_back allows
-        #an infinite put back in a node by default
+        self.nbr_pick = -1 # nbr_pick indicates how many times a row 
+        # can be picked in a node, a value <0 for nbr_pick allows
+        # an infinite pick in a node by default
         self.stopRow = False
         
         # Extend the signature conversion table
@@ -49,13 +49,13 @@ class WeightRow(RowNode):
             self.weight=i1
         def int2(self, i1, i2):
             self.weight=i1
-            self.nbr_put_back=i2
+            self.nbr_pick=i2
         def conv2(self, i1, s1) :
             self.weight=i1
             self.set_node(s1)
         def conv3(self, i1, i2, s1) :
             self.weight=i1
-            self.nbr_put_back=i2
+            self.nbr_pick=i2
             self.set_node(s1)
         self.argument_conversion.extend([
             ([int], int1),
@@ -66,7 +66,7 @@ class WeightRow(RowNode):
 
     def __str_attributes__(self) -> str :
         return f"Weight={self.weight}  "\
-            f"Back={self.nbr_put_back}"
+            f"Back={self.nbr_pick}"
 
 def randint(vmin:int, vmax:int) :
     return random.randint(vmin, vmax)
@@ -77,7 +77,7 @@ def randint(vmin:int, vmax:int) :
 #___________________________________________________#
 class WeightNode(AbsCollectionNode):
     
-    def __init__(self, nbr_draw:int = 1, do_put_back:bool = True, nbr_put_back:int = -1) :
+    def __init__(self, nbr_draw:int = 1, do_put_back:bool = True, nbr_pick:int = -1) :
         AbsCollectionNode.__init__(self)
         # flag raised if the total weight of the row
         # has changed and must be recomputed
@@ -86,7 +86,7 @@ class WeightNode(AbsCollectionNode):
         # introduce new attributes
         self.nbr_draw = nbr_draw #number of time we will start WeightNode
         self.do_put_back = do_put_back #do we put back a picked child
-        self.nbr_put_back = nbr_put_back #how many times we put back a picked child
+        self.nbr_pick = nbr_pick #how many times we put back a picked child
 
     def get_row(self, *args, **kargs) -> WeightRow :
         new_row = WeightRow()
@@ -102,8 +102,8 @@ class WeightNode(AbsCollectionNode):
         self.computeTotal()
         for child in self.children :
             child.stopRow = False
-            child.loop_nbr_put_back = child.nbr_put_back #loop_ is made for not
-            #changing nbr_put_back value between several WeightNode calls
+            child.loop_nbr_pick = child.nbr_pick #loop_ is made for not
+            #changing nbr_pick value between several WeightNode calls
             
         if self.totalWeight == 0 : return
     
@@ -127,14 +127,13 @@ class WeightNode(AbsCollectionNode):
                     roll -= self.children[index].weight
                 
             yield self.children[index].node
+            self.children[index].loop_nbr_pick -= 1
             
             # Conditions for putting back row and how many times it will do it
             if (self.do_put_back == False or
-                (self.do_put_back == True and self.children[index].loop_nbr_put_back == 0)):
+                (self.do_put_back == True and self.children[index].loop_nbr_pick == 0)):
                 self.children[index].stopRow = True
                 self.totalWeight -= self.children[index].weight
-            elif self.do_put_back == True and self.children[index].loop_nbr_put_back != 0 :
-                 self.children[index].loop_nbr_put_back -= 1
             else: pass
         
     def __str_attributes__(self) -> str :
