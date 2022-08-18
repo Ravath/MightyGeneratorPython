@@ -38,9 +38,9 @@ test(0, len(wmap.children))
 test(1, wmap.nbr_draw)
 test(False, wmap.do_put_back)
 # Different number of putback
-wmap = WeightNode(nbr_draw=4, nbr_put_back=8)
+wmap = WeightNode(nbr_draw=4, nbr_pick=8)
 test(0, len(wmap.children))
-test(8, wmap.nbr_put_back)
+test(8, wmap.nbr_pick)
 test(True, wmap.do_put_back)
 wmap.print_node()
 
@@ -64,7 +64,7 @@ wmap.children.clear()
 test(0, len(wmap.children))
 wmap.print_node()
 
-def test_print_node(index:int, node, weight:int = 1, nbr_put_back:int = -1) :
+def test_print_node(index:int, node, weight:int = 1, nbr_pick:int = -1) :
     """Test function of a weightrow.
 
     Parameters
@@ -76,8 +76,8 @@ def test_print_node(index:int, node, weight:int = 1, nbr_put_back:int = -1) :
         or expected string of a printnode to check.
     weight : int, optional, The default is 1.
         expected weight of the row to check.
-    nbr_put_back : int, optional, The default is -1 (infinite put back).
-        expected putback of the row to check.
+    nbr_pick : int, optional, The default is -1 (infinite pick).
+        expected pick of the row to check.
     """
 
     print_log("CHECK", f"====== row at index {index} ======")
@@ -85,7 +85,7 @@ def test_print_node(index:int, node, weight:int = 1, nbr_put_back:int = -1) :
     if not test(True, isinstance(trow, WeightRow), f"test row_{index} is a WeightRow") :
         print_log("DISPLAY", type(trow))
     test(weight, trow.weight, f"test row_{index}.weight")
-    test(nbr_put_back, trow.nbr_put_back, f"test row_{index}.nbr_put_back")
+    test(nbr_pick, trow.nbr_pick, f"test row_{index}.nbr_pick")
     if isinstance(node, str) :
         if not test(True, isinstance(trow.node, PrintNode), f"test row_{index}.node is a PrintNode") :
             print_log("DISPLAY", type(trow))
@@ -156,7 +156,7 @@ wmap.insert(4, 2, "bobo")
 test_print_node(4, "bobo", 2)
 wmap.insert(1, 2, 5, "bibi")
 test_print_node(1, "bibi", 2, 5)
-wmap.insert(index=2, nbr_put_back=-9, weight=3, node="insert2")
+wmap.insert(index=2, nbr_pick=-9, weight=3, node="insert2")
 test_print_node(2, "insert2", 3, -9)
 wmap.print_node()
 
@@ -230,9 +230,9 @@ test_map(wmap, [1,2,3], [1,1,1])
 # With a different individual putback
 print_log("TEST", "4 Authorised draws, individual put back")
 wmap.do_put_back = True
-wmap.children[0].nbr_put_back = 0
-wmap.children[1].nbr_put_back = 1
-wmap.children[2].nbr_put_back = 0
+wmap.children[0].nbr_pick = 1
+wmap.children[1].nbr_pick = 2
+wmap.children[2].nbr_pick = 1
 test_map(wmap, [1,2,2,3], [1,1,1,1])
 # With a different weight
 print_log("TEST", "4 Draws, individual put back, and different weight")
@@ -243,7 +243,7 @@ wmap.children[0].weight = 1
 # Infinite putback
 print_log("TEST", "6 Authorised draws, infinite put back")
 wmap.nbr_draw = 6
-wmap.children[1].nbr_put_back = -1
+wmap.children[1].nbr_pick = -1
 test_map(wmap, [2,2,1,3,2,2], [2,2,1,2,3,1])
 
 test_result()

@@ -180,16 +180,16 @@ arme_spe["COMMUN"]["MITRAILLETTE"] =\
 arme_spe["COMMUN"]["POMPE"] =\
 arme_spe["COMMUN"]["SNIPER"] =\
 Weight(1).extend([
-    [10, 0, " - Baillonette\n"],
-    [10, 0, " - Viseur X2\n"],
-    [6, 0, " - Viseur X4\n"],
-    [3, 0, " - Viseur X6\n"],
+    [10, 1, " - Baillonette\n"],
+    [10, 1, " - Viseur X2\n"],
+    [6, 1, " - Viseur X4\n"],
+    [3, 1, " - Viseur X6\n"],
     [11, " - 1 augmentation de dé\n"],
     [15, " - -1 Difficulté de visée\n"],
     [15, " - +2 Magasin\n"],
     [10, " - Dégâts critiques +25%\n"],
     [10, " - +1 Dégâts\n"],
-    [MulOp(10, can_element), 0, "PROP_ELEMENTAIRE\n"],
+    [MulOp(10, can_element), 1, "PROP_ELEMENTAIRE\n"],
 ])
 
 arme_spe["INCOMMUN"]={}
@@ -199,16 +199,16 @@ arme_spe["INCOMMUN"]["MITRAILLETTE"] =\
 arme_spe["INCOMMUN"]["POMPE"] =\
 arme_spe["INCOMMUN"]["SNIPER"] =\
 Weight(2).extend([
-    [8, 0, " - Baillonette\n"],
-    [9, 0, " - Viseur X2\n"],
-    [6, 0, " - Viseur X4\n"],
-    [4, 0, " - Viseur X6\n"],
+    [8, 1, " - Baillonette\n"],
+    [9, 1, " - Viseur X2\n"],
+    [6, 1, " - Viseur X4\n"],
+    [4, 1, " - Viseur X6\n"],
     [11, " - 1 augmentation de dé\n"],
     [15, " - -1 Difficulté de visée\n"],
     [15, " - +2 Magasin\n"],
     [10, " - Dégâts critiques +25%\n"],
     [10, " - +1 Dégâts\n"],
-    [MulOp(12, can_element), 0, "PROP_ELEMENTAIRE\n"],
+    [MulOp(12, can_element), 1, "PROP_ELEMENTAIRE\n"],
 ])
 
 arme_spe["RARE"]={}
@@ -218,17 +218,17 @@ arme_spe["RARE"]["MITRAILLETTE"] =\
 arme_spe["RARE"]["POMPE"] =\
 arme_spe["RARE"]["SNIPER"] =\
 Weight(3).extend([
-    [7, 0, " - Baillonette\n"],
-    [8, 0, " - Viseur X2\n"],
-    [6, 0, " - Viseur X4\n"],
-    [4, 0, " - Viseur X6\n"],
+    [7, 1, " - Baillonette\n"],
+    [8, 1, " - Viseur X2\n"],
+    [6, 1, " - Viseur X4\n"],
+    [4, 1, " - Viseur X6\n"],
     [11, " - 1 augmentation de dé\n"],
     [10, " - -1 Difficulté de visée\n"],
     [10, " - +2 Magasin\n"],
     [10, " - Dégâts critiques +25%\n"],
     [10, " - +1 Dégâts\n"],
-    [MulOp(14, can_element), 0, "PROP_ELEMENTAIRE\n"],
-    [10, 0, capa_arme],
+    [MulOp(14, can_element), 1, "PROP_ELEMENTAIRE\n"],
+    [10, 1, capa_arme],
 ])
 
 arme_spe["EPIQUE"]={}
@@ -238,17 +238,17 @@ arme_spe["EPIQUE"]["MITRAILLETTE"] =\
 arme_spe["EPIQUE"]["POMPE"] =\
 arme_spe["EPIQUE"]["SNIPER"] =\
 Weight(4).extend([
-    [7, 0, " - Baillonette\n"],
-    [7, 0, " - Viseur X2\n"],
-    [7, 0, " - Viseur X4\n"],
-    [5, 0, " - Viseur X6\n"],
+    [7, 1, " - Baillonette\n"],
+    [7, 1, " - Viseur X2\n"],
+    [7, 1, " - Viseur X4\n"],
+    [5, 1, " - Viseur X6\n"],
     [12, " - 1 augmentation de dé\n"],
     [7, " - -1 Difficulté de visée\n"],
     [7, " - +2 Magasin\n"],
     [10, " - Dégâts critiques +25%\n"],
     [7, " - +1 Dégâts\n"],
-    [MulOp(16, can_element), 0, "PROP_ELEMENTAIRE\n"],
-    [15, 0, capa_arme],
+    [MulOp(16, can_element), 1, "PROP_ELEMENTAIRE\n"],
+    [15, 1, capa_arme],
 ])
 
 arme_spe["ETECH"]={}
@@ -258,17 +258,17 @@ arme_spe["ETECH"]["MITRAILLETTE"] =\
 arme_spe["ETECH"]["POMPE"] =\
 arme_spe["ETECH"]["SNIPER"] =\
 Weight(5).extend([
-    [5, 0, " - Baillonette\n"],
-    [6, 0, " - Viseur X2\n"],
-    [6, 0, " - Viseur X4\n"],
-    [6, 0, " - Viseur X6\n"],
+    [5, 1, " - Baillonette\n"],
+    [6, 1, " - Viseur X2\n"],
+    [6, 1, " - Viseur X4\n"],
+    [6, 1, " - Viseur X6\n"],
     [13, " - 1 augmentation de dé\n"],
     [5, " - -1 Difficulté de visée\n"],
     [5, " - +2 Magasin\n"],
     [10, " - Dégâts critiques +25%\n"],
     [6, " - +1 Dégâts\n"],
-    [MulOp(18, can_element), 0, "PROP_ELEMENTAIRE\n"],
-    [20, 0, capa_arme],
+    [MulOp(18, can_element), 1, "PROP_ELEMENTAIRE\n"],
+    [20, 1, capa_arme],
 ])
 
 arme_spe["LEGENDAIRE"]={}
@@ -280,16 +280,16 @@ arme_spe["LEGENDAIRE"]["SNIPER"] =\
 Sequence().extend([
     capa_arme,
     Weight(5).extend([
-        [5, 0, " - Baillonette\n"],
-        [6, 0, " - Viseur X2\n"],
-        [6, 0, " - Viseur X4\n"],
-        [6, 0, " - Viseur X6\n"],
+        [5, 1, " - Baillonette\n"],
+        [6, 1, " - Viseur X2\n"],
+        [6, 1, " - Viseur X4\n"],
+        [6, 1, " - Viseur X6\n"],
         [14, " - 1 augmentation de dé\n"],
         [5, " - -1 Difficulté de visée\n"],
         [5, " - +2 Magasin\n"],
         [10, " - Dégâts critiques +25%\n"],
         [5, " - +1 Dégâts\n"],
-        [MulOp(20, can_element), 0, "PROP_ELEMENTAIRE\n"],
+        [MulOp(20, can_element), 1, "PROP_ELEMENTAIRE\n"],
     ])
 ])
 
@@ -299,7 +299,7 @@ arme_spe["COMMUN"]["GRENADE"] = Weight(1).extend([
     [3, " - +2 Dégâts\n"],
     [3, " - -1 Difficulté de visée\n"],
     [1, " - +1D20 Bonus\n"],
-    [1, 0, capa_grenade],
+    [1, 1, capa_grenade],
     [MulOp(2, can_element), "PROP_ELEMENTAIRE\n"],
 ])
 
@@ -307,41 +307,41 @@ arme_spe["INCOMMUN"]["GRENADE"] = Weight(2).extend([
     [3, " - +2 Dégâts\n"],
     [3, " - -1 Difficulté de visée\n"],
     [1, " - +1D20 Bonus\n"],
-    [2, 0,capa_grenade],
-    [MulOp(3, can_element), 0, "PROP_ELEMENTAIRE\n"],
+    [2, 1,capa_grenade],
+    [MulOp(3, can_element), 1, "PROP_ELEMENTAIRE\n"],
 ])
 
 arme_spe["RARE"]["GRENADE"] = Weight(3).extend([
     [3, " - +2 Dégâts\n"],
     [3, " - -1 Difficulté de visée\n"],
     [1, " - +1D20 Bonus\n"],
-    [2, 0, capa_grenade],
-    [MulOp(3, can_element), 0, "PROP_ELEMENTAIRE\n"],
+    [2, 1, capa_grenade],
+    [MulOp(3, can_element), 1, "PROP_ELEMENTAIRE\n"],
 ])
 
 arme_spe["EPIQUE"]["GRENADE"] = Weight(4).extend([
     [3, " - +2 Dégâts\n"],
     [3, " - -1 Difficulté de visée\n"],
     [1, " - +1D20 Bonus\n"],
-    [3, 0, capa_grenade],
-    [MulOp(4, can_element), 0, "PROP_ELEMENTAIRE\n"],
+    [3, 1, capa_grenade],
+    [MulOp(4, can_element), 1, "PROP_ELEMENTAIRE\n"],
 ])
 
 arme_spe["ETECH"]["GRENADE"] = Weight(5).extend([
     [3, " - +2 Dégâts\n"],
     [3, " - -1 Difficulté de visée\n"],
     [1, " - +1D20 Bonus\n"],
-    [3, 0, capa_grenade],
-    [MulOp(4, can_element), 0, "PROP_ELEMENTAIRE\n"],
+    [3, 1, capa_grenade],
+    [MulOp(4, can_element), 1, "PROP_ELEMENTAIRE\n"],
 ])
 
 arme_spe["LEGENDAIRE"]["GRENADE"] = Sequence().extend([
+    capa_grenade,
     Weight(5).extend([
-        capa_grenade,
         [3, " - +2 Dégâts\n"],
         [3, " - -1 Difficulté de visée\n"],
         [1, " - +1D20 Bonus\n"],
-        [MulOp(4, can_element), 0, "PROP_ELEMENTAIRE\n"],
+        [MulOp(4, can_element), 1, "PROP_ELEMENTAIRE\n"],
     ])
 ])
 
@@ -363,26 +363,26 @@ arme_spe["RARE"]["BOUCLIER"] = Weight(3).extend([
     [4, " - + [[1d3+3]] Capacité\n"],
     [4, " - + [[1d3+1]] Cadence/tour\n"],
     [2, " - 1 Amélioration compétence spéciale\n"],
-    [1, 0, capa_bouclier],
+    [1, 1, capa_bouclier],
 ])
 
 arme_spe["EPIQUE"]["BOUCLIER"] = Weight(4).extend([
     [4, " - + [[1d3+3]] Capacité\n"],
     [4, " - + [[1d3+1]] Cadence/tour\n"],
     [2, " - 1 Amélioration compétence spéciale\n"],
-    [2, 0, capa_bouclier],
+    [2, 1, capa_bouclier],
 ])
 
 arme_spe["ETECH"]["BOUCLIER"] = Weight(5).extend([
     [3, " - + [[1d3+3]] Capacité\n"],
     [3, " - + [[1d3+1]] Cadence/tour\n"],
     [2, " - 1 Amélioration compétence spéciale\n"],
-    [2, 0, capa_bouclier],
+    [2, 1, capa_bouclier],
 ])
 
 arme_spe["LEGENDAIRE"]["BOUCLIER"] = Sequence().extend([
+    capa_bouclier,
     Weight(5).extend([
-        capa_bouclier,
         [3, " - + [[1d3+3]] Capacité\n"],
         [3, " - + [[1d3+1]] Cadence/tour\n"],
         [2, " - 1 Amélioration compétence spéciale\n"],

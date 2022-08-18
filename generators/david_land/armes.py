@@ -17,7 +17,7 @@ Print.print_to_buffer()
 #              INIT PROBABILITIES               #
 #################################################
 
-CHEST_TYPE = "COMMUN"
+CHEST_TYPE = "LEGENDAIRE"
 
 if CHEST_TYPE == "COMMUN" :
     ODD_COM = 50
@@ -494,11 +494,12 @@ def GetGrenadeBuilder(weapon_name:str,
                      weapon_damage,
                      weapon_aim:str,
                      weapon_modes) :
-    return Title(weapon_name, Sequence().extend([
-        nom_grenade,
-        Label("Dégats",              weapon_damage),
-        Label("Difficulté de visée", weapon_aim),
-        weapon_modes,
+    return Title(weapon_name+" {WEAPON_CONSTRUCTOR}",
+                 Sequence().extend([
+                     nom_grenade,
+                     Label("Dégats",              weapon_damage),
+                     Label("Difficulté de visée", weapon_aim),
+                     weapon_modes,
     ]))
 
 grenade_damage = Print("2D20 + [[1d11+23]]")
@@ -541,10 +542,11 @@ weapon_generation["GRENADE"]["LEGENDAIRE"] = GetGrenadeBuilder(
 shield_intensity = "(1d11+6)"
 
 def GetShieldBuilder(shield_name:str) :
-    return Title(shield_name, Sequence().extend([
-        nom_bouclier,
-        Label("Capacité", f"[[84 - 3*{shield_intensity} + 1d7]]"),
-        Label("Cadence",  f"[[1d5 + {shield_intensity}]]"),
+    return Title(shield_name+" {WEAPON_CONSTRUCTOR}",
+                 Sequence().extend([
+                     nom_bouclier,
+                     Label("Capacité", f"[[84 - 3*{shield_intensity} + 1d7]]"),
+                     Label("Cadence",  f"[[1d5 + {shield_intensity}]]"),     
     ]))
 
 weapon_generation["BOUCLIER"] = {}
