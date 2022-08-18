@@ -135,6 +135,12 @@ class IntervalNode(AbsCollectionNode) :
     def put(self, vmin, vmax, text) :
         """Add a row with the given interval."""
         self.children.append(((vmin,vmax),text))
+
+    def filter_rows(self, value:int) :
+        """Get the rows for the given value."""
+        for row in self.children :
+            if row.min <= value <= row.max :
+                yield row
         
     def draw(self) :
         """Draw a random value from the given random generation
@@ -143,27 +149,14 @@ class IntervalNode(AbsCollectionNode) :
             child.loop_nbr_pick = child.nbr_pick
         for y in range(0, self.nbr_draw) :
             res = self.dice.value
-            for row in self.children :
-                    if row.min <= res <= row.max and row.loop_nbr_pick != 0 :
-                        yield row.node
-                        row.loop_nbr_pick -= 1      
-        
-    # def draw(self) :
-    #     """Draw a random value from the given random generation
-    #     and draw rows consequently."""
-    #     for child in self.children :
-    #         child.loop_nbr_pick = child.nbr_pick
-    #     for y in range(0, self.nbr_draw) :
-    #         res = self.dice.value
-    #         results = self.draw_from_result(res)
-    #         for x in results :
-    #             yield x 
-    def draw_from_result(self, roll:int) :
-        """Get the result for the given value."""
-        for row in self.children :
-            if row.min <= roll <= row.max and row.nbr_pick != 0 :
+            for row in self.filter_rows(res) :
                 yield row.node
-                row._nbr_pick -= 1
+                row.loop_nbr_pick -= 1
+
+    def draw_from_result(self, value:int) :
+        """Get the result for the given value."""
+        for row in self.filter_rows(value) :
+                yield row.node
 
     def __str_attributes__(self) -> str :
         return f"Draws={self.nbr_draw} PutBack={self.put_back}"

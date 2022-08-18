@@ -17,12 +17,12 @@ var.extend([
     [5,10, PrintNode("manuel")]
     ])
 var.print_node()
-#can't do because have to implement roll
-#var.execute()
+
 for i in range(0,6) :
     print(f"== {i} ==")
     for resNode in var.draw_from_result(i) :
         resNode.execute()
+
 print("===== One pick in row 1d4 =====")
 var2 = IntervalNode(1)
 var2.extend([
@@ -32,6 +32,7 @@ var2.extend([
     [5,10, PrintNode("manuel")]
     ])
 var2.execute()
+
 print("===== Eight picks in row 1d4 =====")
 var3 = IntervalNode("1d4",8)
 var3.extend([
@@ -41,7 +42,9 @@ var3.extend([
     [5,10, PrintNode("manuel")]
     ])
 var3.print_node()
+
 print("=================================")
 var3.execute()
+
 print("==========Do it again?===========")
 var3.execute()
