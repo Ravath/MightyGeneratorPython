@@ -72,7 +72,7 @@ class IntervalRow(RowNode) :
         self._min=1
         self._max=1
         self._nbr_pick=-1
-
+        
         # extend the signature conversion table
 # pylint: disable-msg=C0103
         def int1(self, i1) :
@@ -123,7 +123,8 @@ class IntervalNode(AbsCollectionNode) :
         self.put_back = put_back
         # nbr_pick gives the number of time a row can be picked
         # a -1 default value means infinite pick
-        self.nbr_pick = nbr_pick
+        # nbr_pick is a ValueIf, or an int
+        self.nbr_pick = get_ValueIf(nbr_pick)
         
     def get_row(self, *args, **kargs) -> IntervalRow :
         """Instanciate the proper row with the given arguments"""
@@ -134,28 +135,35 @@ class IntervalNode(AbsCollectionNode) :
     def put(self, vmin, vmax, text) :
         """Add a row with the given interval."""
         self.children.append(((vmin,vmax),text))
-
+        
     def draw(self) :
         """Draw a random value from the given random generation
         and draw rows consequently."""
+        for child in self.children :
+            child.loop_nbr_pick = child.nbr_pick
         for y in range(0, self.nbr_draw) :
             res = self.dice.value
-            results = self.draw_from_result(res)
-            for x in results :
-                yield x
-            
-
+            for row in self.children :
+                    if row.min <= res <= row.max and row.loop_nbr_pick != 0 :
+                        yield row.node
+                        row.loop_nbr_pick -= 1      
+        
+    # def draw(self) :
+    #     """Draw a random value from the given random generation
+    #     and draw rows consequently."""
+    #     for child in self.children :
+    #         child.loop_nbr_pick = child.nbr_pick
+    #     for y in range(0, self.nbr_draw) :
+    #         res = self.dice.value
+    #         results = self.draw_from_result(res)
+    #         for x in results :
+    #             yield x 
     def draw_from_result(self, roll:int) :
         """Get the result for the given value."""
-        for child in self.children :
-            child.pick_node = True
         for row in self.children :
-            if row.min <= roll <= row.max and row.pick_node == True \
-            and row.nbr_pick != 0 :
+            if row.min <= roll <= row.max and row.nbr_pick != 0 :
                 yield row.node
-                row.nbr_pick -= 1
-                if row.nbr_pick == 0 :
-                    row.pick_node = False
+                row._nbr_pick -= 1
 
     def __str_attributes__(self) -> str :
         return f"Draws={self.nbr_draw} PutBack={self.put_back}"
