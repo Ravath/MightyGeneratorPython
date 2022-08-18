@@ -150,8 +150,9 @@ class IntervalNode(AbsCollectionNode) :
         for y in range(0, self.nbr_draw) :
             res = self.dice.value
             for row in self.filter_rows(res) :
-                yield row.node
-                row.loop_nbr_pick -= 1
+                if row.loop_nbr_pick != 0 :
+                    yield row.node
+                    row.loop_nbr_pick -= 1
 
     def draw_from_result(self, value:int) :
         """Get the result for the given value."""
