@@ -3,7 +3,7 @@
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode as Sequence
 from ponderation import pond_type, pond_fabriquant, pond_element, can_element
-from ponderation import nbr_of_constructor_properties
+from ponderation import nbr_of_constructor_properties , sel_element
 from macro.calc import SubOp, MulOp
 
 #################################################
@@ -171,15 +171,13 @@ arme_spe.clear()
 #   Because : if a elementary prop is drawn along the way, will inbalance chances of elem unic capas
 #   How : raise a flag and resolve at end of generation
 
-# TODO : elementary properties
-
 arme_spe["COMMUN"]={}
 arme_spe["COMMUN"]["PISTOLET"] =\
 arme_spe["COMMUN"]["ASSAUT"] =\
 arme_spe["COMMUN"]["MITRAILLETTE"] =\
 arme_spe["COMMUN"]["POMPE"] =\
 arme_spe["COMMUN"]["SNIPER"] =\
-Weight(1) << [
+Weight(1 - int(nbr_of_constructor_properties)) << [
     [10, 1, " - Baillonette\n"],
     [10, 1, " - Viseur X2\n"],
     [6, 1, " - Viseur X4\n"],
@@ -189,7 +187,7 @@ Weight(1) << [
     [15, " - +2 Magasin\n"],
     [10, " - Dégâts critiques +25%\n"],
     [10, " - +1 Dégâts\n"],
-    [MulOp(10, can_element), 1, "PROP_ELEMENTAIRE\n"],
+    [MulOp(10, can_element), 1, sel_element],
 ]
 
 arme_spe["INCOMMUN"]={}
@@ -198,7 +196,7 @@ arme_spe["INCOMMUN"]["ASSAUT"] =\
 arme_spe["INCOMMUN"]["MITRAILLETTE"] =\
 arme_spe["INCOMMUN"]["POMPE"] =\
 arme_spe["INCOMMUN"]["SNIPER"] =\
-Weight(2) << [
+Weight(2 - int(nbr_of_constructor_properties)) << [
     [8, 1, " - Baillonette\n"],
     [9, 1, " - Viseur X2\n"],
     [6, 1, " - Viseur X4\n"],
@@ -208,7 +206,7 @@ Weight(2) << [
     [15, " - +2 Magasin\n"],
     [10, " - Dégâts critiques +25%\n"],
     [10, " - +1 Dégâts\n"],
-    [MulOp(12, can_element), 1, "PROP_ELEMENTAIRE\n"],
+    [MulOp(12, can_element), 1, sel_element],
 ]
 
 arme_spe["RARE"]={}
@@ -217,7 +215,7 @@ arme_spe["RARE"]["ASSAUT"] =\
 arme_spe["RARE"]["MITRAILLETTE"] =\
 arme_spe["RARE"]["POMPE"] =\
 arme_spe["RARE"]["SNIPER"] =\
-Weight(3) << [
+Weight(3 - int(nbr_of_constructor_properties)) << [
     [7, 1, " - Baillonette\n"],
     [8, 1, " - Viseur X2\n"],
     [6, 1, " - Viseur X4\n"],
@@ -227,7 +225,7 @@ Weight(3) << [
     [10, " - +2 Magasin\n"],
     [10, " - Dégâts critiques +25%\n"],
     [10, " - +1 Dégâts\n"],
-    [MulOp(14, can_element), 1, "PROP_ELEMENTAIRE\n"],
+    [MulOp(14, can_element), 1, sel_element],
     [10, 1, capa_arme],
 ]
 
@@ -237,7 +235,7 @@ arme_spe["EPIQUE"]["ASSAUT"] =\
 arme_spe["EPIQUE"]["MITRAILLETTE"] =\
 arme_spe["EPIQUE"]["POMPE"] =\
 arme_spe["EPIQUE"]["SNIPER"] =\
-Weight(4) << [
+Weight(4 - int(nbr_of_constructor_properties)) << [
     [7, 1, " - Baillonette\n"],
     [7, 1, " - Viseur X2\n"],
     [7, 1, " - Viseur X4\n"],
@@ -247,7 +245,7 @@ Weight(4) << [
     [7, " - +2 Magasin\n"],
     [10, " - Dégâts critiques +25%\n"],
     [7, " - +1 Dégâts\n"],
-    [MulOp(16, can_element), 1, "PROP_ELEMENTAIRE\n"],
+    [MulOp(16, can_element), 1, sel_element],
     [15, 1, capa_arme],
 ]
 
@@ -257,7 +255,7 @@ arme_spe["ETECH"]["ASSAUT"] =\
 arme_spe["ETECH"]["MITRAILLETTE"] =\
 arme_spe["ETECH"]["POMPE"] =\
 arme_spe["ETECH"]["SNIPER"] =\
-Weight(5) << [
+Weight(5 - int(nbr_of_constructor_properties)) << [
     [5, 1, " - Baillonette\n"],
     [6, 1, " - Viseur X2\n"],
     [6, 1, " - Viseur X4\n"],
@@ -267,7 +265,7 @@ Weight(5) << [
     [5, " - +2 Magasin\n"],
     [10, " - Dégâts critiques +25%\n"],
     [6, " - +1 Dégâts\n"],
-    [MulOp(18, can_element), 1, "PROP_ELEMENTAIRE\n"],
+    [MulOp(18, can_element), 1, sel_element],
     [20, 1, capa_arme],
 ]
 
@@ -278,7 +276,6 @@ arme_spe["LEGENDAIRE"]["MITRAILLETTE"] =\
 arme_spe["LEGENDAIRE"]["POMPE"] =\
 arme_spe["LEGENDAIRE"]["SNIPER"] =\
 Sequence() << [
-    capa_arme,
     Weight(5) << [
         [5, 1, " - Baillonette\n"],
         [6, 1, " - Viseur X2\n"],
@@ -289,8 +286,9 @@ Sequence() << [
         [5, " - +2 Magasin\n"],
         [10, " - Dégâts critiques +25%\n"],
         [5, " - +1 Dégâts\n"],
-        [MulOp(20, can_element), 1, "PROP_ELEMENTAIRE\n"],
-    ]
+        [MulOp(20, can_element), 1, sel_element],
+    ],
+    capa_arme,
 ]
 
 # GRENADES
@@ -300,7 +298,7 @@ arme_spe["COMMUN"]["GRENADE"] = Weight(1) << [
     [3, " - -1 Difficulté de visée\n"],
     [1, " - +1D20 Bonus\n"],
     [1, 1, capa_grenade],
-    [MulOp(2, can_element), "PROP_ELEMENTAIRE\n"],
+    [MulOp(2, can_element), sel_element],
 ]
 
 arme_spe["INCOMMUN"]["GRENADE"] = Weight(2) << [
@@ -308,7 +306,7 @@ arme_spe["INCOMMUN"]["GRENADE"] = Weight(2) << [
     [3, " - -1 Difficulté de visée\n"],
     [1, " - +1D20 Bonus\n"],
     [2, 1,capa_grenade],
-    [MulOp(3, can_element), 1, "PROP_ELEMENTAIRE\n"],
+    [MulOp(3, can_element), 1, sel_element],
 ]
 
 arme_spe["RARE"]["GRENADE"] = Weight(3) << [
@@ -316,7 +314,7 @@ arme_spe["RARE"]["GRENADE"] = Weight(3) << [
     [3, " - -1 Difficulté de visée\n"],
     [1, " - +1D20 Bonus\n"],
     [2, 1, capa_grenade],
-    [MulOp(3, can_element), 1, "PROP_ELEMENTAIRE\n"],
+    [MulOp(3, can_element), 1, sel_element],
 ]
 
 arme_spe["EPIQUE"]["GRENADE"] = Weight(4) << [
@@ -324,7 +322,7 @@ arme_spe["EPIQUE"]["GRENADE"] = Weight(4) << [
     [3, " - -1 Difficulté de visée\n"],
     [1, " - +1D20 Bonus\n"],
     [3, 1, capa_grenade],
-    [MulOp(4, can_element), 1, "PROP_ELEMENTAIRE\n"],
+    [MulOp(4, can_element), 1, sel_element],
 ]
 
 arme_spe["ETECH"]["GRENADE"] = Weight(5) << [
@@ -332,17 +330,17 @@ arme_spe["ETECH"]["GRENADE"] = Weight(5) << [
     [3, " - -1 Difficulté de visée\n"],
     [1, " - +1D20 Bonus\n"],
     [3, 1, capa_grenade],
-    [MulOp(4, can_element), 1, "PROP_ELEMENTAIRE\n"],
+    [MulOp(4, can_element), 1, sel_element],
 ]
 
 arme_spe["LEGENDAIRE"]["GRENADE"] = Sequence() << [
-    capa_grenade,
     Weight(5) << [
         [3, " - +2 Dégâts\n"],
         [3, " - -1 Difficulté de visée\n"],
         [1, " - +1D20 Bonus\n"],
-        [MulOp(4, can_element), 1, "PROP_ELEMENTAIRE\n"],
-    ]
+        [MulOp(4, can_element), 1, sel_element],
+    ],
+    capa_grenade
 ]
 
 # BOUCLIERS
@@ -381,10 +379,10 @@ arme_spe["ETECH"]["BOUCLIER"] = Weight(5) << [
 ]
 
 arme_spe["LEGENDAIRE"]["BOUCLIER"] = Sequence() << [
-    capa_bouclier,
     Weight(5) << [
         [3, " - + [[1d3+3]] Capacité\n"],
         [3, " - + [[1d3+1]] Cadence/tour\n"],
         [2, " - 1 Amélioration compétence spéciale\n"],
-    ]
+    ],
+    capa_bouclier
 ]

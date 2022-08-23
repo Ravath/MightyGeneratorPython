@@ -6,8 +6,8 @@ from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Print import PrintNode as Print
 from wordgenerator.Print import SetNode, Title, Label
 from wordgenerator.Generator import Generator
-from ponderation import pond_type, pond_fabriquant, pond_element, can_element
-from ponderation import nbr_of_constructor_properties
+from ponderation import pond_type, pond_fabriquant, can_element
+from ponderation import nbr_of_constructor_properties, sel_element
 from capacite import arme_spe
 from nom import nom_arme, nom_grenade, nom_bouclier
 
@@ -15,7 +15,7 @@ from nom import nom_arme, nom_grenade, nom_bouclier
 #              INIT PROBABILITIES               #
 #################################################
 
-CHEST_TYPE = "LEGENDAIRE"
+CHEST_TYPE = "COMMUN"
 
 if CHEST_TYPE == "COMMUN" :
     ODD_COM = 50
@@ -31,7 +31,7 @@ elif CHEST_TYPE == "RARE" :
     ODD_EPIC = 9
     ODD_ETECH = 5
     ODD_LEG = 2
-elif CHEST_TYPE == "LEGENDAIRE" :
+elif CHEST_TYPE == "LEGENDAIRE" : #currently used for test, real values later
     ODD_COM = 0
     ODD_UNCOM = 0
     ODD_RAR = 0
@@ -39,7 +39,7 @@ elif CHEST_TYPE == "LEGENDAIRE" :
     ODD_ETECH = 10
     ODD_LEG = 10
 
-ODD_PIS = 1
+ODD_PIS = 100
 ODD_FAS = 1
 ODD_MIT = 1
 ODD_FPO = 1
@@ -78,13 +78,6 @@ def SetWeaponConstructor(weapon_constructor) :
     pond_fabriquant[weapon_constructor].value = 1
     global WEAPON_CONSTRUCTOR
     WEAPON_CONSTRUCTOR = weapon_constructor
-
-def SetWeaponElement(weapon_element) :
-    # update the ponderations
-    for v in pond_element.values() :
-        v.value = 0
-    pond_element[weapon_element].value = 1
-
 
 sel_type = Weight() << [
     [ODD_PIS, SetNode(SetWeaponType, "PISTOLET")],
@@ -173,19 +166,6 @@ sel_fabriquant = {
 #################################################
 #              ELEMENT GENERATION               #
 #################################################
-
-sel_element = Sequence() << [
-    " - Effet élémentaire: ",
-    Weight() << [
-        Sequence() << ["incendiaire", SetNode(SetWeaponElement, "FEU")],
-        Sequence() << ["électrique" , SetNode(SetWeaponElement, "ELEC")],
-        Sequence() << ["slag"       , SetNode(SetWeaponElement, "SLAG")],
-        Sequence() << ["corrosif"   , SetNode(SetWeaponElement, "COR")],
-        Sequence() << ["radiation"  , SetNode(SetWeaponElement, "RAD")],
-        Sequence() << ["cryogénique", SetNode(SetWeaponElement, "CRYO")],
-    ],
-    "\n"
-]
 
 def inhibit_element() :
     can_element.value = 0
@@ -484,4 +464,3 @@ print()
 generation.print_to_console()
 
 # TODO Solve Maliwan bug adding 1 property in each weapon
-# TODO Add PROP_ELEMENTAIRE properly

@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from wordgenerator.Weight import WeightNode as Weight
+from wordgenerator.Sequence import SequenceNode as Sequence
+from wordgenerator.Print import SetNode
 from macro.calc import Value
 
 """ Init values.
@@ -61,6 +64,25 @@ pond_element = {
     "RAD"  : Value(0),
     "CRYO" : Value(0),
 }
+
+def SetWeaponElement(weapon_element) :
+    # update the ponderations
+    for v in pond_element.values() :
+        v.value = 0
+    pond_element[weapon_element].value = 1
+    
+sel_element = Sequence().extend([
+    " - Effet élémentaire: ",
+    Weight().extend([
+        Sequence().extend(["incendiaire", SetNode(SetWeaponElement, "FEU")]),
+        Sequence().extend(["électrique" , SetNode(SetWeaponElement, "ELEC")]),
+        Sequence().extend(["slag"       , SetNode(SetWeaponElement, "SLAG")]),
+        Sequence().extend(["corrosif"   , SetNode(SetWeaponElement, "COR")]),
+        Sequence().extend(["radiation"  , SetNode(SetWeaponElement, "RAD")]),
+        Sequence().extend(["cryogénique", SetNode(SetWeaponElement, "CRYO")]),
+    ]),
+    "\n"
+])
 
 # flag : multiply with weight for actual chances to have an elementary property
 #   0 : no chance to have a elementary property
