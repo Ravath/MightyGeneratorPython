@@ -79,6 +79,7 @@ def SetWeaponConstructor(weapon_constructor) :
     global WEAPON_CONSTRUCTOR
     WEAPON_CONSTRUCTOR = weapon_constructor
 
+
 sel_type = Weight() << [
     [ODD_PIS, SetNode(SetWeaponType, "PISTOLET")],
     [ODD_FAS, SetNode(SetWeaponType, "ASSAUT")],
