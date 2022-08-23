@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from wordgenerator.Weight import WeightNode as Weight
-from wordgenerator.Sequence import SequenceNode as Sequence
+from wordgenerator.Sequence import S
 from wordgenerator.Print import Title, Label
 from wordgenerator.Generator import Generator
 
@@ -353,10 +353,7 @@ point_interet = Weight() << [
 
 ################ ROOT
 
-def S(*args) :
-    return Sequence() << [*args]
-
-root = Sequence() << [
+root = S(
     # Geographie
     Title("Terrain") << S(
         Label("Elevation  ", elevation),
@@ -416,7 +413,7 @@ root = Sequence() << [
     Title("Point d'interet") << S(
         point_interet,
     ),
-]
+)
 
 ################ Generation
 

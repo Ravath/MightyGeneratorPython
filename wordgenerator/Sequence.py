@@ -46,3 +46,8 @@ class SequenceNode(AbsCollectionNode):
         return self._inbetween_action
 
     inbetween_action = property(get_inbetween_action, set_inbetween_action)
+
+
+def S(*args) :
+    """Simplification use of Sequence Node."""
+    return SequenceNode() << [*args]
