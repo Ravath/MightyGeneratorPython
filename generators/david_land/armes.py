@@ -39,7 +39,7 @@ elif CHEST_TYPE == "LEGENDAIRE" : #currently used for test, real values later
     ODD_ETECH = 10
     ODD_LEG = 10
 
-ODD_PIS = 100
+ODD_PIS = 1
 ODD_FAS = 1
 ODD_MIT = 1
 ODD_FPO = 1
@@ -51,9 +51,9 @@ ODD_BOU = 1
 #            SELECT TYPE AND RARITY             #
 #################################################
 
-WEAPON_TYPE = "PISTOLET"
-WEAPON_RARITY = ""
-WEAPON_CONSTRUCTOR = "TEST"
+WEAPON_TYPE = "INIT"
+WEAPON_RARITY = "INIT"
+WEAPON_CONSTRUCTOR = "INIT"
 
 def SetWeaponType(weapon_type) :
     # update the flag
@@ -172,7 +172,7 @@ def inhibit_element() :
     can_element.value = 0
 def pretirage_one() :
     nbr_of_constructor_properties.value = 1
-
+    
 spe_fabriquant = Interval(1) << [
     # update ponderation to :
     # - inhibit elementary weapon if needed
@@ -263,10 +263,10 @@ weapon_generation["PISTOLET"] = {
 ############# RIFLE
 
 rifle_damage = Weight() << [
-    [15, "1D4 << [[1d7+9]]"],
-    [30, "1D6 << [[1d7+8]]"],
-    [40, "1D8 << [[1d7+6]]"],
-    [15, "1D10 << [[1d7+5]]"],
+    [15, "1D4 + [[1d7+9]]"],
+    [30, "1D6 + [[1d7+8]]"],
+    [40, "1D8 + [[1d7+6]]"],
+    [15, "1D10 + [[1d7+5]]"],
 ]
 rifle_modes = pistol_modes
 
@@ -282,9 +282,9 @@ weapon_generation["ASSAUT"] = {
 ############# SUB-MACHINEGUN
 
 machinegun_damage = Weight() << [
-    [20, "1D8 << [[1d7]]"],
-    [40, "1D10 << [[1d7-1]]"],
-    [40, "1D12 << [[1d7-2]]"],
+    [20, "1D8 + [[1d7]]"],
+    [40, "1D10 + [[1d7-1]]"],
+    [40, "1D12 + [[1d7-2]]"],
 ]
 machinegun_modes = Sequence() << [
     " - Tir Simple\n",
@@ -304,10 +304,10 @@ weapon_generation["MITRAILLETTE"] = {
 ############# SHOTGUN
 
 pompe_damage = Weight() << [
-    [10, "2D8 << [[1d9+14]]"],
-    [40, "2D10 << [[1d9+12]]"],
-    [40, "2D12 << [[1d9+10]]"],
-    [10, "2D20 << [[1d9+2]]"],
+    [10, "2D8 + [[1d9+14]]"],
+    [40, "2D10 + [[1d9+12]]"],
+    [40, "2D12 + [[1d9+10]]"],
+    [10, "2D20 + [[1d9+2]]"],
 ]
 pompe_modes = " - Tir Simple\n"
 
@@ -323,9 +323,9 @@ weapon_generation["POMPE"] = {
 ############# SNIPER
 
 sniper_damage = Weight() << [
-    [60, "1D4 << [[1d7+35]]"],
-    [25, "1D6 << [[1d7+34]]"],
-    [15, "1D8 << [[1d7+33]]"],
+    [60, "1D4 + [[1d7+35]]"],
+    [25, "1D6 + [[1d7+34]]"],
+    [15, "1D8 + [[1d7+33]]"],
 ]
 sniper_modes = " - Tir Simple\n"
 
@@ -352,7 +352,7 @@ def GetGrenadeBuilder(weapon_name:str,
                      weapon_modes,
     ])
 
-grenade_damage = Print("2D20 << [[1d11+23]]")
+grenade_damage = Print("2D20 + [[1d11+23]]")
 grenade_modes = " - Tir Simple\n"
 
 weapon_generation["GRENADE"] = {

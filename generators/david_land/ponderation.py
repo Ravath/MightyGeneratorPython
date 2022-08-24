@@ -18,8 +18,8 @@ pond_type = {
     "ASSAUT"    : Value(0),
     "POMPE"     : Value(0),
     "SNIPER"    : Value(0),
-    "GRENADE"    : Value(0),
-    "BOUCLIER"    : Value(0),
+    "GRENADE"   : Value(0),
+    "BOUCLIER"  : Value(0),
 }
 
 # Ponderations for each weapon constructor
@@ -91,3 +91,6 @@ can_element = Value(1)
 
 # Counter of the number of properties preset by the weapon constructor.
 nbr_of_constructor_properties = Value(0)
+
+def predraw() :
+    return nbr_of_constructor_properties.value
