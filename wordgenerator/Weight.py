@@ -18,13 +18,13 @@ from macro.calc import ValueIf
 #___________________________________________________#
 class WeightRow(RowNode):
 
-    def set_weight(self, new_weight) :
+    def _set_weight(self, new_weight) :
         self._weight = new_weight
         if (not isinstance(new_weight, int) and
             not isinstance(new_weight, ValueIf)) :
             raise ValueError("Weight must be 'int' or 'ValueIf'")
         
-    def get_weight(self) -> int :
+    def _get_weight(self) -> int :
         if isinstance(self._weight, int) :
             return self._weight
         elif isinstance(self._weight, ValueIf) :
@@ -32,7 +32,23 @@ class WeightRow(RowNode):
         else :
             raise ValueError("Weight must be 'int' or 'ValueIf'")
 
-    weight = property(get_weight, set_weight)
+    weight = property(_get_weight, _set_weight)
+    
+    def _set_nbr_pick(self, new_nbr_pick) :
+        self._nbr_pick = new_nbr_pick
+        if (not isinstance(new_nbr_pick, int) and
+            not isinstance(new_nbr_pick, ValueIf)) :
+            raise ValueError("Nbr_pick must be 'int' or 'ValueIf'")
+        
+    def _get_nbr_pick(self) -> int :
+        if isinstance(self._nbr_pick, int) :
+            return self._nbr_pick
+        elif isinstance(self._nbr_pick, ValueIf) :
+            return self._nbr_pick.value
+        else :
+            raise ValueError("Nbr_pick must be 'int' or 'ValueIf'")
+
+    nbr_pick = property(_get_nbr_pick, _set_nbr_pick)
 
     def __init__(self):
         RowNode.__init__(self)
@@ -77,7 +93,39 @@ def randint(vmin:int, vmax:int) :
 #___________________________________________________#
 class WeightNode(AbsCollectionNode):
     
-    def __init__(self, nbr_draw:int = 1, do_put_back:bool = True, nbr_pick:int = -1) :
+    def _set_nbr_draw(self, new_nbr_draw) :
+        self._nbr_draw = new_nbr_draw
+        if (not isinstance(new_nbr_draw, int) and
+            not isinstance(new_nbr_draw, ValueIf)) :
+            raise ValueError("nbr_draw must be 'int' or 'ValueIf'")
+        
+    def _get_nbr_draw(self) -> int :
+        if isinstance(self._nbr_draw, int) :
+            return self._nbr_draw
+        elif isinstance(self._nbr_draw, ValueIf) :
+            return self._nbr_draw.value
+        else :
+            raise ValueError("nbr_draw must be 'int' or 'ValueIf'")
+
+    nbr_draw = property(_get_nbr_draw, _set_nbr_draw)
+    
+    def _set_nbr_pick(self, new_nbr_pick) :
+        self._nbr_pick = new_nbr_pick
+        if (not isinstance(new_nbr_pick, int) and
+            not isinstance(new_nbr_pick, ValueIf)) :
+            raise ValueError("Nbr_pick must be 'int' or 'ValueIf'")
+        
+    def _get_nbr_pick(self) -> int :
+        if isinstance(self._nbr_pick, int) :
+            return self._nbr_pick
+        elif isinstance(self._nbr_pick, ValueIf) :
+            return self._nbr_pick.value
+        else :
+            raise ValueError("Nbr_pick must be 'int' or 'ValueIf'")
+
+    nbr_pick = property(_get_nbr_pick, _set_nbr_pick)
+    
+    def __init__(self, nbr_draw = 1, do_put_back:bool = True, nbr_pick = 1) :
         AbsCollectionNode.__init__(self)
         # flag raised if the total weight of the row
         # has changed and must be recomputed

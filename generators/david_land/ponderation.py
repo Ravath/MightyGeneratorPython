@@ -91,6 +91,3 @@ can_element = Value(1)
 
 # Counter of the number of properties preset by the weapon constructor.
 nbr_of_constructor_properties = Value(0)
-
-def predraw() :
-    return nbr_of_constructor_properties.value

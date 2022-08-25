@@ -3,7 +3,7 @@
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode as Sequence
 from ponderation import pond_type, pond_fabriquant, pond_element, can_element
-from ponderation import sel_element, predraw
+from ponderation import sel_element, nbr_of_constructor_properties
 from macro.calc import SubOp, MulOp
 
 #################################################
@@ -177,7 +177,7 @@ arme_spe["COMMUN"]["ASSAUT"]        =\
 arme_spe["COMMUN"]["MITRAILLETTE"]  =\
 arme_spe["COMMUN"]["POMPE"]         =\
 arme_spe["COMMUN"]["SNIPER"]        =\
-    Weight(1 - predraw()) << [
+    Weight(1 - nbr_of_constructor_properties) << [
         [10, 1, " - Baillonette\n"],
         [10, 1, " - Viseur X2\n"],
         [6, 1, " - Viseur X4\n"],
@@ -196,7 +196,7 @@ arme_spe["INCOMMUN"]["ASSAUT"]          =\
 arme_spe["INCOMMUN"]["MITRAILLETTE"]    =\
 arme_spe["INCOMMUN"]["POMPE"]           =\
 arme_spe["INCOMMUN"]["SNIPER"]          =\
-    Weight(2 - predraw()) << [
+    Weight(2 - nbr_of_constructor_properties) << [
         [8, 1, " - Baillonette\n"],
         [9, 1, " - Viseur X2\n"],
         [6, 1, " - Viseur X4\n"],
@@ -215,7 +215,7 @@ arme_spe["RARE"]["ASSAUT"] =\
 arme_spe["RARE"]["MITRAILLETTE"] =\
 arme_spe["RARE"]["POMPE"] =\
 arme_spe["RARE"]["SNIPER"] =\
-    Weight(3 - predraw()) << [
+    Weight(3 - nbr_of_constructor_properties) << [
         [7, 1, " - Baillonette\n"],
         [8, 1, " - Viseur X2\n"],
         [6, 1, " - Viseur X4\n"],
@@ -235,7 +235,7 @@ arme_spe["EPIQUE"]["ASSAUT"] =\
 arme_spe["EPIQUE"]["MITRAILLETTE"] =\
 arme_spe["EPIQUE"]["POMPE"] =\
 arme_spe["EPIQUE"]["SNIPER"] =\
-    Weight(4 - predraw()) << [
+    Weight(4 - nbr_of_constructor_properties) << [
         [7, 1, " - Baillonette\n"],
         [7, 1, " - Viseur X2\n"],
         [7, 1, " - Viseur X4\n"],
@@ -255,7 +255,7 @@ arme_spe["ETECH"]["ASSAUT"] =\
 arme_spe["ETECH"]["MITRAILLETTE"] =\
 arme_spe["ETECH"]["POMPE"] =\
 arme_spe["ETECH"]["SNIPER"] =\
-Weight(5 - predraw()) << [
+Weight(5 - nbr_of_constructor_properties) << [
     [5, 1, " - Baillonette\n"],
     [6, 1, " - Viseur X2\n"],
     [6, 1, " - Viseur X4\n"],
@@ -276,7 +276,7 @@ arme_spe["LEGENDAIRE"]["MITRAILLETTE"] =\
 arme_spe["LEGENDAIRE"]["POMPE"] =\
 arme_spe["LEGENDAIRE"]["SNIPER"] =\
 Sequence() << [
-Weight(5 - predraw()) << [
+Weight(5 - nbr_of_constructor_properties) << [
     [5, 1, " - Baillonette\n"],
     [6, 1, " - Viseur X2\n"],
     [6, 1, " - Viseur X4\n"],
