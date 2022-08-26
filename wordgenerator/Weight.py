@@ -125,7 +125,7 @@ class WeightNode(AbsCollectionNode):
 
     nbr_pick = property(_get_nbr_pick, _set_nbr_pick)
     
-    def __init__(self, nbr_draw = 1, do_put_back:bool = True, nbr_pick = 1) :
+    def __init__(self, nbr_draw = 1, do_put_back:bool = True) :
         AbsCollectionNode.__init__(self)
         # flag raised if the total weight of the row
         # has changed and must be recomputed
@@ -134,7 +134,6 @@ class WeightNode(AbsCollectionNode):
         # introduce new attributes
         self.nbr_draw = nbr_draw #number of time we will start WeightNode
         self.do_put_back = do_put_back #do we put back a picked child
-        self.nbr_pick = nbr_pick #how many times we put back a picked child
 
     def get_row(self, *args, **kargs) -> WeightRow :
         new_row = WeightRow()

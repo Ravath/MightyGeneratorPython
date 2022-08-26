@@ -13,13 +13,13 @@ are chosen.
 
 # Ponderations for each weapon type
 pond_type = {
-    "PISTOLET"  : Value(0),
+    "PISTOLET"     : Value(0),
     "MITRAILLETTE" : Value(0),
-    "ASSAUT"    : Value(0),
-    "POMPE"     : Value(0),
-    "SNIPER"    : Value(0),
-    "GRENADE"   : Value(0),
-    "BOUCLIER"  : Value(0),
+    "ASSAUT"       : Value(0),
+    "POMPE"        : Value(0),
+    "SNIPER"       : Value(0),
+    "GRENADE"      : Value(0),
+    "BOUCLIER"     : Value(0),
 }
 
 # Ponderations for each weapon constructor
@@ -91,3 +91,16 @@ can_element = Value(1)
 
 # Counter of the number of properties preset by the weapon constructor.
 nbr_of_constructor_properties = Value(0)
+
+pond_bonus = {
+    "WEAPON"    : Value(0),
+    "GRENADE"   : Value(0),
+    "SHIELD"    : Value(0),
+}
+    
+def set_weapon_bonus(weapon_bonus) :
+    global pond_bonus
+    # update the ponderations
+    for v in pond_bonus.values() :
+        v.value = 0
+    pond_bonus[weapon_bonus].value = 1

@@ -6,16 +6,16 @@ from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Print import PrintNode as Print
 from wordgenerator.Print import SetNode, Title, Label
 from wordgenerator.Generator import Generator
-from ponderation import pond_type, pond_fabriquant, can_element
+from ponderation import pond_type, pond_fabriquant, can_element, pond_bonus
 from ponderation import nbr_of_constructor_properties, sel_element
-from capacite import arme_spe
+from capacite import arme_spe , bonus_weapon
 from nom import nom_arme, nom_grenade, nom_bouclier
 
 #################################################
 #              INIT PROBABILITIES               #
 #################################################
 
-CHEST_TYPE = "COMMUN"
+CHEST_TYPE = "LEGENDAIRE"
 
 if CHEST_TYPE == "COMMUN" :
     ODD_COM = 50
@@ -54,6 +54,7 @@ ODD_BOU = 1
 WEAPON_TYPE = "INIT"
 WEAPON_RARITY = "INIT"
 WEAPON_CONSTRUCTOR = "INIT"
+WEAPON_BONUS = "INIT"
 
 def SetWeaponType(weapon_type) :
     # update the flag
@@ -78,7 +79,6 @@ def SetWeaponConstructor(weapon_constructor) :
     pond_fabriquant[weapon_constructor].value = 1
     global WEAPON_CONSTRUCTOR
     WEAPON_CONSTRUCTOR = weapon_constructor
-
 
 sel_type = Weight() << [
     [ODD_PIS, SetNode(SetWeaponType, "PISTOLET")],
@@ -190,7 +190,7 @@ spe_fabriquant = Interval(1) << [
     [0, pond_fabriquant["Dahl"], "*Mode Rafale et Automatique: possibilité d'alterner 2 cartes successives d'un tir*\n"],
     [0, pond_fabriquant["Hyperion"], "*Bouclier d'énergie avec [[1d20+10]]PV*\n"],
     [0, pond_fabriquant["Jakobs"], "*Tir ricochant si critique*\n"],
-
+    [0, pond_fabriquant["Maliwan"], "*Meilleurs chances de déclencher l'effet élémentaire*\n"],
     [0, pond_fabriquant["Maliwan"], sel_element],
     [0, pond_fabriquant["Tediore"], "*Lancer l'arme pour recharger, dégâts similaire à une balle en zone*\n"],
     [0, pond_fabriquant["Torgue"], "*Arme Explosive*\n"],
@@ -202,6 +202,7 @@ spe_fabriquant = Interval(1) << [
     [0, pond_fabriquant["MIRV"], "*Explose 3x3, puis lance [[1d5+3]] mini grenades qui explosent 3x3 autour de l'explosion initiale le tour suivant*\n"],
     [0, pond_fabriquant["Singularity"], "*Attire les ennemis autour de la grenade 3x3 et explose 3x3*\n"],
     [0, pond_fabriquant["Tesla"], "*Explose 3x3 et laisse une traînée élémentaire pendant 2 tours*\n"],
+    [0, pond_fabriquant["Tesla"], sel_element],
     [0, pond_fabriquant["Transfusion"], "*Explosion 3x3, soigne le lanceur des dégâts infligés après 1 tour*\n"],
     [0, pond_fabriquant["Betty"], "*Rebondit jusqu'à toucher un ennemi, explosion 3x3*\n"],
     # BOUCLIERS
@@ -211,9 +212,11 @@ spe_fabriquant = Interval(1) << [
     [0, pond_fabriquant["Booster"], "*Une fois touché, balance une unité de rechargement de bouclier à [[1d20]] PV*\n"],
     [0, pond_fabriquant["Lifeline"], "*Vie max +[[1d20+10]], Bouclier -[[1d20]]*\n"],
     [0, pond_fabriquant["Nova"], "*Une fois vidé, le bouclier génère une nova élémentaire faisant [[1d20]] dégâts autour de vous + effet élémentaire*\n"],
+    [0, pond_fabriquant["Nova"], sel_element],
     [0, pond_fabriquant["Raid"], "*Une fois vidé, ajoute un bonus de [[1d20]] dégâts à vos attaques de corps (une fois par tour)*\n"],
     [0, pond_fabriquant["Shield"], "*Cadence de rechargement +10, Capacité -15*\n"],
     [0, pond_fabriquant["Spike"], "*Si attaque subie à courte distance, inflige [[1d10]] dégâts élémentaires à l'attaquant*\n"],
+    [0, pond_fabriquant["Spike"], sel_element],
     [0, pond_fabriquant["Turtle"], "*Bouclier +[[1d20+10]] PV, Vie max -[[1d20]]*\n"],
 ]
 
@@ -441,8 +444,10 @@ generation = Generator(
         Title("Propriétés",
             Sequence() << [
                 spe_fabriquant,
-                DictionaryNode(arme_spe, "WEAPON_RARITY", "WEAPON_TYPE")]),
-])
+                DictionaryNode(arme_spe, "WEAPON_RARITY", "WEAPON_TYPE"),
+                # bonus_weapon,
+                DictionaryNode(bonus_weapon, "WEAPON_BONUS")]
+)])
 
 # text var converter
 def var_converter(name) -> str :
@@ -463,5 +468,3 @@ print()
 
 # print generation result
 generation.print_to_console()
-
-# TODO Solve Maliwan bug adding 1 property in each weapon

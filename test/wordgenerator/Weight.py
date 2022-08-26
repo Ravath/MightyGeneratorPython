@@ -38,9 +38,8 @@ test(0, len(wmap.children))
 test(1, wmap.nbr_draw)
 test(False, wmap.do_put_back)
 # Different number of putback
-wmap = WeightNode(nbr_draw=4, nbr_pick=8)
+wmap = WeightNode(nbr_draw=4)
 test(0, len(wmap.children))
-test(8, wmap.nbr_pick)
 test(True, wmap.do_put_back)
 wmap.print_node()
 
