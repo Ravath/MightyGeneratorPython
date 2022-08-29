@@ -140,6 +140,110 @@ class FuncValue(ValueIf) :
     def __str__(self) -> str :
         return str(self.function)
 
+class ListValue(ValueIf) :
+    """Get the values from a given list"""
+
+    every_list = []
+    def reset_lists() :
+        """Reset every ListValues.
+        This is necessary or the lists will the stuck or shifted across multiple generations."""
+        for l in ListValue.every_list :
+            l.reset_cycle()
+
+    def __init__(self, values : list) :
+        """
+        Init the ListValue with the given integer list.
+
+        Parameters
+        ----------
+        values : list of int or (int, int|ValueIf)
+            If int : the value is drawn once, an then pass to the next one.
+            If Tuple : The second value is the number of times the value is drawn.
+                -1 means infinite.
+            When the end is reached, re-starts from the beginning.
+        """
+        ValueIf.__init__(self)
+        self.values = values
+
+        # register the instance
+        ListValue.every_list.append(self)
+
+    def assert_data(self) :
+        """Asserts the given list has some values to be drawn."""
+        for val in self.values :
+            # if int, at least ponderation 1
+            if isinstance(val, int) :
+                return
+            # if tuple, check ponderation is not 0
+            sub_index = val[1]
+            if isinstance(sub_index, ValueIf) :
+                sub_index = sub_index.value
+            if sub_index != 0 :
+                return
+        # not ponderation has been found
+        raise ValueError(f"ListValue {self.values} implements an infinite loop")
+
+    def reset_cycle(self) :
+        """Reset the cycle to the initial state."""
+        self.index = 0
+        self.init_sub_index()
+
+    def init_sub_index(self) :
+        """Called when increasing the index :
+        get the ponderation of the current value as the sub_index."""
+        # get the sub_index according to data type
+        if isinstance(self.values[self.index], int) :
+            self.sub_index = 1
+        else : #Tuple
+            self.sub_index = self.values[self.index][1]
+            if isinstance(self.sub_index, ValueIf) :
+                self.sub_index = self.sub_index.value
+
+        # check if was 0 (then increment index)
+        if self.sub_index == 0 :
+            self.increment_cycle()
+
+    def increment_cycle(self) :
+        """Parse the cycle up to the next value to draw"""
+        # increment index
+        if (self.index+1) < len(self.values) :
+            self.index += 1
+        else :
+            self.index = 0
+        # get sub_index
+        self.init_sub_index()
+
+    def get_value(self) -> int :
+        """Get the value."""
+        # if int, normal process
+        if isinstance(self.values[self.index], int) :
+            ret_value = self.values[self.index]
+        # if is tuple, use first value
+        else :
+            ret_value = self.values[self.index][0]
+
+        # manage cycle incrementation
+        self.sub_index -= 1
+        if self.sub_index == 0 :
+            self.increment_cycle()
+
+        # return value
+        return ret_value
+
+    value = property(get_value)
+
+    def set_values(self, new_values) :
+        self._values = new_values
+        # Manage initialisation
+        self.assert_data()
+        self.reset_cycle()
+    def get_values(self) -> list :
+        return self._values
+    values = property(get_values, set_values)
+
+    def __str__(self) -> str :
+        return str(self.values)
+
 class Operator(ValueIf) :
     """A mathematical operator with 2 arguments"""
 

@@ -293,29 +293,36 @@ weapon = {
 #TODO Implémenter WeighNode.fusion(WeighNode)
 #TODO implémenter contre-mesures contre les récursions dans print_node
 
+from macro.dice_macro import get_ValueIf
+def Automaton(nbr_draw, val1:str, val2:str) -> Interval :
+    return Interval([(0, get_ValueIf(nbr_draw)), (1, -1)]) << [
+        [0, 0, val1],
+        [1, 1, val2],
+    ]
+
 # Weapon Improvements
 improvement = {
     WEAPON.PISTOL : Weight() << [
-        [2, "Dégâts"],
-        [2, "Portée"],
-        [2, "Capacité du chargeur"],
-        [2, "AP"],
+        [2, Automaton(2,  "Dégâts", "->AP")],
+        [2, Automaton(2,  "Portée", "->Visée")],
+        [2, Automaton(1, "Capacité du chargeur", "->Mode de Tir")],
+        [2, Automaton(2,  "AP", "->Dégâts")],
         [2, S("Dégâts spéciaux : ",
                 Weight() << [
-                    [4, "Corrosifs +1"],
-                    [4, "Electriques +1"],
-                    [4, "Incendiaires +1"],
-                    [4, "Slaguaires"],
-                    [3, "Explosifs"],
-                    [1, "Arme Lourde"],
+                    [4, Automaton(3,     "Corrosifs +1", "->AP")],
+                    [4, Automaton(3,     "Electriques +1", "->Dégâts")],
+                    [4, Automaton("1d6", "Incendiaires +1", "->AP")],
+                    [4, Automaton(1,    "Slaguaires", "->Dégâts")],
+                    [3, Automaton(1,    "Explosifs", "->Dégâts")],
+                    [1, Automaton(1,    "Arme Lourde", "->Dégâts")],
                 ]
             )
         ],
-        [2, "Stabilité"],
-        [2, "Visée"],
-        [2, "Mode de tir"],
-        [2, "Baïonette"],
-        [2, "Rechargement rapide"],
+        [2, Automaton(1,  "Stabilité",           "->Portée")],
+        [2, Automaton(1,  "Visée",               "->Portée")],
+        [2, Automaton(1,  "Mode de tir",         "->Capacité du chargeur")],
+        [2, Automaton(1,  "Baïonette",           "->Reroll")],
+        [2, Automaton(1,  "Rechargement rapide", "->Mode de tir")],
     ],
     WEAPON.MACHINEGUN : Weight() << [
         [2, "Dégâts"],

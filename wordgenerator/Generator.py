@@ -2,6 +2,7 @@
 from wordgenerator.NodeIf import AbsGeneratorNode
 from wordgenerator.Print import PrintNode
 from macro.dice_macro import get_ValueIf
+from macro.calc import ListValue
 import typing
 import re
 
@@ -39,6 +40,11 @@ class Generator :
         """
         Execute the root to get raw text.
         """
+
+        # Reset the things that needs to
+        # Reset ListValues or they will be stuck or shifted across multiple generations.
+        ListValue.reset_lists()
+
         # We have to use the buffer print mechanism in order to retreive the text.
         # (instead of directly printing to console)
         PrintNode.print_to_buffer()
