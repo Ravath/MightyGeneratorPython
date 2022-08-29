@@ -92,6 +92,8 @@ can_element = Value(1)
 # Counter of the number of properties preset by the weapon constructor.
 nbr_of_constructor_properties = Value(0)
 
+WEAPON_BONUS = "INIT"
+
 pond_bonus = {
     "WEAPON"    : Value(0),
     "GRENADE"   : Value(0),
@@ -104,3 +106,5 @@ def set_weapon_bonus(weapon_bonus) :
     for v in pond_bonus.values() :
         v.value = 0
     pond_bonus[weapon_bonus].value = 1
+    global WEAPON_BONUS
+    WEAPON_BONUS = weapon_bonus

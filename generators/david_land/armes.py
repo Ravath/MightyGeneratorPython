@@ -6,7 +6,7 @@ from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Print import PrintNode as Print
 from wordgenerator.Print import SetNode, Title, Label
 from wordgenerator.Generator import Generator
-from ponderation import pond_type, pond_fabriquant, can_element, pond_bonus
+from ponderation import pond_type, pond_fabriquant, can_element
 from ponderation import nbr_of_constructor_properties, sel_element
 from capacite import arme_spe , bonus_weapon
 from nom import nom_arme, nom_grenade, nom_bouclier
@@ -54,7 +54,6 @@ ODD_BOU = 1
 WEAPON_TYPE = "INIT"
 WEAPON_RARITY = "INIT"
 WEAPON_CONSTRUCTOR = "INIT"
-WEAPON_BONUS = "INIT"
 
 def SetWeaponType(weapon_type) :
     # update the flag
@@ -190,7 +189,7 @@ spe_fabriquant = Interval(1) << [
     [0, pond_fabriquant["Dahl"], "*Mode Rafale et Automatique: possibilité d'alterner 2 cartes successives d'un tir*\n"],
     [0, pond_fabriquant["Hyperion"], "*Bouclier d'énergie avec [[1d20+10]]PV*\n"],
     [0, pond_fabriquant["Jakobs"], "*Tir ricochant si critique*\n"],
-    [0, pond_fabriquant["Maliwan"], "*Meilleurs chances de déclencher l'effet élémentaire*\n"],
+    [0, pond_fabriquant["Maliwan"], "*Meilleures chances de déclencher l'effet élémentaire*\n"],
     [0, pond_fabriquant["Maliwan"], sel_element],
     [0, pond_fabriquant["Tediore"], "*Lancer l'arme pour recharger, dégâts similaire à une balle en zone*\n"],
     [0, pond_fabriquant["Torgue"], "*Arme Explosive*\n"],
@@ -445,9 +444,8 @@ generation = Generator(
             Sequence() << [
                 spe_fabriquant,
                 DictionaryNode(arme_spe, "WEAPON_RARITY", "WEAPON_TYPE"),
-                # bonus_weapon,
-                DictionaryNode(bonus_weapon, "WEAPON_BONUS")]
-)])
+                bonus_weapon,
+])])
 
 # text var converter
 def var_converter(name) -> str :

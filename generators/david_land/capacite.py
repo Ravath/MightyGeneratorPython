@@ -2,30 +2,18 @@
 
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode as Sequence
+from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Print import SetNode
 from ponderation import pond_type, pond_fabriquant, pond_element, can_element
-from ponderation import sel_element, nbr_of_constructor_properties
+from ponderation import sel_element, nbr_of_constructor_properties, pond_bonus
 from ponderation import set_weapon_bonus
 from macro.calc import SubOp, MulOp
 
 #################################################
 #                WEAPON BONUSES                 #
 #################################################
-# WEAPON_BONUS = "INIT"
 
-# def pick_weapon_bonus() :
-#     WEAPON_BONUS = "WEAPON"
-
-# def pick_grenade_bonus() :
-#     WEAPON_BONUS = "GRENADE"
-
-# def pick_shield_bonus() :
-#     WEAPON_BONUS = "SHIELD"
-
-
-bonus_weapon = {}
-bonus_weapon["INIT"] = Weight() #Can be improved to just pass rather than return ""
-bonus_weapon["WEAPON"] =\
+bonus_weapon_weapon =\
 Weight() << [
     ["Balise gN0w© intégrée!\n"],
     ["Celle-là, c'est cadeau\n"],
@@ -88,7 +76,7 @@ Weight() << [
     [pond_element["RAD"], "1984 is the new Borderlands\n"],
 ]
 
-bonus_weapon["GRENADE"] =\
+bonus_weapon_grenade =\
 Weight() << [
     ["Une grenade peut cacher un autre nabot\n"],
     ["C'est mon anniversaire mais c'est moi qui vous fais un cadeau!\n"],
@@ -127,7 +115,7 @@ Weight() << [
     [pond_element["SLAG"], "Ça ne partira pas au lavage\n"],
 ]
 
-bonus_weapon["BOUCLIER"] =\
+bonus_weapon_shield =\
 Weight() << [
     ["Il est vivant!\n"],
     ["Jamais vous ne ploierez le genou\n"],
@@ -174,6 +162,12 @@ Weight() << [
     [pond_fabriquant["Spike"], "Toute rose a ses épines\n"],
     [pond_fabriquant["Turtle"], "J'ai vraiment pas mal\n"],
     [pond_fabriquant["Turtle"], "Pr0p hunt l0lz\n"],
+]
+
+bonus_weapon = Interval (1) << [
+    [0, pond_bonus["WEAPON"], bonus_weapon_weapon],
+    [0, pond_bonus["GRENADE"], bonus_weapon_grenade],
+    [0, pond_bonus["SHIELD"], bonus_weapon_shield],
 ]
 
 #################################################
