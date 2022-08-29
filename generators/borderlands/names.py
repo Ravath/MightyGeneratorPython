@@ -3,11 +3,24 @@
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode as Sequence
 
+""" Repository of items names
+
+Listed in 3 different categories:
+    -Firearms (Handguns, Machineguns, Rifles, Snipers and Shotgun)
+    -Grenades
+    -Shields
+
+Each item will get two name parts delivered in generation
+
+"""
+
 #################################################
 #                NAME GENERATION                #
 #################################################
 
-nom_arme = Sequence() << [
+############# FIREARMS
+
+firearm_name = Sequence() << [
     Weight() << [
         ["Dévastateur"],
         ["Dézingueur"],
@@ -96,7 +109,9 @@ nom_arme = Sequence() << [
     "\n"
 ]
 
-nom_grenade = Sequence() << [
+############# GRENADES
+
+grenade_name = Sequence() << [
     Weight() << [
         ["Caillou"],
         ["Etoile du matin"],
@@ -170,7 +185,9 @@ nom_grenade = Sequence() << [
     "\n"
 ]
 
-nom_bouclier = Sequence() << [
+############# SHIELDS
+
+shield_name = Sequence() << [
     Weight() << [
         ["Gardien"],
         ["Policier"],
