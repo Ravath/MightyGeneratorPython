@@ -8,8 +8,6 @@ Created on Tue Sep 15 13:53:57 2020
 import random
 from wordgenerator.NodeCollectionIf import AbsCollectionNode, RowNode
 from wordgenerator.NodeIf import AbsGeneratorNode
-from wordgenerator.Print import PrintNode
-from utils.debug import trace
 from macro.calc import ValueIf
 
 #___________________________________________________#
@@ -108,22 +106,6 @@ class WeightNode(AbsCollectionNode):
             raise ValueError("nbr_draw must be 'int' or 'ValueIf'")
 
     nbr_draw = property(_get_nbr_draw, _set_nbr_draw)
-    
-    def _set_nbr_pick(self, new_nbr_pick) :
-        self._nbr_pick = new_nbr_pick
-        if (not isinstance(new_nbr_pick, int) and
-            not isinstance(new_nbr_pick, ValueIf)) :
-            raise ValueError("Nbr_pick must be 'int' or 'ValueIf'")
-        
-    def _get_nbr_pick(self) -> int :
-        if isinstance(self._nbr_pick, int) :
-            return self._nbr_pick
-        elif isinstance(self._nbr_pick, ValueIf) :
-            return self._nbr_pick.value
-        else :
-            raise ValueError("Nbr_pick must be 'int' or 'ValueIf'")
-
-    nbr_pick = property(_get_nbr_pick, _set_nbr_pick)
     
     def __init__(self, nbr_draw = 1, do_put_back:bool = True) :
         AbsCollectionNode.__init__(self)

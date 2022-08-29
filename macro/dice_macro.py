@@ -183,6 +183,8 @@ def get_ValueIf(toconvert) -> calc.ValueIf :
     | The str are parsed using the dice_macro.py grammar.'''
     if isinstance(toconvert, int) :
         return calc.Value(toconvert)
+    elif callable(toconvert) :
+        return calc.FuncValue(toconvert)
     elif isinstance(toconvert, calc.ValueIf):
         return toconvert
     elif isinstance(toconvert, str) :

@@ -113,18 +113,26 @@ class IntervalNode(AbsCollectionNode) :
     if the random is between the min and max interval
     of the given row."""
 
-    def __init__(self, dice, nbr_draw= 1, put_back:bool = True, nbr_pick = -1) :
+    def get_dice(self) :
+        return self._dice
+    def set_dice(self, dice) :
+        self._dice = get_ValueIf(dice)
+    dice = property(get_dice, set_dice)
+
+    def get_nbr_draw(self) :
+        return self._nbr_draw
+    def set_nbr_draw(self, dice) :
+        self._nbr_draw = get_ValueIf(dice)
+    nbr_draw = property(get_nbr_draw, set_nbr_draw)
+
+    def __init__(self, dice, nbr_draw = 1, put_back:bool = True) :
         AbsCollectionNode.__init__(self)
 
         # dice is a ValueIf, or an int
-        self.dice = get_ValueIf(dice)
+        self.dice = dice
         self.nbr_draw = nbr_draw
         # put_back is a boolean flag
         self.put_back = put_back
-        # nbr_pick gives the number of time a row can be picked
-        # a -1 default value means infinite pick
-        # nbr_pick is a ValueIf, or an int
-        self.nbr_pick = get_ValueIf(nbr_pick)
         
     def get_row(self, *args, **kargs) -> IntervalRow :
         """Instanciate the proper row with the given arguments"""
@@ -147,7 +155,7 @@ class IntervalNode(AbsCollectionNode) :
         and draw rows consequently."""
         for child in self.children :
             child.loop_nbr_pick = child.nbr_pick
-        for y in range(0, self.nbr_draw) :
+        for _ in range(0, self.nbr_draw.value) :
             res = self.dice.value
             for row in self.filter_rows(res) :
                 if row.loop_nbr_pick != 0 :
@@ -160,4 +168,6 @@ class IntervalNode(AbsCollectionNode) :
                 yield row.node
 
     def __str_attributes__(self) -> str :
-        return f"Draws={self.nbr_draw} PutBack={self.put_back}"
+        return f"Roll={self.dice} " \
+               f"Draws={self.nbr_draw} " \
+               f"PutBack={self.put_back}"

@@ -8,6 +8,8 @@ Created on Tue Apr 19 16:40:36 2022
 | Includes mathematical operators and IntReferences.
 """
 
+import typing
+
 # We will use many Interfaces for only one function
 # pylint: disable-msg=R0903
 
@@ -120,7 +122,23 @@ class RefValue(ValueIf) :
     value = property(get_value)
 
     def __str__(self) -> str :
-        return str(self.reference)
+        return f"({str(self.reference)})"
+
+class FuncValue(ValueIf) :
+    """Returns the result of a function"""
+
+    def __init__(self, function:typing.Callable[[], int]) :
+        ValueIf.__init__(self)
+        self.function = function
+
+    def get_value(self) -> int :
+        """Get the value."""
+        return self.function()
+
+    value = property(get_value)
+
+    def __str__(self) -> str :
+        return str(self.function)
 
 class Operator(ValueIf) :
     """A mathematical operator with 2 arguments"""
