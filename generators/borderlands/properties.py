@@ -9,6 +9,8 @@ from ponderation import nbr_of_manufacturer_properties, pond_special
 from ponderation import set_special_prop
 from macro.calc import SubOp, MulOp
 
+"""Dictionnaries for item properties, including weapon element and bonus properties."""
+
 #################################################
 #                   ITEM ELEMENT                #
 #################################################
@@ -26,23 +28,25 @@ def set_weapon_element(weapon_element) :
     pond_element[weapon_element].value = 1
 
 # Picks an element for weapon generation, used by set_weapon_element
-sel_element = Sequence().extend([
+sel_element = Sequence() << [
     " - Effet élémentaire: ",
-    Weight().extend([
-        Sequence().extend(["incendiaire", SetNode(set_weapon_element, "FIRE")]),
-        Sequence().extend(["électrique" , SetNode(set_weapon_element, "SHOCK")]),
-        Sequence().extend(["slag"       , SetNode(set_weapon_element, "SLAG")]),
-        Sequence().extend(["corrosif"   , SetNode(set_weapon_element, "COR")]),
-        Sequence().extend(["radiation"  , SetNode(set_weapon_element, "RAD")]),
-        Sequence().extend(["cryogénique", SetNode(set_weapon_element, "CRYO")]),
-    ]),
+    Weight() << [
+        Sequence() << ["incendiaire", SetNode(set_weapon_element, "FIRE")],
+        Sequence() << ["électrique" , SetNode(set_weapon_element, "SHOCK")],
+        Sequence() << ["slag"       , SetNode(set_weapon_element, "SLAG")],
+        Sequence() << ["corrosif"   , SetNode(set_weapon_element, "COR")],
+        Sequence() << ["radiation"  , SetNode(set_weapon_element, "RAD")],
+        Sequence() << ["cryogénique", SetNode(set_weapon_element, "CRYO")],
+    ],
     "\n"
-])
+]
 
 #################################################
 #                 ITEM PROPERTIES               #
 #################################################
 
+# Item_prop is a dictionnary with double key [ITEM_RARITY][ITEM_TYPE]
+# The rarer the item, the more properties it gets
 item_prop= {"" : {"" : Sequence() }}
 item_prop.clear()
 
@@ -64,7 +68,7 @@ Weight(SubOp(1 , nbr_of_manufacturer_properties)) << [
     [10, " - +1 Dégâts\n"],
     [MulOp(10, can_element), 1, sel_element],
 ]
-    
+
 item_prop["UNCOMMON"]={}
 item_prop["UNCOMMON"]["HANDGUN"]    =\
 item_prop["UNCOMMON"]["RIFLE"]      =\
@@ -167,7 +171,6 @@ SetNode(set_special_prop, "FIREARM")
 ]
 
 # GRENADES
-
 item_prop["COMMON"]["GRENADE"] = \
 Weight(SubOp(1 , nbr_of_manufacturer_properties)) << [
     [3, " - +2 Dégâts\n"],
@@ -222,7 +225,6 @@ SetNode(set_special_prop, "GRENADE")
 ]
 
 # SHIELDS
-
 item_prop["COMMON"]["SHIELD"] = \
 Weight(SubOp(1 , nbr_of_manufacturer_properties)) << [
     [2, " - + [[1d3+3]] Capacité\n"],
@@ -273,6 +275,10 @@ SetNode(set_special_prop, "SHIELD")
 #################################################
 #             ITEM BONUS PROPERTIES             #
 #################################################
+
+# special_prop is obtained with Rare, Epic, E-Tech and Legendary (mandatory) items
+# It gives the item special abilities in combat and destiny
+# For more informations on every bonus properties, see Borderlands Rulebook
 
 # FIREARMS
 special_prop_firearm =\
@@ -428,8 +434,9 @@ Weight() << [
     [pond_manufacturer["Turtle"], "Pr0p hunt l0lz\n"],
 ]
 
-# If special has been row with item generation, will pick an associated special property
-bonus_item = Interval (1) << [
+# If special has been row with item generation
+# Will pick an associated special property
+item_special = Interval (1) << [
     [0, pond_special["FIREARM"], special_prop_firearm],
     [0, pond_special["GRENADE"], special_prop_grenade],
     [0, pond_special["SHIELD"], special_prop_shield],

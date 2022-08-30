@@ -8,7 +8,6 @@ Created on Tue Sep 15 17:35:42 2020
 from macro.dice import ValueIf
 from wordgenerator.NodeIf import AbsGeneratorNode
 from wordgenerator.NodeCollectionIf import AbsCollectionNode, RowNode
-from wordgenerator.Print import PrintNode
 from macro.dice_macro import get_ValueIf
 
 #___________________________________________________#
@@ -46,7 +45,7 @@ class IntervalRow(RowNode) :
             return self._max.value
         else :
             raise ValueError("Max must be 'int' or 'ValueIf'")
-            
+
     def set_nbr_pick(self, new_nbr_pick) :
             self._nbr_pick = new_nbr_pick
             if (not isinstance(new_nbr_pick, int) and
@@ -72,7 +71,7 @@ class IntervalRow(RowNode) :
         self._min=1
         self._max=1
         self._nbr_pick=-1
-        
+
         # extend the signature conversion table
 # pylint: disable-msg=C0103
         def int1(self, i1) :
@@ -125,9 +124,9 @@ class IntervalNode(AbsCollectionNode) :
         # a -1 default value means infinite pick
         # nbr_pick is a ValueIf, or an int
         self.nbr_pick = get_ValueIf(nbr_pick)
-        
+
     def get_row(self, *args, **kargs) -> IntervalRow :
-        """Instanciate the proper row with the given arguments"""
+        """Instanciate the proper row with the given arguments."""
         new_row=IntervalRow()
         new_row.put(*args, **kargs)
         return new_row
@@ -141,7 +140,7 @@ class IntervalNode(AbsCollectionNode) :
         for row in self.children :
             if row.min <= value <= row.max :
                 yield row
-        
+
     def draw(self) :
         """Draw a random value from the given random generation
         and draw rows consequently."""

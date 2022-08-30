@@ -2,7 +2,7 @@
 
 from macro.calc import Value
 
-""" Dictionnaries for each weighting values and properties used in items.py
+""" Dictionnaries for each weighting values used in items.py.
 
 Init values.
 Odds are updated during the generation,
@@ -22,7 +22,7 @@ pond_type = {
     "SHIELD"    : Value(0),
 }
 
-# Ponderations for each weapon constructor
+# Ponderations for each item manufacturer
 pond_manufacturer = {
     # FIREARMS
     "Bandit"    : Value(0),
@@ -58,11 +58,11 @@ pond_manufacturer = {
 # Ponderations for each element
 pond_element = {
     "FIRE"  : Value(0),
-    "COR"  : Value(0),
+    "COR"   : Value(0),
     "SHOCK" : Value(0),
-    "SLAG" : Value(0),
-    "RAD"  : Value(0),
-    "CRYO" : Value(0),
+    "SLAG"  : Value(0),
+    "RAD"   : Value(0),
+    "CRYO"  : Value(0),
 }
 
 # flag : multiply with weight for actual chances to have an elementary property

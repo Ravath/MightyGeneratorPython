@@ -7,22 +7,31 @@ from wordgenerator.Print import PrintNode as Print
 from wordgenerator.Print import SetNode, Title, Label
 from wordgenerator.Generator import Generator
 from ponderation import pond_type, pond_manufacturer, can_element, nbr_of_manufacturer_properties
-from properties import item_prop , bonus_item, sel_element
+from properties import item_prop , item_special, sel_element
 from names import firearm_name, grenade_name, shield_name
+
+"""The Mighty Item Generator for Borderlands RPG!
+
+Mocks-up a loot generation from a chest in Borderlands, adapted for table roleplay
+Generates an item with Type, Rarity, Manufacturer, Stats and Properties
+
+Pendejo.
+"""
 
 #################################################
 #              INIT PROBABILITIES               #
 #################################################
 
+# CHEST_TYPE changes odds of getting some rarities
 CHEST_TYPE = "LEGENDARY"
 
 if CHEST_TYPE == "COMMON" :
-    ODD_COM = 50
-    ODD_UNCOM = 30
-    ODD_RAR = 10
-    ODD_EPIC = 6
-    ODD_ETECH = 3
-    ODD_LEG = 1
+    ODD_COM = 50   # Odds for getting a common item
+    ODD_UNCOM = 30 # Odds for getting an uncommon item
+    ODD_RAR = 10   # Odds for getting a rare item
+    ODD_EPIC = 6   # Odds for getting an epic item
+    ODD_ETECH = 3  # Odds for getting an e-tech item
+    ODD_LEG = 1    # Odds for getting a legendary item
 elif CHEST_TYPE == "RARE" :
     ODD_COM = 26
     ODD_UNCOM = 40
@@ -30,7 +39,7 @@ elif CHEST_TYPE == "RARE" :
     ODD_EPIC = 9
     ODD_ETECH = 5
     ODD_LEG = 2
-elif CHEST_TYPE == "LEGENDARY" : #currently used for test, real values later
+elif CHEST_TYPE == "LEGENDARY" : # Currently used for test, real values later
     ODD_COM = 0
     ODD_UNCOM = 0
     ODD_RAR = 0
@@ -38,18 +47,19 @@ elif CHEST_TYPE == "LEGENDARY" : #currently used for test, real values later
     ODD_ETECH = 10
     ODD_LEG = 10
 
-ODD_HAN = 1
-ODD_RIF = 1
-ODD_MAC = 1
-ODD_SHO = 1
-ODD_SNI = 1
-ODD_GRE = 1
-ODD_SHI = 1
+ODD_HAN = 1 # Odds for getting a handgun
+ODD_RIF = 1 # Odds for getting a rifle
+ODD_MAC = 1 # Odds for getting a sub-machinegun
+ODD_SHO = 1 # Odds for getting a shotgun
+ODD_SNI = 1 # Odds for getting a sniper rifle
+ODD_GRE = 1 # Odds for getting a grenade
+ODD_SHI = 1 # Odds for getting a shield
 
 #################################################
 #            SELECT TYPE AND RARITY             #
 #################################################
 
+# Initialisations for every new item generation
 ITEM_TYPE = "INIT"
 ITEM_RARITY = "INIT"
 ITEM_MANUFACTURER = "INIT"
@@ -167,14 +177,20 @@ sel_manufacturer = {
 #################################################
 
 def inhibit_element() :
+    """"Inhibits the capacity of drawing an element for an item.
+    Used for Torgue manufacturer : no element, only EXPLOSIVE
+    Used for Maliwan and Tesla manufacturer : mandatory, already picked before
+    """
     can_element.value = 0
 def predraw_one() :
+    """"Reduce the number of picked properties by one for an item.
+    Used for every element-mandatory item manufacturer (Maliwan, Nova, Spike, Tesla)
+    """
     nbr_of_manufacturer_properties.value = 1
-    
+
+# spe_manufacturer resolves all specifications for every manufacturer
 spe_manufacturer = Interval(1) << [
     # update ponderation to :
-    # - inhibit elementary weapon if needed
-    # - make the manufacturer capacity count as a regular one
     [0, pond_manufacturer["Maliwan"], inhibit_element],
     [0, pond_manufacturer["Maliwan"], predraw_one],
     [0, pond_manufacturer["Torgue"],  inhibit_element],
@@ -183,7 +199,7 @@ spe_manufacturer = Interval(1) << [
     [0, pond_manufacturer["Tesla"],   inhibit_element],
     [0, pond_manufacturer["Tesla"],   predraw_one],
     # resolve the manufacturer specific capacity
-    # ARMES
+    # FIREARMS
     [0, pond_manufacturer["Bandit"], "*Chargeur X2*\n"],
     [0, pond_manufacturer["Dahl"], "*Mode Rafale et Automatique: possibilité d'alterner 2 cartes successives d'un tir*\n"],
     [0, pond_manufacturer["Hyperion"], "*Bouclier d'énergie avec [[1d20+10]]PV*\n"],
@@ -239,7 +255,7 @@ def get_firearm_builder(firearm_type:str,
                     firearm_modes,
     ])
 
-############# HANDGUN
+############# HANDGUN BUILDING
 
 handgun_damage = Weight() << [
     [25, "1D4 << [[1d5+5]]"],
@@ -261,7 +277,7 @@ item_generation["HANDGUN"] = {
     "LEGENDARY":get_firearm_builder("Pistolet Légendaire", handgun_damage, "[[1-1d4]]", "[[1d5+6]]", handgun_modes),
 }
 
-############# RIFLE
+############# RIFLE BUILDING
 
 rifle_damage = Weight() << [
     [15, "1D4 + [[1d7+9]]"],
@@ -280,7 +296,7 @@ item_generation["RIFLE"] = {
     "LEGENDARY":get_firearm_builder("Fusil d'assaut Légendaire", rifle_damage, "[[3-1d5]]", "[[1d5+12]]", rifle_modes),
 }
 
-############# SUB-MACHINEGUN
+############# SUB-MACHINEGUN BUILDING
 
 machinegun_damage = Weight() << [
     [20, "1D8 + [[1d7]]"],
@@ -302,7 +318,7 @@ item_generation["MACHINEGUN"] = {
     "LEGENDARY":get_firearm_builder("Mitraillette Légendaire",  machinegun_damage, "[[3-1d5]]", "[[1d7+15]]", machinegun_modes),
 }
 
-############# SHOTGUN
+############# SHOTGUN BUILDING
 
 shotgun_damage = Weight() << [
     [10, "2D8 + [[1d9+14]]"],
@@ -321,7 +337,7 @@ item_generation["SHOTGUN"] = {
     "LEGENDARY":get_firearm_builder("Fusil à pompe Légendaire", shotgun_damage, "[[4-1d7]]", "[[1d3+3]]", shotgun_modes),
 }
 
-############# SNIPER
+############# SNIPER BUILDING
 
 sniper_damage = Weight() << [
     [60, "1D4 + [[1d7+35]]"],
@@ -339,7 +355,7 @@ item_generation["SNIPER"] = {
     "LEGENDARY":get_firearm_builder("Sniper Légendaire", sniper_damage, "[[1-1d4]]", "[[1d4+3]]", sniper_modes),
 }
 
-############# GRENADE
+############# GRENADE BUILDING
 
 def get_grenade_builder(grenade_type:str,
                      grenade_damage,
@@ -365,7 +381,7 @@ item_generation["GRENADE"] = {
     "LEGENDARY":get_grenade_builder("Grenade Légendaire",  grenade_damage, "[[3-1d5]]", grenade_modes),
 }
 
-############# SHIELD
+############# SHIELD BUILDING
 
 shield_intensity = "(1d11+6)"
 
@@ -386,7 +402,7 @@ item_generation["SHIELD"] = {
     "LEGENDARY":get_shield_builder("Bouclier Légendaire"),
 }
 
-#################################################
+###################################P#E#N#D#E#J#O#
 #                   GENERATION                  #
 #################################################
 
@@ -397,7 +413,7 @@ class DictionaryNode(AbsLeafNode) :
     def __init__(self, node_dictionary, *variables : str):
         AbsLeafNode.__init__(self)
         self.dict = node_dictionary
-        # name of variables 
+        # name of variables
         self.variables = variables
 
     def execute(self):
@@ -433,6 +449,7 @@ class DictionaryNode(AbsLeafNode) :
         else :
             dico_node.print_node(tabs)
 
+### GENERATION TEMPLATE ###
 generation = Generator(
     Sequence() << [
         sel_type,
@@ -443,7 +460,7 @@ generation = Generator(
             Sequence() << [
                 spe_manufacturer,
                 DictionaryNode(item_prop, "ITEM_RARITY", "ITEM_TYPE"),
-                bonus_item,
+                item_special,
 ])])
 
 # text var converter
@@ -458,7 +475,7 @@ generation.variable_converter = var_converter
 generation.execute()
 
 print("Coffre :", globals()["CHEST_TYPE"])
-print("Arme   :", ITEM_TYPE) 
+print("Arme   :", ITEM_TYPE)
 print("Rareté :", ITEM_RARITY)
 print("Fabriquant :", ITEM_MANUFACTURER)
 print()

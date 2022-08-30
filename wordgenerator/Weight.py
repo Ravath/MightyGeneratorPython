@@ -8,8 +8,6 @@ Created on Tue Sep 15 13:53:57 2020
 import random
 from wordgenerator.NodeCollectionIf import AbsCollectionNode, RowNode
 from wordgenerator.NodeIf import AbsGeneratorNode
-from wordgenerator.Print import PrintNode
-from utils.debug import trace
 from macro.calc import ValueIf
 
 #___________________________________________________#
@@ -51,7 +49,7 @@ class WeightRow(RowNode):
 
     def __init__(self):
         RowNode.__init__(self)
-        
+
         # Introduce new attributes
         self.weight= 1
         self.nbr_pick = -1 # nbr_pick indicates how many times a row
@@ -80,7 +78,7 @@ class WeightRow(RowNode):
         ])
 
     def __str_attributes__(self) -> str :
-        return f"Weight={self.weight}  "\
+        return f"Weight={self.weight}"\
             f"Back={self.nbr_pick}"
 
 def randint(vmin:int, vmax:int) :
@@ -97,7 +95,7 @@ class WeightNode(AbsCollectionNode):
         if (not isinstance(new_nbr_draw, int) and
             not isinstance(new_nbr_draw, ValueIf)) :
             raise ValueError("nbr_draw must be 'int' or 'ValueIf'")
-        
+
     def _get_nbr_draw(self) -> int :
         if isinstance(self._nbr_draw, int) :
             return self._nbr_draw
@@ -107,23 +105,7 @@ class WeightNode(AbsCollectionNode):
             raise ValueError("nbr_draw must be 'int' or 'ValueIf'")
 
     nbr_draw = property(_get_nbr_draw, _set_nbr_draw)
-    
-    def _set_nbr_pick(self, new_nbr_pick) :
-        self._nbr_pick = new_nbr_pick
-        if (not isinstance(new_nbr_pick, int) and
-            not isinstance(new_nbr_pick, ValueIf)) :
-            raise ValueError("Nbr_pick must be 'int' or 'ValueIf'")
-        
-    def _get_nbr_pick(self) -> int :
-        if isinstance(self._nbr_pick, int) :
-            return self._nbr_pick
-        elif isinstance(self._nbr_pick, ValueIf) :
-            return self._nbr_pick.value
-        else :
-            raise ValueError("Nbr_pick must be 'int' or 'ValueIf'")
 
-    nbr_pick = property(_get_nbr_pick, _set_nbr_pick)
-    
     def __init__(self, nbr_draw = 1, do_put_back:bool = True) :
         AbsCollectionNode.__init__(self)
         # flag raised if the total weight of the row
@@ -131,8 +113,8 @@ class WeightNode(AbsCollectionNode):
         self.totalWeight = 0
 
         # introduce new attributes
-        self.nbr_draw = nbr_draw #number of time we will draw
-        self.do_put_back = do_put_back #do we put back a picked child (boolean)
+        self.nbr_draw = nbr_draw # number of time we will draw a child
+        self.do_put_back = do_put_back # (boolean) put back a picked child
 
     def get_row(self, *args, **kargs) -> WeightRow :
         new_row = WeightRow()
@@ -144,13 +126,17 @@ class WeightNode(AbsCollectionNode):
                                 if c.weight > 0 ])
 
     def draw(self):
+        """Draw a random node from every node put into a Weightnode.
+        Consider weight and number of pick for every node.
+        """
         # Sum the total weight
         self.computeTotal()
+        # Initialising stopRow value for picking
         for child in self.children :
             child.stopRow = False
-            child.loop_nbr_pick = child.nbr_pick # loop_ is made for not
+            child.loop_nbr_pick = child.nbr_pick # loop_nbr_pick is made for not
             # changing nbr_pick value between several WeightNode calls
-            
+
         if self.totalWeight == 0 : return
 
         for y in range(0, self.nbr_draw):
@@ -158,20 +144,23 @@ class WeightNode(AbsCollectionNode):
             if self.totalWeight == 0 :
                 return
 
-            # Roll
-            roll = randint(1,self.totalWeight) # We ask to get a random number
+            ### Roll ###
+            # First, get a random number between 1 and totalWeight
+            roll = randint(1,self.totalWeight)
             index = 0
-            # Find associated entry
-            # Particular case if first pick of the list has been row 
+            # Then, find associated entry
+            # Particular case if first pick of the list has been row
             if self.children[index].stopRow == False :
                 roll -= self.children[index].weight
             else : pass
 
+            # roll decreases and index increases accordingly until roll = O...
             while roll > 0:
                 index += 1
                 if self.children[index].stopRow == False :
                     roll -= self.children[index].weight
-                
+
+            # ...and it picks children[index] associated.
             yield self.children[index].node
             self.children[index].loop_nbr_pick -= 1
 
