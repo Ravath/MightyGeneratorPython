@@ -339,7 +339,7 @@ class CompoundExplode(PoolIf) :
             for die in to_roll :
                 if (not die.discarded and
                     test_match(self, die)) :
-    
+
                     reroll = die.copy()
                     reroll.roll()
                     to_roll_next.append(reroll)

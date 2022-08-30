@@ -35,7 +35,7 @@ class WEAPON(Enum) :
     ASSAULT = 2
     SNIPER = 3
     SHOTGUN = 4
-    ROCKET = 5 
+    ROCKET = 5
     GRENADE = 6
     SHIELD = 7
 
@@ -356,25 +356,25 @@ improvement = {
 #                 <State Repeat="2, "Dégats"]</State>
 #                 <State Repeat="1, "Relancer Dégats"]</State>
 #             </Automaton>
-        
+
 #         [ 3,  4, S(
 #             <Automaton Behaviour="Stop, S(
 #                 <State Repeat="2, "Portée"]</State>
 #                 <State Repeat="1, "Relancer Portée"]</State>
 #             </Automaton>
-        
+
 #         [ 5,  6, S(
 #             <Automaton Behaviour="Stop, S(
 #                 <State Repeat="1, "Capacité du Chargeur"]</State>
 #                 <State Repeat="1, "Relancer Capacité"]</State>
 #             </Automaton>
-        
+
 #         [ 7,  8, S(
 #             <Automaton Behaviour="Stop, S(
 #                 <State Repeat="2, "AP"]</State>
 #                 <State Repeat="1, "Relancer AP"]</State>
 #             </Automaton>
-        
+
 #         [ 9, 10, S(
 #             "Dégats Spéciaux : ",
 #             Interval("1d20") << [
@@ -383,62 +383,62 @@ improvement = {
 #                         <State Repeat="3, "Corrosifs +1"]</State>
 #                         <State Repeat="1, "Relancer Corod"]</State>
 #                     </Automaton>
-                
+
 #                 [ 5,  8, S(
 #                     <Automaton Behaviour="Stop, S(
 #                         <State Repeat="3, "Electriques +1"]</State>
 #                         <State Repeat="1, "Relancer Elec"]</State>
 #                     </Automaton>
-                
+
 #                 [ 9, 12, S(
 #                     <Automaton Behaviour="Stop, S(
 #                         <State Repeat="1d6, "Incendiaires +1"]</State>
 #                         <State Repeat="1, "Relancer Feu"]</State>
 #                     </Automaton>
-                
+
 #                 [13, 16, S(
 #                     <Automaton Behaviour="Stop, S(
 #                         <State Repeat="1, "Slaguaires"]</State>
 #                         <State Repeat="1, "Relancer Slag"]</State>
 #                     </Automaton>
-                
+
 #                 [17, 19, S(
 #                     <Automaton Behaviour="Stop, S(
 #                         <State Repeat="1, "Explosifs"]</State>
 #                         <State Repeat="1, "Relancer Exlpos"]</State>
 #                     </Automaton>
-                
+
 #                 [20, 20, S(
 #                     <Automaton Behaviour="Stop, S(
 #                         <State Repeat="1, "Arme Lourde"]</State>
 #                         <State Repeat="1, "Relancer Lourd"]</State>
 #                     </Automaton>
-        
+
 #         [11, 12, S(
 #             <Automaton Behaviour="Stop, S(
 #                 <State Repeat="1, "Stabilité"]</State>
 #                 <State Repeat="1, "Relancer Stab"]</State>
 #             </Automaton>
-        
+
 #         [13, 14, S(
 #             "",
 #             <Automaton Behaviour="Stop, S(
 #                 <State Repeat="1, "Visée"]</State>
 #                 <State Repeat="1, "Relancer Visée"]</State>
 #             </Automaton>
-        
+
 #         [15, 16, S(
 #             <Automaton Behaviour="Stop, S(
 #                 <State Repeat="1, "Mode de Tir"]</State>
 #                 <State Repeat="1, "Relancer Mode"]</State>
 #             </Automaton>
-        
+
 #         [17, 18, S(
 #             <Automaton Behaviour="Stop, S(
 #                 <State Repeat="1, "Baïonette"]</State>
 #                 <State Repeat="1, "Relancer Baïonette"]</State>
 #             </Automaton>
-        
+
 #         [19, 20, S(
 #             <Automaton Behaviour="Stop, S(
 #                 <State Repeat="1, "Rechargement Rapide"]</State>
