@@ -6,9 +6,9 @@ from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Print import PrintNode as Print
 from wordgenerator.Print import SetNode, Title, Label
 from wordgenerator.Generator import Generator
-from ponderation import pond_type, pond_manufacturer, can_element, nbr_of_manufacturer_properties
-from properties import item_prop , item_special, sel_element
-from names import firearm_name, grenade_name, shield_name
+from generators.borderlands.ponderation import pond_type, pond_manufacturer, can_element, nbr_of_manufacturer_properties
+from generators.borderlands.properties import item_prop , item_special, sel_element
+from generators.borderlands.names import firearm_name, grenade_name, shield_name
 
 """The Mighty Item Generator for Borderlands RPG!
 

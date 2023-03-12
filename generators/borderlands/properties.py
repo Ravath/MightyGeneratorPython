@@ -4,9 +4,9 @@ from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Print import SetNode
-from ponderation import pond_type, pond_manufacturer, pond_element, can_element
-from ponderation import nbr_of_manufacturer_properties, pond_special
-from ponderation import set_special_prop
+from generators.borderlands.ponderation import pond_type, pond_manufacturer, pond_element, can_element
+from generators.borderlands.ponderation import nbr_of_manufacturer_properties, pond_special
+from generators.borderlands.ponderation import set_special_prop
 from macro.calc import SubOp, MulOp
 
 """Dictionnaries for item properties, including weapon element and bonus properties."""
