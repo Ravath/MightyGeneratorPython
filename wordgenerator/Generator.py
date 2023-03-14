@@ -48,6 +48,7 @@ class Generator :
         # We have to use the buffer print mechanism in order to retreive the text.
         # (instead of directly printing to console)
         PrintNode.print_to_buffer()
+        PrintNode._printer.del_text()
 
         self.root.execute()
         self.text = self.raw_text= PrintNode._printer.get_text()

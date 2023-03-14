@@ -471,14 +471,15 @@ def var_converter(name) -> str :
         return "{" + name + "}"
 generation.variable_converter = var_converter
 
-# Do generation
-generation.execute()
-
-print("Coffre :", globals()["CHEST_TYPE"])
-print("Arme   :", ITEM_TYPE)
-print("Rareté :", ITEM_RARITY)
-print("Fabriquant :", ITEM_MANUFACTURER)
-print()
-
-# print generation result
-generation.print_to_console()
+if __name__ == "__main__" :
+    # Do generation
+    generation.execute()
+    
+    print("Coffre :", globals()["CHEST_TYPE"])
+    print("Arme   :", ITEM_TYPE)
+    print("Rareté :", ITEM_RARITY)
+    print("Fabriquant :", ITEM_MANUFACTURER)
+    print()
+    
+    # print generation result
+    generation.print_to_console()
