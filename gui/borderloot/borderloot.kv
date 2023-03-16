@@ -1,0 +1,12 @@
+#:kivy 2.1.0
+
+<BorderlootWidget>:
+    BoxLayout:
+        size: root.size
+        Button:
+            id: generation_button
+            text: "GENERATE"
+            on_release: root.change_text()
+        Label:
+            id: item_display
+            text: root.item_text

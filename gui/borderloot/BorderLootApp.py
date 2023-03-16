@@ -10,12 +10,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 # ================= GUI IMPORTS ==================
 import kivy
 from kivy.app import App
-from kivy.uix.button import Button
-from kivy.uix.gridlayout import GridLayout
+# from kivy.uix.gridlayout import GridLayout
 from kivy.uix.widget import Widget
-from kivy.uix.label import Label as LabKivy
+from kivy.properties import StringProperty
 
-kivy.require('1.0.9')
+kivy.require('2.1.0')
 
 # ============== GENERATION IMPORTS ==============
 # exec(open("generators/borderlands/items.py", encoding='utf-8').read())
@@ -23,42 +22,43 @@ from generators.borderlands.items import generation
 from wordgenerator.Print import PrintNode
 PrintNode.print_to_buffer()
 
-# ============== BUTTON DEFINITIONS ==============
-text_export=LabKivy(text='')
+# ============== WIDGET DEFINITIONS ==============
 
-def loot_generation_callback(instance):
+class BorderlootWidget(Widget):
     """
-    Generates an item and prints it.
+    Constructing Kivy Widget.
+    
+    item_text : (String) Will display the result of the generated item
+    change_text : Executes generation from borderlands/items and stores
+    generated text into item_text
     """
-    generation.execute()
-    print("\\---------------------------------------------------------------")
-    print(generation.text)
-    text_export=LabKivy(text=generation.text)
+    
+    item_text = StringProperty()
+    
+    def __init__(self, **kwargs):
+        super(BorderlootWidget, self).__init__(**kwargs)
+        self.item_text = str("")
 
-generation_button = Button(text='GENERATE')
-generation_button.bind(on_press=loot_generation_callback)
-#text_export= LabKivy(text=generation.text)
-# ============== TEXT EXPORT WINDOW DEFINITIONS ==============
-"""
-Display item generation result on a window after generation
-"""
-# class TextExport(Widget):
-#     generation.text()
-#     pass
+    def change_text(self):
+        generation.execute()
+        print("\\------------------------------------------------------------")
+        print(generation.text)
+        self.item_text = str(generation.text)
+        
 # ================= APP DEFINITION ================
 
-class BorderLootApp(App):
+class BorderlootApp(App):
     """
     The GUI interface for generating borderland loot.
+    
+    For more information
+    about Borderloot organisation widget, see borderloot.kv
     """
     
     def build(self):
-        root = GridLayout(cols=2)
-        root.add_widget(generation_button)
-        root.add_widget(text_export)
-        return root
+        return BorderlootWidget()
 
 # ==================== APP RUN ====================
 
-BorderLootApp().run()
+BorderlootApp().run()
 
