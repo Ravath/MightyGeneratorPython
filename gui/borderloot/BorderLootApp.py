@@ -12,7 +12,8 @@ import kivy
 from kivy.app import App
 # from kivy.uix.gridlayout import GridLayout
 from kivy.uix.widget import Widget
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, ObjectProperty
+from kivy.uix.dropdown import DropDown
 
 kivy.require('2.1.0')
 
@@ -23,23 +24,27 @@ from wordgenerator.Print import PrintNode
 PrintNode.print_to_buffer()
 
 # ============== WIDGET DEFINITIONS ==============
+class WeaponDropDown(DropDown):
+    pass
+
+w_dropdown = WeaponDropDown()
 
 class BorderlootWidget(Widget):
     """
     Constructing Kivy Widget.
     
     item_text : (String) Will display the result of the generated item
-    change_text : Executes generation from borderlands/items and stores
+    display_text : Executes generation from borderlands/items and stores
     generated text into item_text
     """
     
     item_text = StringProperty()
+    w_dropdown = ObjectProperty()
     
     def __init__(self, **kwargs):
         super(BorderlootWidget, self).__init__(**kwargs)
-        self.item_text = str("")
 
-    def change_text(self):
+    def display_text(self):
         generation.execute()
         print("\\------------------------------------------------------------")
         print(generation.text)
