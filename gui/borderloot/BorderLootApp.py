@@ -24,10 +24,14 @@ from wordgenerator.Print import PrintNode
 PrintNode.print_to_buffer()
 
 # ============== WIDGET DEFINITIONS ==============
+class TreasureDropDown(DropDown):
+    pass
+
 class WeaponDropDown(DropDown):
     pass
 
-w_dropdown = WeaponDropDown()
+class RarityDropDown(DropDown):
+    pass
 
 class BorderlootWidget(Widget):
     """
@@ -39,10 +43,15 @@ class BorderlootWidget(Widget):
     """
     
     item_text = StringProperty()
-    w_dropdown = ObjectProperty()
+    # t_dropdown = ObjectProperty()
+    # w_dropdown = ObjectProperty()
+    # r_dropdown = ObjectProperty()
     
     def __init__(self, **kwargs):
         super(BorderlootWidget, self).__init__(**kwargs)
+        self.t_dropdown = TreasureDropDown()
+        self.w_dropdown = WeaponDropDown()
+        self.r_dropdown = RarityDropDown()
 
     def display_text(self):
         generation.execute()
