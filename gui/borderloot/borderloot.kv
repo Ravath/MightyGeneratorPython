@@ -9,15 +9,15 @@
         text: 'Coffre Rare'
         size_hint_y: None
         height: 44
-        on_release: root.select('item1')
+        on_release: root.select('item2')
     Button:
         text: 'Coffre Légendaire'
         size_hint_y: None
         height: 44
-        on_release: root.select('item2')
+        on_release: root.select('item3')
 
 <WeaponDropDown>:
-    Button:
+    Button:     
         text: 'Pistolet'
         size_hint_y: None
         height: 44
@@ -26,32 +26,32 @@
         text: 'Fusil d assaut'
         size_hint_y: None
         height: 44
-        on_release: root.select('item1')
+        on_release: root.select('item2')
     Button:
         text: 'Mitraillette'
         size_hint_y: None
         height: 44
-        on_release: root.select('item2')
+        on_release: root.select('item3')
     Button:
         text: 'Fusil à pompe'
         size_hint_y: None
         height: 44
-        on_release: root.select('item1')
+        on_release: root.select('item4')
     Button:
         text: 'Fusil Sniper'
         size_hint_y: None
         height: 44
-        on_release: root.select('item1')
+        on_release: root.select('item5')
     Button:
         text: 'Grenade'
         size_hint_y: None
         height: 44
-        on_release: root.select('item1')
+        on_release: root.select('item6')
     Button:
         text: 'Bouclier'
         size_hint_y: None
         height: 44
-        on_release: root.select('item1')
+        on_release: root.select('item7')
         
 <RarityDropDown>:
     Button:
@@ -59,31 +59,37 @@
         size_hint_y: None
         height: 44
         on_release: root.select('item1')
+        on_text: root
     Button:
         text: 'Uncommun'
-        size_hint_y: None
-        height: 44
-        on_release: root.select('item1')
-    Button:
-        text: 'Rare'
+        background_color: 0, 1, 0, 1
         size_hint_y: None
         height: 44
         on_release: root.select('item2')
     Button:
+        background_color: 0, 0, 1, 1
+        text: 'Rare'
+        size_hint_y: None
+        height: 44
+        on_release: root.select('item3')
+    Button:
+        background_color: 1, 0, 1, 1
         text: 'Épique'
         size_hint_y: None
         height: 44
-        on_release: root.select('item1')
+        on_release: root.select('item4')
     Button:
+        background_color: 1, 0, 0.4, 1
         text: 'E-TECH'
         size_hint_y: None
         height: 44
-        on_release: root.select('item1')
+        on_release: root.select('item5')
     Button:
+        background_color: 1, 0.5, 0, 2
         text: 'Légendaire'
         size_hint_y: None
         height: 44
-        on_release: root.select('item1')
+        on_release: root.select('item6')
 
 <BorderlootWidget>:
     BoxLayout:

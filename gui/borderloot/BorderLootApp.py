@@ -25,7 +25,8 @@ PrintNode.print_to_buffer()
 
 # ============== WIDGET DEFINITIONS ==============
 class TreasureDropDown(DropDown):
-    pass
+    def _set_select(self, data):
+        setattr(self, 'text', data)
 
 class WeaponDropDown(DropDown):
     pass
@@ -41,12 +42,12 @@ class BorderlootWidget(Widget):
     display_text : Executes generation from borderlands/items and stores
     generated text into item_text
     """
-    
+
     item_text = StringProperty()
     # t_dropdown = ObjectProperty()
     # w_dropdown = ObjectProperty()
     # r_dropdown = ObjectProperty()
-    
+
     def __init__(self, **kwargs):
         super(BorderlootWidget, self).__init__(**kwargs)
         self.t_dropdown = TreasureDropDown()
