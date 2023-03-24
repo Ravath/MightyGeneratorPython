@@ -19,14 +19,13 @@ kivy.require('2.1.0')
 
 # ============== GENERATION IMPORTS ==============
 # exec(open("generators/borderlands/items.py", encoding='utf-8').read())
-from generators.borderlands.items import generation
+from generators.borderlands.items import generation, force_item_rarity
 from wordgenerator.Print import PrintNode
 PrintNode.print_to_buffer()
 
 # ============== WIDGET DEFINITIONS ==============
 class TreasureDropDown(DropDown):
-    def _set_select(self, data):
-        setattr(self, 'text', data)
+    pass
 
 class WeaponDropDown(DropDown):
     pass
@@ -44,17 +43,25 @@ class BorderlootWidget(Widget):
     """
 
     item_text = StringProperty()
-    # t_dropdown = ObjectProperty()
-    # w_dropdown = ObjectProperty()
-    # r_dropdown = ObjectProperty()
+    
+    """Dropdown buttons"""
+    treasure_button = ObjectProperty()
+    weapon_button = ObjectProperty()
+    rarity_button = ObjectProperty()
 
     def __init__(self, **kwargs):
         super(BorderlootWidget, self).__init__(**kwargs)
+
+        # dropdown lists
         self.t_dropdown = TreasureDropDown()
         self.w_dropdown = WeaponDropDown()
         self.r_dropdown = RarityDropDown()
+        self.t_dropdown.bind(on_select=lambda instance, x: setattr(self.treasure_button, 'text', x))
+        self.w_dropdown.bind(on_select=lambda instance, x: setattr(self.weapon_button, 'text', x))
+        self.r_dropdown.bind(on_select=lambda instance, x: setattr(self.rarity_button, 'text', x))
 
     def display_text(self):
+        force_item_rarity("LEGENDARY")
         generation.execute()
         print("\\------------------------------------------------------------")
         print(generation.text)

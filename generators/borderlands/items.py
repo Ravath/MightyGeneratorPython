@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Interval import IntervalNode as Interval
@@ -23,8 +24,9 @@ Pendejo.
 #################################################
 
 # CHEST_TYPE changes odds of getting some rarities
-CHEST_TYPE = "LEGENDARY"
+CHEST_TYPE = "COMMON"
 
+print("CHEST_TYPE : ", CHEST_TYPE)
 if CHEST_TYPE == "COMMON" :
     ODD_COM = 50   # Odds for getting a common item
     ODD_UNCOM = 30 # Odds for getting an uncommon item
@@ -258,9 +260,9 @@ def get_firearm_builder(firearm_type:str,
 ############# HANDGUN BUILDING
 
 handgun_damage = Weight() << [
-    [25, "1D4 << [[1d5+5]]"],
-    [50, "1D6 << [[1d5+4]]"],
-    [25, "1D8 << [[1d5+3]]"],
+    [25, "1D4 + [[1d5+5]]"],
+    [50, "1D6 + [[1d5+4]]"],
+    [25, "1D8 + [[1d5+3]]"],
 ]
 handgun_modes = Weight(2, False) << [
     [" - Tir Simple\n"],
@@ -470,6 +472,25 @@ def var_converter(name) -> str :
     else :
         return "{" + name + "}"
 generation.variable_converter = var_converter
+
+def force_item_rarity(rarity:str):
+    for child in sel_rarity.children :
+        child.weight = 0
+    if rarity == "COMMON":
+        sel_rarity.children[0].weight = 1
+    elif rarity == "UNCOMMON":
+        sel_rarity.children[1].weight = 1
+    elif rarity == "RARE":
+        sel_rarity.children[2].weight = 1
+    elif rarity == "EPIC":
+        sel_rarity.children[3].weight = 1
+    elif rarity == "ETECH":
+        sel_rarity.children[4].weight = 1
+    elif rarity == "LEGENDARY":
+        sel_rarity.children[5].weight = 1
+    else:
+        print("error, rarity argument not processed : ", rarity)
+
 
 if __name__ == "__main__" :
     # Do generation
