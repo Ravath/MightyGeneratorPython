@@ -19,18 +19,31 @@ kivy.require('2.1.0')
 
 # ============== GENERATION IMPORTS ==============
 # exec(open("generators/borderlands/items.py", encoding='utf-8').read())
-from generators.borderlands.items import generation, force_item_rarity
+from generators.borderlands.items import generation, force_item_type, force_item_rarity
 from wordgenerator.Print import PrintNode
 PrintNode.print_to_buffer()
 
 # ============== WIDGET DEFINITIONS ==============
 class TreasureDropDown(DropDown):
+    # def attribute_treasure_type(self, tre:str):
+    #     global FORCED_TREASURE
+    #     FORCED_TREASURE = tre
     pass
 
-class WeaponDropDown(DropDown):
+class ItemDropDown(DropDown):
+    def attribute_item_type(self, i_typ:str):
+        """" Put an item type on pressing the corresponding button, then stores
+        it for generation with force_item_type function"""
+        global FORCED_ITEM_TYPE
+        FORCED_ITEM_TYPE = i_typ
     pass
 
 class RarityDropDown(DropDown):
+    def attribute_rarity(self, rar:str):
+        """" Put a rarity on pressing the corresponding button, then stores
+        it for generation with force_item_rarity function"""
+        global FORCED_RARITY
+        FORCED_RARITY = rar
     pass
 
 class BorderlootWidget(Widget):
@@ -46,7 +59,7 @@ class BorderlootWidget(Widget):
     
     """Dropdown buttons"""
     treasure_button = ObjectProperty()
-    weapon_button = ObjectProperty()
+    item_button = ObjectProperty()
     rarity_button = ObjectProperty()
 
     def __init__(self, **kwargs):
@@ -54,14 +67,22 @@ class BorderlootWidget(Widget):
 
         # dropdown lists
         self.t_dropdown = TreasureDropDown()
-        self.w_dropdown = WeaponDropDown()
+        self.i_dropdown = ItemDropDown()
         self.r_dropdown = RarityDropDown()
         self.t_dropdown.bind(on_select=lambda instance, x: setattr(self.treasure_button, 'text', x))
-        self.w_dropdown.bind(on_select=lambda instance, x: setattr(self.weapon_button, 'text', x))
+        self.i_dropdown.bind(on_select=lambda instance, x: setattr(self.item_button, 'text', x))
         self.r_dropdown.bind(on_select=lambda instance, x: setattr(self.rarity_button, 'text', x))
 
     def display_text(self):
-        force_item_rarity("LEGENDARY")
+        # If a button has been pressed for item change, apply its forced specs
+        if ('FORCED_ITEM_TYPE' in globals()):
+            force_item_type(FORCED_ITEM_TYPE)
+        else :
+            pass
+        if ('FORCED_RARITY' in globals()):
+            force_item_rarity(FORCED_RARITY)
+        else :
+            pass
         generation.execute()
         print("\\------------------------------------------------------------")
         print(generation.text)

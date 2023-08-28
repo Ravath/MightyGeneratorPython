@@ -4,95 +4,108 @@
         text: 'Coffre Commun'
         size_hint_y: None
         height: 44
-        on_release: root.select('item1')
+        on_release: root.select('Coffre Commun')
     Button:
         text: 'Coffre Rare'
         size_hint_y: None
         height: 44
-        on_release: root.select('item2')
+        on_release: root.select('Coffre Rare')
     Button:
         text: 'Coffre Légendaire'
         size_hint_y: None
         height: 44
-        on_release: root.select('item3')
+        on_release: root.select('Coffre Lég.')
 
-<WeaponDropDown>:
+<ItemDropDown>:
     Button:
         text: 'Pistolet'
         size_hint_y: None
         height: 44
-        on_release: root.select('item1')
+        on_release: root.select('Pistolet')
+        on_release: root.attribute_item_type("HANDGUN")
     Button:
-        text: 'Fusil d assaut'
+        text: 'Fusil assaut'
         size_hint_y: None
         height: 44
-        on_release: root.select('item2')
+        on_release: root.select('Fusil assaut')
+        on_release: root.attribute_item_type("RIFLE")
     Button:
         text: 'Mitraillette'
         size_hint_y: None
         height: 44
-        on_release: root.select('item3')
+        on_release: root.select('Mitraillette')
+        on_release: root.attribute_item_type("SUBMACHINEGUN")
     Button:
         text: 'Fusil à pompe'
         size_hint_y: None
         height: 44
-        on_release: root.select('item4')
+        on_release: root.select('Fusil à pompe')
+        on_release: root.attribute_item_type("SHOTGUN")
     Button:
         text: 'Fusil Sniper'
         size_hint_y: None
         height: 44
-        on_release: root.select('item5')
+        on_release: root.select('Fusil Sniper')
+        on_release: root.attribute_item_type("SNIPER")
     Button:
         text: 'Grenade'
         size_hint_y: None
         height: 44
-        on_release: root.select('item6')
+        on_release: root.select('Grenade')
+        on_release: root.attribute_item_type("GRENADE")
     Button:
         text: 'Bouclier'
         size_hint_y: None
         height: 44
-        on_release: root.select('item7')
+        on_release: root.select('Bouclier')
+        on_release: root.attribute_item_type("SHIELD")
         
 <RarityDropDown>:
     Button:
         text: 'Commun'
         size_hint_y: None
         height: 44
-        on_release: root.select('item1')
-        on_text: root
+        on_release: root.select('Commun')
+        on_release: root.attribute_rarity("COMMON")
+        on_text: root # what is that?
     Button:
         text: 'Uncommun'
         background_color: 0, 1, 0, 1
         size_hint_y: None
         height: 44
-        on_release: root.select('item2')
+        on_release: root.select('Uncommun')
+        on_release: root.attribute_rarity("UNCOMMON")
     Button:
-        background_color: 0, 0, 1, 1
         text: 'Rare'
+        background_color: 0, 0, 1, 1
         size_hint_y: None
         height: 44
-        on_release: root.select('item3')
+        on_release: root.select('Rare')
+        on_release: root.attribute_rarity("RARE")
     Button:
-        background_color: 1, 0, 1, 1
         text: 'Épique'
+        background_color: 1, 0, 1, 1
         size_hint_y: None
         height: 44
-        on_release: root.select('item4')
+        on_release: root.select('Épique')
+        on_release: root.attribute_rarity("EPIC")
     Button:
-        background_color: 1, 0, 0.4, 1
         text: 'E-TECH'
+        background_color: 1, 0, 0.4, 1
         size_hint_y: None
         height: 44
-        on_release: root.select('item5')
+        on_release: root.select('E-TECH')
+        on_release: root.attribute_rarity("ETECH")
     Button:
-        background_color: 1, 0.5, 0, 2
         text: 'Légendaire'
+        background_color: 1, 0.5, 0, 2
         size_hint_y: None
         height: 44
-        on_release: root.select('item6')
+        on_release: root.select('Légendaire')
+        on_release: root.attribute_rarity("LEGENDARY")
 
 <BorderlootWidget>:
-    weapon_button: weapon_button_id
+    item_button: item_button_id
     rarity_button: rarity_button_id
     treasure_button: treasure_button_id
     BoxLayout:
@@ -104,7 +117,7 @@
             id: generation_button
             size_hint: 0.25, 0.2
             pos_hint: {"x":0,"y":0.8}
-            text: "GENERATE"
+            text: "GENERER"
             on_release: root.display_text()
         Button:
             id: treasure_button_id
@@ -113,11 +126,11 @@
             text: "COFFRE"
             on_release: root.t_dropdown.open(self)
         Button:
-            id: weapon_button_id
+            id: item_button_id
             size_hint: 0.25, 0.2
             pos_hint: {"y":0.8}
-            text: "WEAPON"
-            on_release: root.w_dropdown.open(self)
+            text: "OBJET"
+            on_release: root.i_dropdown.open(self)
         Button:
             id: rarity_button_id
             size_hint: 0.25, 0.2
