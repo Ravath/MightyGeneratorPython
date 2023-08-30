@@ -1,22 +1,31 @@
 #:kivy 2.1.0
-<TreasureDropDown>:
+<ChestDropDown>:
     Button:
         text: 'Coffre Commun'
         size_hint_y: None
         height: 44
         on_release: root.select('Coffre Commun')
+        on_release: root.attribute_chest_type("COMMON")
     Button:
         text: 'Coffre Rare'
         size_hint_y: None
         height: 44
         on_release: root.select('Coffre Rare')
+        on_release: root.attribute_chest_type("RARE")
     Button:
         text: 'Coffre Légendaire'
         size_hint_y: None
         height: 44
         on_release: root.select('Coffre Lég.')
+        on_release: root.attribute_chest_type("LEGENDARY")
 
 <ItemDropDown>:
+    Button:
+        text: 'Objet Aléatoire'
+        size_hint_y: None
+        height: 44
+        on_release: root.select('Objet Aléatoire')
+        on_release: root.attribute_item_type("RANDOM")
     Button:
         text: 'Pistolet'
         size_hint_y: None
@@ -34,7 +43,7 @@
         size_hint_y: None
         height: 44
         on_release: root.select('Mitraillette')
-        on_release: root.attribute_item_type("SUBMACHINEGUN")
+        on_release: root.attribute_item_type("MACHINEGUN")
     Button:
         text: 'Fusil à pompe'
         size_hint_y: None
@@ -59,15 +68,21 @@
         height: 44
         on_release: root.select('Bouclier')
         on_release: root.attribute_item_type("SHIELD")
-        
+
 <RarityDropDown>:
+    Button:
+        text: 'Rar. Aléatoire'
+        background_color: 0, 0, 0, 0
+        size_hint_y: None
+        height: 44
+        on_release: root.select('Rar. Aléatoire')
+        on_release: root.attribute_rarity("RANDOM")
     Button:
         text: 'Commun'
         size_hint_y: None
         height: 44
         on_release: root.select('Commun')
         on_release: root.attribute_rarity("COMMON")
-        on_text: root # what is that?
     Button:
         text: 'Uncommun'
         background_color: 0, 1, 0, 1
@@ -107,7 +122,7 @@
 <BorderlootWidget>:
     item_button: item_button_id
     rarity_button: rarity_button_id
-    treasure_button: treasure_button_id
+    chest_button: chest_button_id
     BoxLayout:
         id: button_layout
         size: root.width, 250
@@ -120,11 +135,11 @@
             text: "GENERER"
             on_release: root.display_text()
         Button:
-            id: treasure_button_id
+            id: chest_button_id
             size_hint: 0.25, 0.2
             pos_hint: {"y":0.8}
             text: "COFFRE"
-            on_release: root.t_dropdown.open(self)
+            on_release: root.c_dropdown.open(self)
         Button:
             id: item_button_id
             size_hint: 0.25, 0.2

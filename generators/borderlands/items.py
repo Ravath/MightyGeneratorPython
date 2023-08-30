@@ -26,9 +26,9 @@ Pendejo.
 #################################################
 
 # CHEST_TYPE changes odds of getting some rarities
-CHEST_TYPE = "RARE"
+#CHEST_TYPE = "LEGENDARY" # not used anymore
 
-print("CHEST_TYPE : ", CHEST_TYPE)
+#print("CHEST_TYPE : ", CHEST_TYPE) #not used anymore
 if CHEST_TYPE == "COMMON" :
     ODD_COM = 50   # Odds for getting a common item
     ODD_UNCOM = 30 # Odds for getting an uncommon item
@@ -51,13 +51,20 @@ elif CHEST_TYPE == "LEGENDARY" : # Currently used for test, real values later
     ODD_ETECH = 10
     ODD_LEG = 10
 
-ODD_HAN = 1 # Odds for getting a handgun
-ODD_RIF = 1 # Odds for getting a rifle
-ODD_MAC = 1 # Odds for getting a sub-machinegun
-ODD_SHO = 1 # Odds for getting a shotgun
-ODD_SNI = 1 # Odds for getting a sniper rifle
-ODD_GRE = 1 # Odds for getting a grenade
-ODD_SHI = 1 # Odds for getting a shield
+def set_chest_type(chest_type) :
+    # update the flag
+    global CHEST_TYPE
+    CHEST_TYPE = chest_type
+
+c_common = 1
+c_rare = 0
+c_leg = 0
+
+sel_chest = Weight() << [
+    [c_common, SetNode(set_chest_type, "COMMON")],
+    [c_rare, SetNode(set_chest_type, "RARE")],
+    [c_leg, SetNode(set_chest_type, "LEGENDARY")],
+]
 
 #################################################
 #                                               #
@@ -70,126 +77,125 @@ ODD_SHI = 1 # Odds for getting a shield
 #               SELECT ITEM TYPE                #
 #################################################
 
-if not ('ITEM_TYPE' in locals()):
-    ITEM_TYPE = "INIT"
+ODD_HAN = 1 # Odds for getting a handgun
+ODD_RIF = 1 # Odds for getting a rifle
+ODD_MAC = 1 # Odds for getting a sub-machinegun
+ODD_SHO = 1 # Odds for getting a shotgun
+ODD_SNI = 1 # Odds for getting a sniper rifle
+ODD_GRE = 1 # Odds for getting a grenade
+ODD_SHI = 1 # Odds for getting a shield
 
-    def set_item_type(item_type) :
-        # update the flag
-        global ITEM_TYPE
-        ITEM_TYPE = item_type
-        # update the ponderations
+def set_item_type(item_type) :
+    # update the flag
+    global ITEM_TYPE
+    ITEM_TYPE = item_type
+    # update the ponderations
 
-        for v in pond_type.values() :
-            v.value = 0
-        pond_type[item_type].value = 1
-    
-    sel_type = Weight() << [
-        [ODD_HAN, SetNode(set_item_type, "HANDGUN")],
-        [ODD_RIF, SetNode(set_item_type, "RIFLE")],
-        [ODD_MAC, SetNode(set_item_type, "MACHINEGUN")],
-        [ODD_SHO, SetNode(set_item_type, "SHOTGUN")],
-        [ODD_SNI, SetNode(set_item_type, "SNIPER")],
-        [ODD_GRE, SetNode(set_item_type, "GRENADE")],
-        [ODD_SHI, SetNode(set_item_type, "SHIELD")],
-    ]
+    for v in pond_type.values() :
+        v.value = 0
+    pond_type[item_type].value = 1
+
+sel_type = Weight() << [
+    [ODD_HAN, SetNode(set_item_type, "HANDGUN")],
+    [ODD_RIF, SetNode(set_item_type, "RIFLE")],
+    [ODD_MAC, SetNode(set_item_type, "MACHINEGUN")],
+    [ODD_SHO, SetNode(set_item_type, "SHOTGUN")],
+    [ODD_SNI, SetNode(set_item_type, "SNIPER")],
+    [ODD_GRE, SetNode(set_item_type, "GRENADE")],
+    [ODD_SHI, SetNode(set_item_type, "SHIELD")],
+]
 
 #################################################
 #              SELECT ITEM RARITY               #
 #################################################
 
-if not ('ITEM_RARITY' in locals()):
-    ITEM_RARITY = "INIT"
-    
-    def set_item_rarity(item_rarity) :
-        # update the flag
-        global ITEM_RARITY
-        ITEM_RARITY = item_rarity
-        
-    sel_rarity = Weight() << [
-        [ODD_COM,   SetNode(set_item_rarity, "COMMON")],
-        [ODD_UNCOM, SetNode(set_item_rarity, "UNCOMMON")],
-        [ODD_RAR,   SetNode(set_item_rarity, "RARE")],
-        [ODD_EPIC,  SetNode(set_item_rarity, "EPIC")],
-        [ODD_ETECH, SetNode(set_item_rarity, "ETECH")],
-        [ODD_LEG,   SetNode(set_item_rarity, "LEGENDARY")],
-        ]
+def set_item_rarity(item_rarity) :
+    # update the flag
+    global ITEM_RARITY
+    ITEM_RARITY = item_rarity
+
+sel_rarity = Weight() << [
+    [ODD_COM,   SetNode(set_item_rarity, "COMMON")],
+    [ODD_UNCOM, SetNode(set_item_rarity, "UNCOMMON")],
+    [ODD_RAR,   SetNode(set_item_rarity, "RARE")],
+    [ODD_EPIC,  SetNode(set_item_rarity, "EPIC")],
+    [ODD_ETECH, SetNode(set_item_rarity, "ETECH")],
+    [ODD_LEG,   SetNode(set_item_rarity, "LEGENDARY")],
+]
 
 #################################################
 #               SELECT MANUFACTURER             #
 #################################################
 
-if not ('ITEM_MANUFACTURER' in locals()):
-    ITEM_MANUFACTURER = "INIT"
+def set_item_manufacturer(item_manufacturer) :
+    # update the ponderations
+    global pond_manufacturer
+    for v in pond_manufacturer.values() :
+        v.value = 0
+    pond_manufacturer[item_manufacturer].value = 1
+    global ITEM_MANUFACTURER
+    ITEM_MANUFACTURER = item_manufacturer
 
-    def set_item_manufacturer(item_manufacturer) :
-        # update the ponderations
-        global pond_manufacturer
-        for v in pond_manufacturer.values() :
-            v.value = 0
-        pond_manufacturer[item_manufacturer].value = 1
-        global ITEM_MANUFACTURER
-        ITEM_MANUFACTURER = item_manufacturer
-
-    sel_manufacturer = {
-        "HANDGUN" : Weight() << [
-            SetNode(set_item_manufacturer, "Maliwan"),
-            SetNode(set_item_manufacturer, "Jakobs"),
-            SetNode(set_item_manufacturer, "Hyperion"),
-            SetNode(set_item_manufacturer, "Dahl"),
-            SetNode(set_item_manufacturer, "Vladof"),
-            SetNode(set_item_manufacturer, "Bandit"),
-            SetNode(set_item_manufacturer, "Tediore"),
-            SetNode(set_item_manufacturer, "Torgue"),
-        ],
-        "MACHINEGUN" : Weight() << [
-            SetNode(set_item_manufacturer, "Maliwan"),
-            SetNode(set_item_manufacturer, "Hyperion"),
-            SetNode(set_item_manufacturer, "Dahl"),
-            SetNode(set_item_manufacturer, "Bandit"),
-            SetNode(set_item_manufacturer, "Tediore"),
-        ],
-        "RIFLE" : Weight() << [
-            SetNode(set_item_manufacturer, "Jakobs"),
-            SetNode(set_item_manufacturer, "Dahl"),
-            SetNode(set_item_manufacturer, "Bandit"),
-            SetNode(set_item_manufacturer, "Torgue"),
-        ],
-        "SHOTGUN" : Weight() << [
-            SetNode(set_item_manufacturer, "Jakobs"),
-            SetNode(set_item_manufacturer, "Hyperion"),
-            SetNode(set_item_manufacturer, "Bandit"),
-            SetNode(set_item_manufacturer, "Tediore"),
-            SetNode(set_item_manufacturer, "Torgue"),
-        ],
-        "SNIPER" : Weight() << [
-            SetNode(set_item_manufacturer, "Maliwan"),
-            SetNode(set_item_manufacturer, "Jakobs"),
-            SetNode(set_item_manufacturer, "Hyperion"),
-            SetNode(set_item_manufacturer, "Vladof"),
-        ],
-        "GRENADE" : Weight() << [
-            SetNode(set_item_manufacturer, "Classic"),
-            SetNode(set_item_manufacturer, "Contact"),
-            SetNode(set_item_manufacturer, "Proximity"),
-            SetNode(set_item_manufacturer, "MIRV"),
-            SetNode(set_item_manufacturer, "Singularity"),
-            SetNode(set_item_manufacturer, "Tesla"),
-            SetNode(set_item_manufacturer, "Transfusion"),
-            SetNode(set_item_manufacturer, "Betty"),
-        ],
-        "SHIELD" : Weight() << [
-            SetNode(set_item_manufacturer, "Absorb"),
-            SetNode(set_item_manufacturer, "Adaptive"),
-            SetNode(set_item_manufacturer, "Amplify"),
-            SetNode(set_item_manufacturer, "Booster"),
-            SetNode(set_item_manufacturer, "Lifeline"),
-            SetNode(set_item_manufacturer, "Nova"),
-            SetNode(set_item_manufacturer, "Raid"),
-            SetNode(set_item_manufacturer, "Shield"),
-            SetNode(set_item_manufacturer, "Spike"),
-            SetNode(set_item_manufacturer, "Turtle"),
-        ],
-    }
+sel_manufacturer = {
+    "HANDGUN" : Weight() << [
+        SetNode(set_item_manufacturer, "Maliwan"),
+        SetNode(set_item_manufacturer, "Jakobs"),
+        SetNode(set_item_manufacturer, "Hyperion"),
+        SetNode(set_item_manufacturer, "Dahl"),
+        SetNode(set_item_manufacturer, "Vladof"),
+        SetNode(set_item_manufacturer, "Bandit"),
+        SetNode(set_item_manufacturer, "Tediore"),
+        SetNode(set_item_manufacturer, "Torgue"),
+    ],
+    "MACHINEGUN" : Weight() << [
+        SetNode(set_item_manufacturer, "Maliwan"),
+        SetNode(set_item_manufacturer, "Hyperion"),
+        SetNode(set_item_manufacturer, "Dahl"),
+        SetNode(set_item_manufacturer, "Bandit"),
+        SetNode(set_item_manufacturer, "Tediore"),
+    ],
+    "RIFLE" : Weight() << [
+        SetNode(set_item_manufacturer, "Jakobs"),
+        SetNode(set_item_manufacturer, "Dahl"),
+        SetNode(set_item_manufacturer, "Bandit"),
+        SetNode(set_item_manufacturer, "Torgue"),
+    ],
+    "SHOTGUN" : Weight() << [
+        SetNode(set_item_manufacturer, "Jakobs"),
+        SetNode(set_item_manufacturer, "Hyperion"),
+        SetNode(set_item_manufacturer, "Bandit"),
+        SetNode(set_item_manufacturer, "Tediore"),
+        SetNode(set_item_manufacturer, "Torgue"),
+    ],
+    "SNIPER" : Weight() << [
+        SetNode(set_item_manufacturer, "Maliwan"),
+        SetNode(set_item_manufacturer, "Jakobs"),
+        SetNode(set_item_manufacturer, "Hyperion"),
+        SetNode(set_item_manufacturer, "Vladof"),
+    ],
+    "GRENADE" : Weight() << [
+        SetNode(set_item_manufacturer, "Classic"),
+        SetNode(set_item_manufacturer, "Contact"),
+        SetNode(set_item_manufacturer, "Proximity"),
+        SetNode(set_item_manufacturer, "MIRV"),
+        SetNode(set_item_manufacturer, "Singularity"),
+        SetNode(set_item_manufacturer, "Tesla"),
+        SetNode(set_item_manufacturer, "Transfusion"),
+        SetNode(set_item_manufacturer, "Betty"),
+    ],
+    "SHIELD" : Weight() << [
+        SetNode(set_item_manufacturer, "Absorb"),
+        SetNode(set_item_manufacturer, "Adaptive"),
+        SetNode(set_item_manufacturer, "Amplify"),
+        SetNode(set_item_manufacturer, "Booster"),
+        SetNode(set_item_manufacturer, "Lifeline"),
+        SetNode(set_item_manufacturer, "Nova"),
+        SetNode(set_item_manufacturer, "Raid"),
+        SetNode(set_item_manufacturer, "Shield"),
+        SetNode(set_item_manufacturer, "Spike"),
+        SetNode(set_item_manufacturer, "Turtle"),
+    ],
+}
 
 #################################################
 #              ELEMENT GENERATION               #
@@ -422,7 +428,7 @@ item_generation["SHIELD"] = {
 }
 
 #################################################
-#                 FORCING GENERATION            #
+#               FORCING GENERATION              #
 #################################################
 
 """These functions will be used by our GUI to force some features to be picked,
@@ -433,46 +439,73 @@ set_item_manufacturer by putting directly a value in respectively ITEM_TYPE,
 ITEM_RARITY & ITEM_MANUFACTURER
 """
 
+def force_chest_type(c_type:str):
+    """Use in GUI, c_type is recovered from the attribute_chest_type method."""
+#    global CHEST_TYPE, ODD_COM, ODD_UNCOM, ODD_RAR, ODD_EPIC, ODD_ETECH, ODD_LEG
+    for child in sel_chest.children:
+        child.weight = 0
+
+    if c_type == "COMMON":
+        CHEST_TYPE = "COMMON"
+        sel_chest.children[0].weight = 1
+    elif c_type == "RARE":
+        CHEST_TYPE = "RARE"
+        sel_chest.children[1].weight = 1
+    elif c_type == "LEGENDARY":
+        CHEST_TYPE = "LEGENDARY"
+        sel_chest.children[2].weight = 1
+    else:
+        print("error, chest type argument not processed : ", c_type)
+
 def force_item_type(i_type:str):
     """Use in GUI, i_type is recovered from the attribute_item_type method."""
-    for child in sel_type.children :
-        child.weight = 0
-    if i_type == "HANDGUN":
-        sel_type.children[0].weight = 1
-    elif i_type == "RIFLE":
-        sel_type.children[1].weight = 1
-    elif i_type == "MACHINEGUN":
-        sel_type.children[2].weight = 1
-    elif i_type == "SHOTGUN":
-        sel_type.children[3].weight = 1
-    elif i_type == "SNIPER":
-        sel_type.children[4].weight = 1
-    elif i_type == "GRENADE":
-        sel_type.children[5].weight = 1
-    elif i_type == "SHIELD":
-        sel_type.children[6].weight = 1
+    if i_type == "RANDOM":
+        for child in sel_type.children :
+            child.weight = 1
     else:
-        print("error, item type argument not processed : ", i_type)
-    
+        for child in sel_type.children :
+            child.weight = 0
+        if i_type == "HANDGUN":
+            sel_type.children[0].weight = 1
+        elif i_type == "RIFLE":
+            sel_type.children[1].weight = 1
+        elif i_type == "MACHINEGUN":
+            sel_type.children[2].weight = 1
+        elif i_type == "SHOTGUN":
+            sel_type.children[3].weight = 1
+        elif i_type == "SNIPER":
+            sel_type.children[4].weight = 1
+        elif i_type == "GRENADE":
+            sel_type.children[5].weight = 1
+        elif i_type == "SHIELD":
+            sel_type.children[6].weight = 1
+        else:
+            print("error, item type argument not processed : ", i_type)
+
 def force_item_rarity(rarity:str):
     """Use in GUI, rarity is recovered from the attribute_rarity method."""
-    for child in sel_rarity.children :
-        child.weight = 0
-    if rarity == "COMMON":
-        sel_rarity.children[0].weight = 1
-    elif rarity == "UNCOMMON":
-        sel_rarity.children[1].weight = 1
-    elif rarity == "RARE":
-        sel_rarity.children[2].weight = 1
-    elif rarity == "EPIC":
-        sel_rarity.children[3].weight = 1
-    elif rarity == "ETECH":
-        sel_rarity.children[4].weight = 1
-    elif rarity == "LEGENDARY":
-        sel_rarity.children[5].weight = 1
+    if rarity == "RANDOM":
+        for child in sel_rarity.children :
+            child.weight = 1 # Actually not what we want, we want to put odds 
+            # on chest rarities odds instead of equal chances, but that's a beginning
     else:
-        print("error, rarity argument not processed : ", rarity)
-        
+        for child in sel_rarity.children :
+            child.weight = 0
+        if rarity == "COMMON":
+            sel_rarity.children[0].weight = 1
+        elif rarity == "UNCOMMON":
+            sel_rarity.children[1].weight = 1
+        elif rarity == "RARE":
+            sel_rarity.children[2].weight = 1
+        elif rarity == "EPIC":
+            sel_rarity.children[3].weight = 1
+        elif rarity == "ETECH":
+            sel_rarity.children[4].weight = 1
+        elif rarity == "LEGENDARY":
+            sel_rarity.children[5].weight = 1
+        else:
+            print("error, rarity argument not processed : ", rarity)
+
 #####################################P#E#N#D#E#J#
 #                   GENERATION                  O
 #################################################
@@ -523,6 +556,7 @@ class DictionaryNode(AbsLeafNode) :
 ### GENERATION TEMPLATE ###
 generation = Generator(
     Sequence() << [
+        sel_chest,
         sel_type,
         sel_rarity,
         DictionaryNode(sel_manufacturer, "ITEM_TYPE"),
@@ -555,8 +589,9 @@ if __name__ == "__main__" :
 
     # print generation result
     generation.print_to_console()
-    
+
     # After generation, delete any item specs for further generation
     del ITEM_TYPE
     del ITEM_RARITY
     del ITEM_MANUFACTURER
+    del CHEST_TYPE

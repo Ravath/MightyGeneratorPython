@@ -19,16 +19,16 @@ kivy.require('2.1.0')
 
 # ============== GENERATION IMPORTS ==============
 # exec(open("generators/borderlands/items.py", encoding='utf-8').read())
-from generators.borderlands.items import generation, force_item_type, force_item_rarity
+from generators.borderlands.items import generation, force_chest_type, force_item_type, force_item_rarity
 from wordgenerator.Print import PrintNode
 PrintNode.print_to_buffer()
 
 # ============== WIDGET DEFINITIONS ==============
-class TreasureDropDown(DropDown):
-    # def attribute_treasure_type(self, tre:str):
-    #     global FORCED_TREASURE
-    #     FORCED_TREASURE = tre
-    pass
+class ChestDropDown(DropDown):
+    def attribute_chest_type(self, che:str):
+        global FORCED_CHEST
+        FORCED_CHEST = che
+pass
 
 class ItemDropDown(DropDown):
     def attribute_item_type(self, i_typ:str):
@@ -36,7 +36,7 @@ class ItemDropDown(DropDown):
         it for generation with force_item_type function"""
         global FORCED_ITEM_TYPE
         FORCED_ITEM_TYPE = i_typ
-    pass
+pass
 
 class RarityDropDown(DropDown):
     def attribute_rarity(self, rar:str):
@@ -44,7 +44,7 @@ class RarityDropDown(DropDown):
         it for generation with force_item_rarity function"""
         global FORCED_RARITY
         FORCED_RARITY = rar
-    pass
+pass
 
 class BorderlootWidget(Widget):
     """
@@ -56,7 +56,7 @@ class BorderlootWidget(Widget):
     """
 
     item_text = StringProperty()
-    
+
     """Dropdown buttons"""
     treasure_button = ObjectProperty()
     item_button = ObjectProperty()
@@ -66,15 +66,20 @@ class BorderlootWidget(Widget):
         super(BorderlootWidget, self).__init__(**kwargs)
 
         # dropdown lists
-        self.t_dropdown = TreasureDropDown()
+        self.c_dropdown = ChestDropDown()
         self.i_dropdown = ItemDropDown()
         self.r_dropdown = RarityDropDown()
-        self.t_dropdown.bind(on_select=lambda instance, x: setattr(self.treasure_button, 'text', x))
+        self.c_dropdown.bind(on_select=lambda instance, x: setattr(self.chest_button, 'text', x))
         self.i_dropdown.bind(on_select=lambda instance, x: setattr(self.item_button, 'text', x))
         self.r_dropdown.bind(on_select=lambda instance, x: setattr(self.rarity_button, 'text', x))
 
     def display_text(self):
         # If a button has been pressed for item change, apply its forced specs
+        if ('FORCED_CHEST' in globals()):
+            global FORCED_CHEST
+            force_chest_type(FORCED_CHEST)
+        else :
+            pass
         if ('FORCED_ITEM_TYPE' in globals()):
             force_item_type(FORCED_ITEM_TYPE)
         else :
@@ -87,17 +92,17 @@ class BorderlootWidget(Widget):
         print("\\------------------------------------------------------------")
         print(generation.text)
         self.item_text = str(generation.text)
-        
+
 # ================= APP DEFINITION ================
 
 class BorderlootApp(App):
     """
     The GUI interface for generating borderland loot.
-    
-    For more information
-    about Borderloot organisation widget, see borderloot.kv
+
+    For more information about Borderloot organisation widget,
+    see borderloot.kv
     """
-    
+
     def build(self):
         return BorderlootWidget()
 
