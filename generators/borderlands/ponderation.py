@@ -10,6 +10,13 @@ when the different item type and manufacturer
 are chosen.
 
 """
+# Ponderations for each chest type
+
+pond_chest = {
+    "COMMON"    : Value(0),
+    "RARE"      : Value(0),
+    "LEGENDARY" : Value(0),
+}
 
 # Ponderations for each weapon type
 pond_type = {

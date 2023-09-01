@@ -7,7 +7,7 @@ from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Print import PrintNode as Print
 from wordgenerator.Print import SetNode, Title, Label
 from wordgenerator.Generator import Generator
-from generators.borderlands.ponderation import pond_type, pond_manufacturer, can_element, nbr_of_manufacturer_properties
+from generators.borderlands.ponderation import pond_chest, pond_type, pond_manufacturer, can_element, nbr_of_manufacturer_properties
 from generators.borderlands.properties import item_prop , item_special, sel_element
 from generators.borderlands.names import firearm_name, grenade_name, shield_name
 
@@ -26,7 +26,7 @@ Pendejo.
 #################################################
 
 # CHEST_TYPE changes odds of getting some rarities
-#CHEST_TYPE = "LEGENDARY" # not used anymore
+CHEST_TYPE = "COMMON" # not used anymore
 
 #print("CHEST_TYPE : ", CHEST_TYPE) #not used anymore
 if CHEST_TYPE == "COMMON" :
@@ -55,15 +55,19 @@ def set_chest_type(chest_type) :
     # update the flag
     global CHEST_TYPE
     CHEST_TYPE = chest_type
+    
+    for v in pond_chest.values() :
+        v.value = 0
+    pond_chest[chest_type].value = 1
 
-c_common = 1
-c_rare = 0
-c_leg = 0
+c_common =  1
+c_rare =    0
+c_leg =     0
 
 sel_chest = Weight() << [
-    [c_common, SetNode(set_chest_type, "COMMON")],
-    [c_rare, SetNode(set_chest_type, "RARE")],
-    [c_leg, SetNode(set_chest_type, "LEGENDARY")],
+    [c_common,  SetNode(set_chest_type,"COMMON")],
+    [c_rare,    SetNode(set_chest_type,"RARE")],
+    [c_leg,     SetNode(set_chest_type,"LEGENDARY")],
 ]
 
 #################################################
@@ -278,7 +282,7 @@ def get_firearm_builder(firearm_type:str,
                     Label("Difficulté de visée", firearm_aim),
                     Label("Magasin",             firearm_magazine),
                     firearm_modes,
-    ])
+                ])
 
 ############# HANDGUN BUILDING
 
@@ -392,7 +396,7 @@ def get_grenade_builder(grenade_type:str,
                      Label("Dégats",              grenade_damage),
                      Label("Difficulté de visée", grenade_aim),
                      grenade_modes,
-    ])
+                ])
 
 grenade_damage = Print("2D20 + [[1d11+23]]")
 grenade_modes = " - Tir Simple\n"
@@ -416,7 +420,7 @@ def get_shield_builder(shield_type:str) :
                      shield_name,
                      Label("Capacité", f"[[84 - 3*{shield_intensity} + 1d7]]"),
                      Label("Cadence",  f"[[1d5 + {shield_intensity}]]"),
-    ])
+                ])
 
 item_generation["SHIELD"] = {
     "COMMON":   get_shield_builder("Bouclier Commun"),
@@ -441,7 +445,7 @@ ITEM_RARITY & ITEM_MANUFACTURER
 
 def force_chest_type(c_type:str):
     """Use in GUI, c_type is recovered from the attribute_chest_type method."""
-#    global CHEST_TYPE, ODD_COM, ODD_UNCOM, ODD_RAR, ODD_EPIC, ODD_ETECH, ODD_LEG
+    #global CHEST_TYPE, ODD_COM, ODD_UNCOM, ODD_RAR, ODD_EPIC, ODD_ETECH, ODD_LEG
     for child in sel_chest.children:
         child.weight = 0
 
