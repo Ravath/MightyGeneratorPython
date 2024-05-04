@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from wordgenerator.NodeIf import AbsGeneratorNode
 from wordgenerator.Print import PrintNode
-from macro.dice_macro import get_ValueIf
-from macro.calc import ListValue
+from macro.grammar import get_ValueIf
+from macro.math import ListValue
 import typing
 import re
 
@@ -48,6 +48,7 @@ class Generator :
         # We have to use the buffer print mechanism in order to retreive the text.
         # (instead of directly printing to console)
         PrintNode.print_to_buffer()
+        PrintNode._printer.del_text()
 
         self.root.execute()
         self.text = self.raw_text= PrintNode._printer.get_text()

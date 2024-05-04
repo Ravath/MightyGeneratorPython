@@ -7,7 +7,7 @@ Created on 12/08/2022
 from wordgenerator.Weight import WeightNode, WeightRow
 import wordgenerator.Weight as w
 from wordgenerator.Print import PrintNode
-from utils.debug import test, print_log, test_result, test_action, trace
+from utils.debugtools import test, print_log, test_result, test_action, trace
 from wordgenerator.Print import ActionNode
 
 print_log("START", "WEIGHTNODE UNITARY TESTING")

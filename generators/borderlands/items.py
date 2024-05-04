@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import sys
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Print import PrintNode as Print
 from wordgenerator.Print import SetNode, Title, Label
 from wordgenerator.Generator import Generator
-from generators.borderlands.ponderation import pond_type, pond_manufacturer, can_element, nbr_of_manufacturer_properties
+from generators.borderlands.ponderation import pond_chest, pond_type, pond_manufacturer, can_element, nbr_of_manufacturer_properties
 from generators.borderlands.properties import item_prop , item_special, sel_element
 from generators.borderlands.names import firearm_name, grenade_name, shield_name
 
@@ -19,12 +20,15 @@ Pendejo.
 """
 
 #################################################
-#              INIT PROBABILITIES               #
+#                                               #
+#         CONDITIONS OF CHEST SELECTION         #
+#                                               #
 #################################################
 
 # CHEST_TYPE changes odds of getting some rarities
-CHEST_TYPE = "LEGENDARY"
+CHEST_TYPE = "COMMON" # not used anymore
 
+#print("CHEST_TYPE : ", CHEST_TYPE) #not used anymore
 if CHEST_TYPE == "COMMON" :
     ODD_COM = 50   # Odds for getting a common item
     ODD_UNCOM = 30 # Odds for getting an uncommon item
@@ -47,6 +51,36 @@ elif CHEST_TYPE == "LEGENDARY" : # Currently used for test, real values later
     ODD_ETECH = 10
     ODD_LEG = 10
 
+def set_chest_type(chest_type) :
+    # update the flag
+    global CHEST_TYPE
+    CHEST_TYPE = chest_type
+    
+    for v in pond_chest.values() :
+        v.value = 0
+    pond_chest[chest_type].value = 1
+
+c_common =  1
+c_rare =    0
+c_leg =     0
+
+sel_chest = Weight() << [
+    [c_common,  SetNode(set_chest_type,"COMMON")],
+    [c_rare,    SetNode(set_chest_type,"RARE")],
+    [c_leg,     SetNode(set_chest_type,"LEGENDARY")],
+]
+
+#################################################
+#                                               #
+#   CONDITIONS OF ITEM, RARITY & MANUFACTURER   #
+#                   SELECTION                   #
+#                                               #
+#################################################
+
+#################################################
+#               SELECT ITEM TYPE                #
+#################################################
+
 ODD_HAN = 1 # Odds for getting a handgun
 ODD_RIF = 1 # Odds for getting a rifle
 ODD_MAC = 1 # Odds for getting a sub-machinegun
@@ -55,38 +89,15 @@ ODD_SNI = 1 # Odds for getting a sniper rifle
 ODD_GRE = 1 # Odds for getting a grenade
 ODD_SHI = 1 # Odds for getting a shield
 
-#################################################
-#            SELECT TYPE AND RARITY             #
-#################################################
-
-# Initialisations for every new item generation
-ITEM_TYPE = "INIT"
-ITEM_RARITY = "INIT"
-ITEM_MANUFACTURER = "INIT"
-
 def set_item_type(item_type) :
     # update the flag
     global ITEM_TYPE
     ITEM_TYPE = item_type
-
     # update the ponderations
+
     for v in pond_type.values() :
         v.value = 0
     pond_type[item_type].value = 1
-
-def set_item_rarity(item_rarity) :
-    # update the flag
-    global ITEM_RARITY
-    ITEM_RARITY = item_rarity
-
-def set_item_manufacturer(item_manufacturer) :
-    # update the ponderations
-    global pond_manufacturer
-    for v in pond_manufacturer.values() :
-        v.value = 0
-    pond_manufacturer[item_manufacturer].value = 1
-    global ITEM_MANUFACTURER
-    ITEM_MANUFACTURER = item_manufacturer
 
 sel_type = Weight() << [
     [ODD_HAN, SetNode(set_item_type, "HANDGUN")],
@@ -97,6 +108,15 @@ sel_type = Weight() << [
     [ODD_GRE, SetNode(set_item_type, "GRENADE")],
     [ODD_SHI, SetNode(set_item_type, "SHIELD")],
 ]
+
+#################################################
+#              SELECT ITEM RARITY               #
+#################################################
+
+def set_item_rarity(item_rarity) :
+    # update the flag
+    global ITEM_RARITY
+    ITEM_RARITY = item_rarity
 
 sel_rarity = Weight() << [
     [ODD_COM,   SetNode(set_item_rarity, "COMMON")],
@@ -110,6 +130,15 @@ sel_rarity = Weight() << [
 #################################################
 #               SELECT MANUFACTURER             #
 #################################################
+
+def set_item_manufacturer(item_manufacturer) :
+    # update the ponderations
+    global pond_manufacturer
+    for v in pond_manufacturer.values() :
+        v.value = 0
+    pond_manufacturer[item_manufacturer].value = 1
+    global ITEM_MANUFACTURER
+    ITEM_MANUFACTURER = item_manufacturer
 
 sel_manufacturer = {
     "HANDGUN" : Weight() << [
@@ -253,14 +282,14 @@ def get_firearm_builder(firearm_type:str,
                     Label("Difficulté de visée", firearm_aim),
                     Label("Magasin",             firearm_magazine),
                     firearm_modes,
-    ])
+                ])
 
 ############# HANDGUN BUILDING
 
 handgun_damage = Weight() << [
-    [25, "1D4 << [[1d5+5]]"],
-    [50, "1D6 << [[1d5+4]]"],
-    [25, "1D8 << [[1d5+3]]"],
+    [25, "1D4 + [[1d5+5]]"],
+    [50, "1D6 + [[1d5+4]]"],
+    [25, "1D8 + [[1d5+3]]"],
 ]
 handgun_modes = Weight(2, False) << [
     [" - Tir Simple\n"],
@@ -367,7 +396,7 @@ def get_grenade_builder(grenade_type:str,
                      Label("Dégats",              grenade_damage),
                      Label("Difficulté de visée", grenade_aim),
                      grenade_modes,
-    ])
+                ])
 
 grenade_damage = Print("2D20 + [[1d11+23]]")
 grenade_modes = " - Tir Simple\n"
@@ -391,7 +420,7 @@ def get_shield_builder(shield_type:str) :
                      shield_name,
                      Label("Capacité", f"[[84 - 3*{shield_intensity} + 1d7]]"),
                      Label("Cadence",  f"[[1d5 + {shield_intensity}]]"),
-    ])
+                ])
 
 item_generation["SHIELD"] = {
     "COMMON":   get_shield_builder("Bouclier Commun"),
@@ -402,8 +431,87 @@ item_generation["SHIELD"] = {
     "LEGENDARY":get_shield_builder("Bouclier Légendaire"),
 }
 
-###################################P#E#N#D#E#J#O#
-#                   GENERATION                  #
+#################################################
+#               FORCING GENERATION              #
+#################################################
+
+"""These functions will be used by our GUI to force some features to be picked,
+instead of being randomly picked, allowing to generate a specific item.
+
+In terms of C0D1NG: It will bypass set_item_type, set_item_rarity &
+set_item_manufacturer by putting directly a value in respectively ITEM_TYPE,
+ITEM_RARITY & ITEM_MANUFACTURER
+"""
+
+def force_chest_type(c_type:str):
+    """Use in GUI, c_type is recovered from the attribute_chest_type method."""
+    #global CHEST_TYPE, ODD_COM, ODD_UNCOM, ODD_RAR, ODD_EPIC, ODD_ETECH, ODD_LEG
+    for child in sel_chest.children:
+        child.weight = 0
+
+    if c_type == "COMMON":
+        CHEST_TYPE = "COMMON"
+        sel_chest.children[0].weight = 1
+    elif c_type == "RARE":
+        CHEST_TYPE = "RARE"
+        sel_chest.children[1].weight = 1
+    elif c_type == "LEGENDARY":
+        CHEST_TYPE = "LEGENDARY"
+        sel_chest.children[2].weight = 1
+    else:
+        print("error, chest type argument not processed : ", c_type)
+
+def force_item_type(i_type:str):
+    """Use in GUI, i_type is recovered from the attribute_item_type method."""
+    if i_type == "RANDOM":
+        for child in sel_type.children :
+            child.weight = 1
+    else:
+        for child in sel_type.children :
+            child.weight = 0
+        if i_type == "HANDGUN":
+            sel_type.children[0].weight = 1
+        elif i_type == "RIFLE":
+            sel_type.children[1].weight = 1
+        elif i_type == "MACHINEGUN":
+            sel_type.children[2].weight = 1
+        elif i_type == "SHOTGUN":
+            sel_type.children[3].weight = 1
+        elif i_type == "SNIPER":
+            sel_type.children[4].weight = 1
+        elif i_type == "GRENADE":
+            sel_type.children[5].weight = 1
+        elif i_type == "SHIELD":
+            sel_type.children[6].weight = 1
+        else:
+            print("error, item type argument not processed : ", i_type)
+
+def force_item_rarity(rarity:str):
+    """Use in GUI, rarity is recovered from the attribute_rarity method."""
+    if rarity == "RANDOM":
+        for child in sel_rarity.children :
+            child.weight = 1 # Actually not what we want, we want to put odds 
+            # on chest rarities odds instead of equal chances, but that's a beginning
+    else:
+        for child in sel_rarity.children :
+            child.weight = 0
+        if rarity == "COMMON":
+            sel_rarity.children[0].weight = 1
+        elif rarity == "UNCOMMON":
+            sel_rarity.children[1].weight = 1
+        elif rarity == "RARE":
+            sel_rarity.children[2].weight = 1
+        elif rarity == "EPIC":
+            sel_rarity.children[3].weight = 1
+        elif rarity == "ETECH":
+            sel_rarity.children[4].weight = 1
+        elif rarity == "LEGENDARY":
+            sel_rarity.children[5].weight = 1
+        else:
+            print("error, rarity argument not processed : ", rarity)
+
+#####################################P#E#N#D#E#J#
+#                   GENERATION                  O
 #################################################
 
 from wordgenerator.NodeIf import AbsLeafNode
@@ -452,6 +560,7 @@ class DictionaryNode(AbsLeafNode) :
 ### GENERATION TEMPLATE ###
 generation = Generator(
     Sequence() << [
+        sel_chest,
         sel_type,
         sel_rarity,
         DictionaryNode(sel_manufacturer, "ITEM_TYPE"),
@@ -471,14 +580,22 @@ def var_converter(name) -> str :
         return "{" + name + "}"
 generation.variable_converter = var_converter
 
-# Do generation
-generation.execute()
 
-print("Coffre :", globals()["CHEST_TYPE"])
-print("Arme   :", ITEM_TYPE)
-print("Rareté :", ITEM_RARITY)
-print("Fabriquant :", ITEM_MANUFACTURER)
-print()
+if __name__ == "__main__" :
+    # Do generation
+    generation.execute()
+    
+    print("Coffre :", globals()["CHEST_TYPE"])
+    print("Arme   :", ITEM_TYPE)
+    print("Rareté :", ITEM_RARITY)
+    print("Fabriquant :", ITEM_MANUFACTURER)
+    print()
 
-# print generation result
-generation.print_to_console()
+    # print generation result
+    generation.print_to_console()
+
+    # After generation, delete any item specs for further generation
+    del ITEM_TYPE
+    del ITEM_RARITY
+    del ITEM_MANUFACTURER
+    del CHEST_TYPE

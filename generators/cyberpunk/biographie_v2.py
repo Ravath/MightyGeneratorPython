@@ -3,6 +3,8 @@
 Created on Tue Sep 15 19:03:13 2020
 
 @author: Ehlion
+| Implementation of the character generation
+| from http://cyberpunk2021.free.fr/creation2.php?lng=fr
 """
 
 from wordgenerator.Weight import WeightNode as Weight

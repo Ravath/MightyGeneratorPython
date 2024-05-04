@@ -293,7 +293,7 @@ weapon = {
 #TODO Implémenter WeighNode.fusion(WeighNode)
 #TODO implémenter contre-mesures contre les récursions dans print_node
 
-from macro.dice_macro import get_ValueIf
+from macro.grammar import get_ValueIf
 def Automaton(nbr_draw, val1:str, val2:str) -> Interval :
     return Interval([(0, get_ValueIf(nbr_draw)), (1, -1)]) << [
         [0, 0, val1],
