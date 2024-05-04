@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from wordgenerator.NodeIf import AbsGeneratorNode
 from wordgenerator.Print import PrintNode
-from macro.dice_macro import get_ValueIf
-from macro.calc import ListValue
+from macro.grammar import get_ValueIf
+from macro.math import ListValue
 import typing
 import re
 

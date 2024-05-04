@@ -6,8 +6,8 @@ Created on Sun Aug 28 23:13:25 2022
 """
 
 from wordgenerator.NodeCollectionIf import AbsCollectionNode
-from macro.calc import ValueIf
-from macro.dice_macro import get_ValueIf
+from macro.math import ValueIf
+from macro.grammar import get_ValueIf
 
 class TabNode(AbsCollectionNode) :
 

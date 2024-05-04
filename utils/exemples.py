@@ -46,7 +46,7 @@ w_back.extend([
 
 """ Executions """
 
-print("== Weigh maps ==")
+print("\n== Weigh maps ==")
 
 print("- Empty map :")
 w_empty.execute()
@@ -93,7 +93,7 @@ i_test.extend([
 
 """ Executions """
 
-print("== Interval maps ==")
+print("\n== Interval maps 1 ==")
 
 print("- Empty map :")
 for resNode in i_empty.draw_from_result(1):
@@ -111,7 +111,7 @@ for i in range(0,6):
     for resNode in i_test.draw_from_result(i):
         resNode.execute()
 
-print("== Interval maps ==")
+print("\n== Interval maps 2 ==")
 i_empty.execute()
 i_single.execute()
 i_test.execute()
@@ -132,7 +132,7 @@ test = SequenceNode().extend([
 
 """ Executions """
 
-print("== Sequence Node ==")
+print("\n== Sequence Node ==")
 
 test.print_node()
 
@@ -164,7 +164,7 @@ gen.variable_converter = var_converter
 
 """ Executions """
 
-print("== Generator ==")
+print("\n== Generator ==")
 
 gen.execute()
 gen.print_to_console()

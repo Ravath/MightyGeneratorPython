@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from macro.calc import Value
+from macro.math import Value
 
 """ Dictionnaries for each weighting values used in items.py.
 

@@ -9,7 +9,7 @@ Created on Tue Apr 19 14:15:22 2022
 """
 
 import random
-from macro.calc import ValueIf
+from macro.math import ValueIf
 
 def roll_dice(faces:int = 6) :
     """Get the result of a dice roll."""
@@ -307,7 +307,7 @@ class CompoundExplode(PoolIf) :
     """Roll a new die for every result over the given threshold."""
     def __init__(self, pool:PoolIf, threshold:int = -1,
                  higher:bool = True, infinite:bool = False) :
-        """Initialize a Compouding Explosion operation of the given pool.
+        """Initialize a Compounding Explosion operation of the given pool.
 
         Parameters
         ----------
@@ -529,7 +529,7 @@ class PoolCount(ValueIf, PoolIf) :
 #___________________________________________________#
 
 if __name__ == "__main__" :
-    from utils.debug import test, print_log, test_result
+    from utils.debugtools import test, print_log, test_result
 
     # for test purpose, we stub the *ing not deterministic function
 # pylint: disable-msg=E0102
@@ -635,19 +635,19 @@ if __name__ == "__main__" :
 # SwitchPool
 # pylint: disable-msg=C0103
     print_log("TEST", "SwitchPool")
-    nbr_od_dice_to_use = 3
+    nbr_of_dice_to_use = 3
     def choose_number_of_dice() :
         """used by the SwitchPool for selecting a child pool"""
-        return nbr_od_dice_to_use -1
+        return nbr_of_dice_to_use -1
     p = SwitchPool([
         Pool(1,4), Pool(2,4), Pool(3,4)],
         choose_number_of_dice)
     test_pool(p, [1,2,3], [])
-    nbr_od_dice_to_use = 2
+    nbr_of_dice_to_use = 2
     test_pool(p, [1,2], [])
-    nbr_od_dice_to_use = 1
+    nbr_of_dice_to_use = 1
     test_pool(p, [1], [])
-    del nbr_od_dice_to_use
+    del nbr_of_dice_to_use
 # pylint: enable-msg=C0103
 
 # PoolSum & PoolCount

@@ -11,7 +11,7 @@ Created on Fri Apr 15 01:39:26 2022
 
 from wordgenerator.NodeIf import AbsGeneratorNode
 from wordgenerator.Print import CanConvToNode, ConvToNode
-from macro.calc import ValueIf
+from macro.math import ValueIf
 
 #___________________________________________________#
 #                                                   #

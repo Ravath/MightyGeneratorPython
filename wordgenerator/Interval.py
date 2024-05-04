@@ -8,7 +8,7 @@ Created on Tue Sep 15 17:35:42 2020
 from macro.dice import ValueIf
 from wordgenerator.NodeIf import AbsGeneratorNode
 from wordgenerator.NodeCollectionIf import AbsCollectionNode, RowNode
-from macro.dice_macro import get_ValueIf
+from macro.grammar import get_ValueIf
 
 #___________________________________________________#
 #                                                   #

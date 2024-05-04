@@ -1,19 +1,31 @@
 #:kivy 2.1.0
+#color palette
+#E4C59E rgb(228/256, 197/256, 158/256)
+#AF8260 rgb(175/256, 130/256, 96 /256)
+#803D3B rgb(128/256, 61 /256, 59 /256)
+#322C2B rgb(50 /256, 44 /256, 43 /256)
+
 <ChestDropDown>:
     Button:
         text: 'Coffre Commun'
+        color: 175/256, 130/256, 96 /256
+        background_color: 128/256, 61 /256, 59 /256
         size_hint_y: None
         height: 44
         on_release: root.select('Coffre Commun')
         on_release: root.attribute_chest_type("COMMON")
     Button:
         text: 'Coffre Rare'
+        color: 175/256, 130/256, 96 /256
+        background_color: 128/256, 61 /256, 59 /256
         size_hint_y: None
         height: 44
         on_release: root.select('Coffre Rare')
         on_release: root.attribute_chest_type("RARE")
     Button:
         text: 'Coffre Légendaire'
+        color: 175/256, 130/256, 96 /256
+        background_color: 128/256, 61 /256, 59 /256
         size_hint_y: None
         height: 44
         on_release: root.select('Coffre Lég.')
@@ -22,48 +34,64 @@
 <ItemDropDown>:
     Button:
         text: 'Objet Aléatoire'
+        color: 175/256, 130/256, 96 /256
+        background_color: 128/256, 61 /256, 59 /256
         size_hint_y: None
         height: 44
         on_release: root.select('Objet Aléatoire')
         on_release: root.attribute_item_type("RANDOM")
     Button:
         text: 'Pistolet'
+        color: 175/256, 130/256, 96 /256
+        background_color: 128/256, 61 /256, 59 /256
         size_hint_y: None
         height: 44
         on_release: root.select('Pistolet')
         on_release: root.attribute_item_type("HANDGUN")
     Button:
         text: 'Fusil assaut'
+        color: 175/256, 130/256, 96 /256
+        background_color: 128/256, 61 /256, 59 /256
         size_hint_y: None
         height: 44
         on_release: root.select('Fusil assaut')
         on_release: root.attribute_item_type("RIFLE")
     Button:
         text: 'Mitraillette'
+        color: 175/256, 130/256, 96 /256
+        background_color: 128/256, 61 /256, 59 /256
         size_hint_y: None
         height: 44
         on_release: root.select('Mitraillette')
         on_release: root.attribute_item_type("MACHINEGUN")
     Button:
         text: 'Fusil à pompe'
+        color: 175/256, 130/256, 96 /256
+        background_color: 128/256, 61 /256, 59 /256
         size_hint_y: None
         height: 44
         on_release: root.select('Fusil à pompe')
         on_release: root.attribute_item_type("SHOTGUN")
     Button:
         text: 'Fusil Sniper'
+        color: 175/256, 130/256, 96 /256
+        background_color: 128/256, 61 /256, 59 /256
         size_hint_y: None
         height: 44
         on_release: root.select('Fusil Sniper')
         on_release: root.attribute_item_type("SNIPER")
     Button:
         text: 'Grenade'
+        color: 175/256, 130/256, 96 /256
+        background_color: 128/256, 61 /256, 59 /256
         size_hint_y: None
         height: 44
         on_release: root.select('Grenade')
         on_release: root.attribute_item_type("GRENADE")
     Button:
         text: 'Bouclier'
+        color: 175/256, 130/256, 96 /256
+        background_color: 128/256, 61 /256, 59 /256
         size_hint_y: None
         height: 44
         on_release: root.select('Bouclier')
@@ -72,7 +100,7 @@
 <RarityDropDown>:
     Button:
         text: 'Rar. Aléatoire'
-        background_color: 0, 0, 0, 0
+        background_color: 0, 0, 0, 1
         size_hint_y: None
         height: 44
         on_release: root.select('Rar. Aléatoire')
@@ -120,6 +148,12 @@
         on_release: root.attribute_rarity("LEGENDARY")
 
 <BorderlootWidget>:
+    canvas.before:
+        Color:
+            rgba: 228/256, 197/256, 158/256, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
     item_button: item_button_id
     rarity_button: rarity_button_id
     chest_button: chest_button_id
@@ -129,28 +163,28 @@
         orientation: 'horizontal'
         top: root.top
         Button:
-            id: generation_button
-            size_hint: 0.25, 0.2
-            pos_hint: {"x":0,"y":0.8}
-            text: "GENERER"
-            on_release: root.display_text()
-        Button:
+            background_color: (175/256, 130/256, 96 /256)
             id: chest_button_id
             size_hint: 0.25, 0.2
             pos_hint: {"y":0.8}
             text: "COFFRE"
+            color: 175/256, 130/256, 96 /256
             on_release: root.c_dropdown.open(self)
         Button:
+            background_color: (175/256, 130/256, 96 /256)
             id: item_button_id
             size_hint: 0.25, 0.2
             pos_hint: {"y":0.8}
             text: "OBJET"
+            color: 175/256, 130/256, 96 /256
             on_release: root.i_dropdown.open(self)
         Button:
+            background_color: (175/256, 130/256, 96 /256)
             id: rarity_button_id
             size_hint: 0.25, 0.2
             pos_hint: {"y":0.8}
             text: "RARETÉ"
+            color: 175/256, 130/256, 96 /256
             on_release: root.r_dropdown.open(self)
     Label:
         id: item_display
@@ -159,3 +193,16 @@
         valign: 'middle'
         text_size: root.width/2, None
         text: root.item_text
+        color: 50 /256, 44 /256, 43 /256
+    Button:
+        id: button_layout
+        size: root.width/2, 100
+        orientation: 'horizontal'
+        center_x: root.center_x
+        background_color: (128/256, 61/256, 59/256, 1)
+        id: generation_button
+        size_hint: 0.25, 0.2
+        pos_hint: {"x":0,"y":0.8}
+        text: "GENERER"
+        color: 175/256, 130/256, 96 /256
+        on_release: root.display_text()

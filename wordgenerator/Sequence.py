@@ -7,7 +7,7 @@ Created on Fri Apr 15 01:40:29 2022
 
 from wordgenerator.NodeCollectionIf import AbsCollectionNode
 from wordgenerator.Print import ConvToNode
-from macro.dice_macro import get_ValueIf
+from macro.grammar import get_ValueIf
 
 #___________________________________________________#
 #                                                   #

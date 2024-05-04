@@ -6,7 +6,7 @@ Created on 12/08/2022
 """
 from wordgenerator.Interval import IntervalNode
 from wordgenerator.Print import PrintNode
-from utils.debug import test, print_log
+from utils.debugtools import test, print_log
 from macro.dice import PoolSum, Pool
 
 var = IntervalNode(PoolSum(Pool(1,4)))

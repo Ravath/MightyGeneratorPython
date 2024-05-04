@@ -8,7 +8,7 @@ Created on Tue Sep 15 13:53:57 2020
 import random
 from wordgenerator.NodeCollectionIf import AbsCollectionNode, RowNode
 from wordgenerator.NodeIf import AbsGeneratorNode
-from macro.calc import ValueIf
+from macro.math import ValueIf
 
 #___________________________________________________#
 #                                                   #

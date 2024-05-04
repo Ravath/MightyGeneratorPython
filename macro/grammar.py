@@ -28,7 +28,7 @@ Grammar
 from macro.ply import lex
 import macro.ply.yacc as yacc
 import macro.dice as dice
-import macro.calc as calc
+import macro.math as math
 
 tokens = (
     'PLUS',
@@ -83,27 +83,27 @@ precedence = (
 
 def p_add( p ) :
     'expr : expr PLUS expr'
-    p[0] = calc.AddOp(p[1], p[3])
+    p[0] = math.AddOp(p[1], p[3])
 
 def p_sub( p ) :
     'expr : expr MINUS expr'
-    p[0] = calc.SubOp(p[1], p[3])
+    p[0] = math.SubOp(p[1], p[3])
 
 def p_expr2uminus( p ) :
     'expr : MINUS expr %prec UMINUS'
-    p[0] = calc.NegOp(p[2])
+    p[0] = math.NegOp(p[2])
 
 def p_mult_div( p ) :
     '''expr : expr TIMES expr
             | expr DIV expr'''
 
     if p[2] == '*' :
-        p[0] = calc.MulOp(p[1], p[3])
+        p[0] = math.MulOp(p[1], p[3])
     else :
         if p[3] == 0 :
             print("Can't divide by 0")
             raise ZeroDivisionError('integer division by 0')
-        p[0] = calc.DivOp(p[1], p[3])
+        p[0] = math.DivOp(p[1], p[3])
 
 def p_INTERVAL( p ) :
     '''expr : expr RAND_INTERVAL expr'''
@@ -139,8 +139,8 @@ def p_RAND_DECORATOR( p ) :
         p[0] = dice.FilterDiceCount(p[1], p[3], False)
     else :
         operand = p[2][0].lower()
-        is_higher = not (len(p[2])>2 and p[2][1] != '<')
-        is_upper = operand.upper() == p[2][0]
+        is_higher = not (len(p[2])>2 and p[2][1] != '<') # check if the operand is followed by the <' sign.
+        is_upper = operand.upper() == p[2][0] # check if the operand is upper case.
         if operand == 'a' :
             p[0] = dice.CompoundExplode(p[1], p[3], is_higher, is_upper)
         elif operand == 'e' :
@@ -177,17 +177,17 @@ parser = yacc.yacc()
 #                    Convenience                    #
 #___________________________________________________#
 
-def get_ValueIf(toconvert) -> calc.ValueIf :
+def get_ValueIf(toconvert) -> math.ValueIf :
     '''Convert to a ValueIf.
     | Can convert from int, ValueIf, and str.
     | The str are parsed using the dice_macro.py grammar.'''
     if isinstance(toconvert, int) :
-        return calc.Value(toconvert)
+        return math.Value(toconvert)
     elif isinstance(toconvert, list):
-        return calc.ListValue(toconvert)
+        return math.ListValue(toconvert)
     elif callable(toconvert) :
-        return calc.FuncValue(toconvert)
-    elif isinstance(toconvert, calc.ValueIf):
+        return math.FuncValue(toconvert)
+    elif isinstance(toconvert, math.ValueIf):
         return toconvert
     elif isinstance(toconvert, str) :
         return parser.parse(toconvert)
@@ -201,7 +201,7 @@ def get_ValueIf(toconvert) -> calc.ValueIf :
 
 if __name__ == '__main__':
     # DEBUG/TEST
-    from utils.debug import test, print_log, test_result
+    from utils.debugtools import test, print_log, test_result
 
     def test_roll(roll : str, expected_value:int = -1) :
         pool = parser.parse(roll)

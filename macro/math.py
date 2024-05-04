@@ -369,7 +369,7 @@ class ModOp(Operator) :
 #___________________________________________________#
 
 if __name__ == "__main__" :
-    from utils.debug import print_log, test, test_result
+    from utils.debugtools import print_log, test, test_result
 
     print_log("START", "CALCULATION UNITARY TESTING")
     print_log("TEST", "Value")

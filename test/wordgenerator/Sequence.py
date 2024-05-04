@@ -5,7 +5,7 @@ Created on 12/08/2022
 @author: Trense
 """
 from wordgenerator.Sequence import SequenceNode
-from utils.debug import test, print_log, test_result, test_action, trace
+from utils.debugtools import test, print_log, test_result, test_action, trace
 
 var = SequenceNode()
 var.extend([
