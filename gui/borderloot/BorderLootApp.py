@@ -19,7 +19,7 @@ kivy.require('2.1.0')
 
 # ============== GENERATION IMPORTS ==============
 # exec(open("generators/borderlands/items.py", encoding='utf-8').read())
-from generators.borderlands.items import generation, force_chest_type, force_item_type, force_item_rarity
+from generators.borderlands.gen_david_weapon import generation, force_chest_type, force_item_type, force_item_rarity
 from wordgenerator.Print import PrintNode
 PrintNode.print_to_buffer()
 

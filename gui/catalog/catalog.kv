@@ -1,0 +1,42 @@
+#:kivy 2.1.0
+#color palette
+#E4C59E rgb(228/256, 197/256, 158/256) # Background
+#AF8260 rgb(175/256, 130/256, 96 /256) # Button text
+#803D3B rgb(128/256, 61 /256, 59 /256) # GenButton
+#322C2B rgb(50 /256, 44 /256, 43 /256) # Main Text
+
+<CatalogWidget>:
+    canvas.before:
+        Color:
+            rgba: 228/256, 197/256, 158/256, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        orientation: 'vertical'
+        size: root.width, root.height
+        Carousel:
+            direction: 'right'
+            TreeView:
+                id: tree_list
+            BoxLayout:
+                id: button_layout
+                size: root.width/2, root.height
+                orientation: 'vertical'
+                top: root.top
+                Label:
+                    id: generation_display
+                    top: root.top - generation_button.height
+                    center_x: root.center_x
+                    valign: 'middle'
+                    text_size: root.width/2, None
+                    text: root.generated_text
+                    color: 50 /256, 44 /256, 43 /256
+                Button:
+                    id: generation_button
+                    size_hint: 0.5, 0.2
+                    pos_hint: {'center_x':.5}
+                    text: "GENERER"
+                    on_release: root.generate_text()
+                    color: 175/256, 130/256, 96 /256
+                    background_color: (128/256, 61/256, 59/256, 1)

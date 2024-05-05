@@ -34,7 +34,7 @@ antagonist = Weight() << [
     [3,"A lich"],
     [3,"Barbarians"],
     [3,"An aboleth"],
-    [3,"A sucuubus"],
+    [3,"A sucubus"],
     [3,"A criminal organisation"],
     [3,"A gelatinous cube"],
     [3,"A necromancer"],
