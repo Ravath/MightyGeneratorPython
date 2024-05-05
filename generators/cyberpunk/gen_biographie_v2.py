@@ -510,6 +510,6 @@ root = Sequence() << [
 
 ################ Generation
 
-generator = Generator(root)
-generator.execute()
-generator.print_to_console()
+generation = Generator(root)
+generation.execute()
+generation.print_to_console()

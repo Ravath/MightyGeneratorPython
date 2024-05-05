@@ -490,7 +490,7 @@ def force_item_rarity(rarity:str):
     """Use in GUI, rarity is recovered from the attribute_rarity method."""
     if rarity == "RANDOM":
         for child in sel_rarity.children :
-            child.weight = 1 # Actually not what we want, we want to put odds 
+            child.weight = 1 # TODO Actually not what we want, we want to put odds 
             # on chest rarities odds instead of equal chances, but that's a beginning
     else:
         for child in sel_rarity.children :
@@ -515,6 +515,7 @@ def force_item_rarity(rarity:str):
 #################################################
 
 from wordgenerator.NodeIf import AbsLeafNode
+# TODO move to default library, and compare to tabNode
 class DictionaryNode(AbsLeafNode) :
     """Node managing a dictionary of nodes"""
 

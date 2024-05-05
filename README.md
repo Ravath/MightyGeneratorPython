@@ -10,9 +10,14 @@ Generates some text by rolling random results from roll tables.
 Some generation implementations.
 
 ## GUI
-
-A GUI manipulation of the Borderloot generation.
 Intended for Android using Kivy (In progress).
+
+### Borderloot
+A GUI manipulation of the Borderloot generation.
+### Catalog
+A GUI for accessing every implemented generations and executing them.
+ - Uses only files prefixed 'gen_'.
+ - A generator named 'generation' must be initialized.
 
 ## Macro
 
@@ -107,6 +112,7 @@ Some miscellaneous modules.
 generation = Generator(root)
 generation.execute()
 generation.print_to_console()
+```
 
 ## Generation order
  - Rolls the tables starting from root.
