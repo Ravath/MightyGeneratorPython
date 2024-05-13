@@ -108,7 +108,7 @@ Some miscellaneous modules.
 2) Assemble the tables
 3) Use the Generator class to conclude and generate
 
->```
+```
 generation = Generator(root)
 generation.execute()
 generation.print_to_console()
