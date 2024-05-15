@@ -5,15 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
+            "name": "Python Debugger: Current File",
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",
-            "console": "integratedTerminal",
-            "justMyCode": true,
-            "env": {
-                "PYTHONPATH": "C:/Users/rvi/Desktop/repos/MightyGeneratorPython"
-            }
-        }
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "android",
+            "request": "launch",
+            "name": "Android Launch",
+            "appSrcRoot": "${workspaceRoot}/.",
+            "apkFile": "${workspaceRoot}/bin/BorderlootPkg-0.1-arm64-v8a_armeabi-v7a-debug.apk",
+            "adbPort": 5037
+        },
     ]
 }

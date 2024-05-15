@@ -7,6 +7,10 @@ Created on Tue Sep 15 19:03:13 2020
 | from http://cyberpunk2021.free.fr/creation2.php?lng=fr
 """
 
+if __name__ == "__main__" :
+    import sys, os
+    sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Sequence import SequenceNode as Sequence
@@ -511,5 +515,6 @@ root = Sequence() << [
 ################ Generation
 
 generation = Generator(root)
-generation.execute()
-generation.print_to_console()
+if __name__ == "__main__" :
+    generation.execute()
+    generation.print_to_console()
