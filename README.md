@@ -33,16 +33,16 @@ Includes:
  - x __`:`__ y : returns a number between x and y.
  - x __`d`__ y : rolls x dice of y faces, returning x numbers between 1 and y.
 
-#### The filter operators compare every number with a thresold
+#### The filter operators compare every number with a threshold
  - __`h`__ z : keeps the z higher numbers.
  - __`l`__ z : keeps the z lower numbers.
  - __`<`__ z : keeps the numbers higher than z.
  - __`>`__ z : keeps the numbers lower than z.
 
 #### The reroll operators reroll the numbers exceding the threshold
- - __`e`__ : Explosive Dice : reroll the dice with a result equal or higher than z and adds the result to the previous number.
- - __`a`__ : Compound Explosive Dice : Similar to Explosive Dice, except a new dice is added to the pool instead.
- - __`r`__ : Reroll Dice : reroll the dice for a new value.
+ - __`e`__ z : Explosive Dice : reroll the dice with a result equal or higher than z and adds the result to the previous number.
+ - __`a`__ z : Compound Explosive Dice : Similar to Explosive Dice, except a new dice is added to the pool instead.
+ - __`r`__ z : Reroll Dice : reroll the dice for a new value.
 - if z=-1 (default value) then the threshold value is the maximum value of the dice.
 - if uppercase (`E`,`A`,`R`), then the operation will reiterate as long as the newer results meet the threshold criteria.
 - if followed by `<`, then the operation will use a lower threshold instead of a higher threshold.
@@ -52,9 +52,20 @@ Includes:
  - _`<Nothing>`_ : computes the sum by default
  - __`c`__ : returns the number of results
 
-#### Exemple
+#### Exemples
 
-3d6>4c : the number of dice from a 3d6 pool with a result greater than 4.
+3d6>4c : the number of dice from a 3d6 pool with a result greater or equal than 4.
+- [1,4,6] => 2
+- [1,3,2] => 0
+
+5d10e9 : Rolls 5d10, and then explodes every result greater or equal to 9 and computes the sum.
+- [1,8,9,4,10] => [1,8,(9+5),4,(10+9)] => 46
+
+3d4Ac : Rolls 3d4, and then rolls a new dice for every result greater or equal than 4 (default value), repeats until done, and then counts the number of dice.
+- [1,4,4] => [1,4,3,4,4] => [1,4,3,4,4,2] => 6
+
+3d10r<1 : Rolls 3d10, and then rerolls every result smaller or equal to 1 and computes the sum.
+- [1,8,9] => [6,8,9] => 23
 
 ## Test
 
@@ -68,37 +79,7 @@ Some miscellaneous modules.
 
 ## WordGenerator
 
-![WordGenerator Class Diagram](/wordgenerator/uml.jpg "Tables Structure.")
-
-### Collections
-
-- **Weight Node** : Each row has a ponderated chance to be rolled.
-  - Default row ponderation = 1.
-  - This table type garanties to draw a row.
-  - Default row format : `[pond, value]`
-- **Interval Node** : Each row has an interval of values. The table must be configured with a specific roll.
-  - This table type can draw no rows or multiple rows depending on configuration.
-  - Default row format : `[minThreshold, maxThreshold, value]`
-- **Sequence Node** : Each row of the table will be drawn sequentially.
-  - Default row format : __`value`__
-- **Tab Node** : Returns the row at the given index, generaly a variable red by a lambda.
-
-### Leafs
-- Action Node : Executes a given function on execution
-- Set Node : Set a variable with a given value.
-- Print Node : Default node, prints a given text.
-  - Title : automatic __Title__ formating.
-  - Label : automatic __Label : Text__ formatting.
-  - By default. the generated output is printed to the console, but by setting `PrintNode.print_to_buffer()`, it can be used as a normal string without using the console. The generated text can then be accessed with `generation.text` 
-
-### Utilities
- - using the `<<` operator on a table enables to extend the table with new rows.
- - Giving a text to a row value will be automatically interpreted as a PrintNode.
- - Giving a lamda or a function to a row value will be automatically interpreted as a ActionNode.
- - The number of rolls can be specified for every tables.
-   - Default 1.
- - The maximum number of times a row can be drawn can be specified.
-   - Default -1 for an infinite number of times.
+[WordGenerator Readme](wordgenerator/README.md)
 
 # How to Use
 
@@ -109,9 +90,25 @@ Some miscellaneous modules.
 3) Use the Generator class to conclude and generate
 
 ```
-generation = Generator(root)
-generation.execute()
-generation.print_to_console()
+# exemple from generators/pathfinder/gen_loot_faible.py
+from wordgenerator.Weight import WeightNode as Weight
+
+...
+
+# create arborescence
+root = Weight() << [
+    [ 4, Title("Armure", obj_bouclier_armure)],
+    [ 5, Title("Arme", obj_cac_dist)],
+    [35, Title("Potion", obj_potion)],
+    [ 2, Title("Anneau", obj_anneaux)],
+    [35, Title("Parchemin", obj_parchemin)],
+    [10, Title("Baguette", obj_baguette)],
+    [ 9, Title("Objet Merveilleux", obj_merveilleux)],
+]
+
+generation = Generator(root)    # Give the root node to the generator
+generation.execute()            # Generate a random result
+generation.print_to_console()   # print the generated result to the console
 ```
 
 ## Generation order

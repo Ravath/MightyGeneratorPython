@@ -5,7 +5,10 @@
 # add the project path or it won't find any relative
 # dependencies.
 import sys, os
-sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+from kivy.utils import platform
+
+if __name__ == '__main__' :
+    sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 # ================= GUI IMPORTS ==================
 import kivy
@@ -18,10 +21,7 @@ from kivy.uix.dropdown import DropDown
 kivy.require('2.1.0')
 
 # ============== GENERATION IMPORTS ==============
-# exec(open("generators/borderlands/items.py", encoding='utf-8').read())
 from generators.borderlands.gen_david_weapon import generation, force_chest_type, force_item_type, force_item_rarity
-from wordgenerator.Print import PrintNode
-PrintNode.print_to_buffer()
 
 # ============== WIDGET DEFINITIONS ==============
 class ChestDropDown(DropDown):

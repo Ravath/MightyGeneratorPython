@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import sys
+if __name__ == "__main__" :
+    import sys, os
+    sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Interval import IntervalNode as Interval

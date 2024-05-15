@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "Archime"
+version = "0.0.1"
+dependencies = [
+
+]
+requires-python = ">=3.10.12"
+authors = [
+  {name = "Ravath", email = "remi.vignal@gmail.com"},
+]
+maintainers = [
+  {name = "Ravath", email = "remi.vignal@gmail.com"},
+]
+description = "A tool for creating random draw tables."
+readme = "README.md"
+license = {file = "LICENSE.txt"}
+keywords = ["random", "generation", "rpg", "dice", "die", "jdr", "table", "rand", "draw"]
+classifiers = [
+  "Programming Language :: Python",
+]
+
+[project.urls]
+Repository = "https://github.com/Ravath/MightyGeneratorPython"

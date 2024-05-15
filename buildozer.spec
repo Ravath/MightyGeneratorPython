@@ -1,28 +1,28 @@
 [app]
 
 # (str) Title of your application
-title = RPGen
+title = Borderloot
 
 # (str) Package name
-package.name = RPGen
+package.name = BorderlootPkg
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.test
+package.domain = org.ravath.borderloot
 
 # (str) Source code where the main.py live
-source.dir = ./gui/catalog
+source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
 source.include_exts = py,png,jpg,kv,atlas
 
 # (list) List of inclusions using pattern matching
-#source.include_patterns = gui/*
+#source.include_patterns = assets/*,images/*.png
 
 # (list) Source files to exclude (let empty to not exclude anything)
 #source.exclude_exts = spec
 
 # (list) List of directory to exclude (let empty to not exclude anything)
-#source.exclude_dirs = tests, bin, venv
+source.exclude_dirs = tests, test, utils, bin, venv, __pycache__, .buildozer, .vscode
 
 # (list) List of exclusions using pattern matching
 # Do not prefix with './'
@@ -37,17 +37,23 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy
+requirements = python3==3.12.0, kivy
+#, androidstorage4kivy==0.1.1, appdirs==1.4.4, build==1.2.1, certifi==2024.2.2, charset-normalizer==3.3.2, colorama==0.4.6, distlib==0.3.8, docutils==0.21.2, filelock==3.14.0, idna==3.7, Jinja2==3.1.4, MarkupSafe==2.1.5, pexpect==4.9.0, platformdirs==4.2.1, plyer==2.1.0, ptyprocess==0.7.0, Pygments==2.17.2, pypiwin32==223, pyproject_hooks==1.1.0, python-for-android==2024.1.21, requests==2.31.0, setuptools==68.2.2, sh==2.0.6, toml==0.10.2, urllib3==2.2.1
+#, wordgenerator, macro, generators
+#pywin32==306, , 
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
-# requirements.source.kivy = ../../kivy
+# requirements.source = ../../../MightyGeneratorPython
+#requirements.source.wordgenerator = ../../wordgenerator
+#requirements.source.macro = ../../macro
+#requirements.source.generators = ../../generators
 
 # (str) Presplash of the application
 #presplash.filename = %(source.dir)s/data/presplash.png
 
 # (str) Icon of the application
-#icon.filename = %(source.dir)s/d10.png
+#icon.filename = %(source.dir)s/data/icon.png
 
 # (list) Supported orientations
 # Valid options are: landscape, portrait, portrait-reverse or landscape-reverse
@@ -61,7 +67,7 @@ orientation = portrait
 #
 
 #
-# author = Ravath© Copyright Info
+# author = © Copyright Info
 
 # change the major version of python used by the app
 osx.python_version = 3
@@ -411,7 +417,7 @@ warn_on_root = 1
 # build_dir = ./.buildozer
 
 # (str) Path to build output (i.e. .apk, .aab, .ipa) storage
-# bin_dir = ./bin
+bin_dir = ./bin
 
 #    -----------------------------------------------------------------------------
 #    List as sections
