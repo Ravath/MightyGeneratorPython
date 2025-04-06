@@ -5,7 +5,6 @@ Created on Tue Sep 15 13:53:57 2020
 @authors: Ehlion, Trense
 """
 
-#import random
 from wordgenerator.NodeCollectionIf import AbsCollectionNode, RowNode
 from wordgenerator.NodeIf import AbsGeneratorNode
 from macro.math import ValueIf

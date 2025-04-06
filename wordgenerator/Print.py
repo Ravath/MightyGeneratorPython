@@ -5,7 +5,6 @@ Created on Fri Apr 15 01:37:14 2022
 @author: Ehlion
 """
 
-#import io
 import typing
 from wordgenerator.NodeIf import AbsLeafNode, AbsGeneratorNode
 
