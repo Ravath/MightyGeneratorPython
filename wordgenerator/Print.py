@@ -5,7 +5,7 @@ Created on Fri Apr 15 01:37:14 2022
 @author: Ehlion
 """
 
-import io
+#import io
 import typing
 from wordgenerator.NodeIf import AbsLeafNode, AbsGeneratorNode
 
@@ -80,25 +80,25 @@ class PrintToBuffer(PrintDelegationIf):
     """
 
     def __init__(self) :
-        self.str_build = io.StringIO()
+        self.str_build = ""
 
     def do_print(self, to_print:str) :
         """Concatene the given text to the generated string."""
         tabs = ""
-        if self.str_build.getvalue().endswith('\n') :
+        if self.str_build.endswith('\n') :
             tabs = '\t' * PrintDelegationIf.tabs
-        self.str_build.write(tabs + to_print)
+        self.str_build += tabs + to_print
 
     def end_section(self) :
-        self.str_build.write('\n')
+        self.str_build += '\n'
 
     def get_text(self) -> str :
         """Get the generated string."""
-        return self.str_build.getvalue()
+        return self.str_build
 
     def del_text(self) :
         """Reset the generated string."""
-        self.str_build = io.StringIO()
+        self.str_build = ""
 
 #___________________________________________________#
 #                                                   #

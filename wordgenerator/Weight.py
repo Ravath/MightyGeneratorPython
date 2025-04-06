@@ -5,10 +5,11 @@ Created on Tue Sep 15 13:53:57 2020
 @authors: Ehlion, Trense
 """
 
-import random
+#import random
 from wordgenerator.NodeCollectionIf import AbsCollectionNode, RowNode
 from wordgenerator.NodeIf import AbsGeneratorNode
 from macro.math import ValueIf
+from macro.dice import randint
 
 #___________________________________________________#
 #                                                   #
@@ -80,9 +81,6 @@ class WeightRow(RowNode):
     def __str_attributes__(self) -> str :
         return f"Weight={self.weight}"\
             f"Back={self.nbr_pick}"
-
-def randint(vmin:int, vmax:int) :
-    return random.randint(vmin, vmax)
 
 #___________________________________________________#
 #                                                   #

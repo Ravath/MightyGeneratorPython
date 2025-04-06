@@ -8,12 +8,20 @@ Created on Tue Apr 19 14:15:22 2022
 
 """
 
-import random
+#import random
+import os
 from macro.math import ValueIf
+
+def randint(vmin:int, vmax:int) :
+    random_bytes = os.urandom(4)  # Get 4 random bytes
+    random_number = int.from_bytes(random_bytes, 'big')  # Convert bytes to an integer
+    return random_number % (vmax - vmin + 1) + vmin
+    #return random.randint(vmin, vmax)
 
 def roll_dice(faces:int = 6) :
     """Get the result of a dice roll."""
-    return random.randint(1, faces)
+    return randint(1, faces)
+    #return random.randint(1, faces)
 
 #___________________________________________________#
 #                                                   #
