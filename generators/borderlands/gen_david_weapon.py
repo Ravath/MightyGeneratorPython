@@ -8,6 +8,7 @@ from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Print import PrintNode as Print
+from wordgenerator.Print import CheckpointNode as Checkpoint
 from wordgenerator.Print import SetNode, Title, Label
 from wordgenerator.Generator import Generator
 from generators.borderlands.ponderation import pond_chest, pond_type, pond_manufacturer, can_element, nbr_of_manufacturer_properties
@@ -562,6 +563,13 @@ class DictionaryNode(AbsLeafNode) :
             dico_node.print_node(tabs)
 
 ### GENERATION TEMPLATE ###
+prop_ckpt = Checkpoint("Properties",
+    Sequence() << [
+        spe_manufacturer,
+        DictionaryNode(item_prop, "ITEM_RARITY", "ITEM_TYPE"),
+        item_special,
+])
+                       
 generation = Generator(
     Sequence() << [
         sel_chest,
@@ -569,12 +577,8 @@ generation = Generator(
         sel_rarity,
         DictionaryNode(sel_manufacturer, "ITEM_TYPE"),
         DictionaryNode(item_generation, "ITEM_TYPE", "ITEM_RARITY"),
-        Title("Propriétés",
-            Sequence() << [
-                spe_manufacturer,
-                DictionaryNode(item_prop, "ITEM_RARITY", "ITEM_TYPE"),
-                item_special,
-])])
+        Title("Propriétés", prop_ckpt)
+])
 
 # text var converter
 def var_converter(name) -> str :
@@ -597,6 +601,12 @@ if __name__ == "__main__" :
 
     # print generation result
     generation.print_to_console()
+
+    print("checkpoint test")
+    print(prop_ckpt.text)
+    prop_ckpt.execute()
+    print(prop_ckpt.text)
+    print("checkpoint test end")
 
     # After generation, delete any item specs for further generation
     del ITEM_TYPE

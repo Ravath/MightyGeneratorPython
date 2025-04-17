@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from wordgenerator.NodeIf import AbsGeneratorNode
-from wordgenerator.Print import PrintNode
+from wordgenerator.Print import PrintNode, CheckpointNode
 from macro.grammar import get_ValueIf
 from macro.math import ListValue
 import typing
@@ -32,9 +32,16 @@ class Generator :
 
         # do Variable replacement
         self.text = self.replace_variables(self.text)
+        # also do the checkpoints
+        for ckpt in CheckpointNode.checkpoints.values():
+            ckpt.text = self.replace_variables(ckpt.text)
 
         # do macro rolls
         self.text = self.roll_macros(self.text)
+        # also do the checkpoints
+        # TODO With the current mechanism, the checkpoints rolls have different values than the original text. Idealy should not happen.
+        for ckpt in CheckpointNode.checkpoints.values():
+            ckpt.text = self.replace_variables(ckpt.text)
 
     def generate_text(self) :
         """

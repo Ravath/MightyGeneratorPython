@@ -80,11 +80,12 @@ class PrintToBuffer(PrintDelegationIf):
 
     def __init__(self) :
         self.str_build = ""
+        self.checkpoints_stack = list()
 
     def do_print(self, to_print:str) :
         """Concatene the given text to the generated string."""
         tabs = ""
-        if self.str_build.endswith('\n') :
+        if self.str_build.endswith('\n') or self.str_build == "":
             tabs = '\t' * PrintDelegationIf.tabs
         self.str_build += tabs + to_print
 
@@ -98,6 +99,15 @@ class PrintToBuffer(PrintDelegationIf):
     def del_text(self) :
         """Reset the generated string."""
         self.str_build = ""
+
+    def stack(self):
+        self.checkpoints_stack.append(self.str_build)
+        self.str_build = ""
+    
+    def unstack(self) -> str:
+        ret = self.str_build
+        self.str_build = self.checkpoints_stack.pop() + self.str_build
+        return ret
 
 #___________________________________________________#
 #                                                   #
@@ -127,6 +137,45 @@ class PrintNode(AbsLeafNode):
         """Print the node name and printed text."""
         tab_sign="\t"
         print(f"{tab_sign*tabs}{type(self).__name__} : '{self.text}'")
+
+#___________________________________________________#
+#                                                   #
+#                   CheckpointNode                  #
+#___________________________________________________#
+class CheckpointNode(AbsLeafNode):
+    """A Node wrapper used to manipulate subsections of the generation tree.
+    Specific uses include catching output in variables
+    and regenerating only a subtree of the whole."""
+    
+    # The current checkpoints
+    checkpoints = dict()
+
+    def __init__(self, label:str, child:AbsGeneratorNode = None):
+        AbsLeafNode.__init__(self)
+        self.label = label
+        self.child = child
+        self.text = ""
+        CheckpointNode.checkpoints[label] = self
+
+    def __lshift__(self, other) :
+        """Use '<<' as shortcut for the 'set_child' operation."""
+        self.child = other
+        return self
+
+    def execute(self):
+        """Print the associated text."""
+        # stack the print
+        PrintNode._printer.stack()
+        
+        self.child.execute()
+        
+        # unstack the print
+        self.text = PrintNode._printer.unstack()
+    
+    def print_node(self, tabs:int = 0) :
+        tab_signs="\t"*tabs
+        print(f"{tab_signs}CHECKPOINT[{self.label}]")
+        self.child.print_node(tabs+1)
 
 #___________________________________________________#
 #                                                   #
