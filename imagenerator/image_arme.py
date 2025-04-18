@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 from PIL import Image, ImageDraw, ImageFont, ImageShow
-from generators.borderlands.items import generation, force_chest_type, force_item_type, force_item_rarity
+from generators.borderlands.gen_david_weapon import generation, force_chest_type, force_item_type, force_item_rarity
 from wordgenerator.Print import PrintNode
 
 ###################
