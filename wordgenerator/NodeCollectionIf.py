@@ -172,7 +172,7 @@ class AbsCollectionNode(AbsGeneratorNode) :
     #####################################################
 
     def draw(self) :
-        """draw some children"""
+        """Draw some children. ie select any, one or more children according to the node's logic."""
         raise NotImplementedError(f"In class {type(self).__name__}")
 
     def execute(self) :

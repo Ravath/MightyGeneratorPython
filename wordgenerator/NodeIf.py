@@ -34,11 +34,11 @@ class AbsGeneratorNode :
                 NotImplemented)
 
     def execute(self) :
-        """Execute the node action"""
+        """Execute the node action."""
         raise NotImplementedError(f"In class {type(self).__name__}")
 
     def print_node(self, tabs:int = 0) :
-        """print the node."""
+        """print the node fonctional data for analysis purposes."""
         raise NotImplementedError(f"In class {type(self).__name__}")
 
 #___________________________________________________#

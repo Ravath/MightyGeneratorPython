@@ -78,8 +78,7 @@ class WeightRow(RowNode):
         ])
 
     def __str_attributes__(self) -> str :
-        return f"Weight={self.weight}"\
-            f"Back={self.nbr_pick}"
+        return f"Weight={self.weight} Pick={self.nbr_pick}"
 
 #___________________________________________________#
 #                                                   #

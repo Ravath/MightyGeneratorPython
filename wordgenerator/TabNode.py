@@ -18,6 +18,7 @@ class TabNode(AbsCollectionNode) :
         return self._value
 
     value = property(_get_value, _set_value)
+    """Index of the value to draw at execution."""
 
     def _set_nbr_draw(self, new_nbr_draw) :
         self._nbr_draw = get_ValueIf(new_nbr_draw)
@@ -26,6 +27,7 @@ class TabNode(AbsCollectionNode) :
         return self._nbr_draw
 
     nbr_draw = property(_get_nbr_draw, _set_nbr_draw)
+    """The number of items to draw at execution."""
 
     def __init__(self, value, nbr_draw = 1) :
         AbsCollectionNode.__init__(self)

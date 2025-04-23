@@ -58,7 +58,7 @@ class Generator :
         PrintNode._printer.del_text()
 
         self.root.execute()
-        self.text = self.raw_text= PrintNode._printer.get_text()
+        self.text = self.raw_text = PrintNode._printer.get_text()
 
     def replace_variables(self, text : str) -> str :
         """

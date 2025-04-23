@@ -241,7 +241,7 @@ def CanConvToNode(conv_from) -> AbsGeneratorNode :
 def ConvToNode(conv_from) -> AbsGeneratorNode :
     """Convert a value to a managable node.
         str->PrintNode
-        callable(function)->ActoinNode
+        callable(function)->ActionNode
         Already a Node -> no need to convert it.
     """
     if conv_from is None :
