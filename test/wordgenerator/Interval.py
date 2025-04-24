@@ -21,7 +21,7 @@ var.print_node()
 for i in range(0,6) :
     print(f"== {i} ==")
     for resNode in var.draw_from_result(i) :
-        resNode.execute()
+        resNode.execute().print_to_console()
 
 print("===== One pick in row 1d4 =====")
 var2 = IntervalNode(1)
@@ -31,7 +31,7 @@ var2.extend([
     [3, 2, "problem"],
     [5,10, PrintNode("manuel")]
     ])
-var2.execute()
+var2.execute().print_to_console()
 
 print("===== Eight picks in row 1d4 =====")
 var3 = IntervalNode("1d4",8)
@@ -44,7 +44,7 @@ var3.extend([
 var3.print_node()
 
 print("=================================")
-var3.execute()
+var3.execute().print_to_console()
 
 print("==========Do it again?===========")
-var3.execute()
+var3.execute().print_to_console()

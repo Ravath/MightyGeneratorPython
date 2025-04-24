@@ -146,7 +146,7 @@ class ListValue(ValueIf) :
     every_list = []
     def reset_lists() :
         """Reset every ListValues.
-        This is necessary or the lists will the stuck or shifted across multiple generations."""
+        This is necessary or the lists will be stuck or shifted across multiple generations."""
         for l in ListValue.every_list :
             l.reset_cycle()
 

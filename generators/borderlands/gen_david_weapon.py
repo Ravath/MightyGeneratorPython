@@ -529,7 +529,7 @@ class DictionaryNode(AbsLeafNode) :
         # name of variables
         self.variables = variables
 
-    def execute(self):
+    def node_action(self, generation_result:GenerationResult):
         """Execute the designated node."""
         # Get the first dictionary
         var_name = self.variables[0]
@@ -543,7 +543,7 @@ class DictionaryNode(AbsLeafNode) :
             to_execute = to_execute[globals()[var_name]]
 
         # Execute the found dictionary
-        to_execute.execute()
+        to_execute.node_action(generation_result)
 
     def print_node(self, tabs:int = 0) :
         """Print the node name and its dictionary keys and values."""
@@ -591,7 +591,7 @@ generation.variable_converter = var_converter
 
 if __name__ == "__main__" :
     # Do generation
-    generation.execute()
+    result = generation.execute()
     
     print("Coffre :", globals()["CHEST_TYPE"])
     print("Arme   :", ITEM_TYPE)
@@ -600,12 +600,12 @@ if __name__ == "__main__" :
     print()
 
     # print generation result
-    generation.print_to_console()
+    result.print_to_console()
 
     print("checkpoint test")
     print(prop_ckpt.text)
-    prop_ckpt.execute()
-    print(prop_ckpt.text)
+    result = prop_ckpt.execute()
+    print(result.text)
     print("checkpoint test end")
 
     # After generation, delete any item specs for further generation

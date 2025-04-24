@@ -180,7 +180,7 @@ def test_map(tmap:WeightNode, expected:list, determined_rand:list = default_dice
     dice_results.clear()
     dice_results.extend(determined_rand)
     received_results.clear()
-    tmap.execute()
+    tmap.execute().print_to_console()
     test(expected, received_results, "test roll outcome")
 
 print_log("TEST", "Drawing with default values")

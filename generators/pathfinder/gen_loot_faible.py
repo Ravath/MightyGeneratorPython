@@ -315,5 +315,4 @@ root = Weight() << [
 
 generation = Generator(root)
 if __name__ == "__main__" :
-    generation.execute()
-    generation.print_to_console()
+    generation.execute().print_to_console()

@@ -9,6 +9,7 @@ Created on Fri Apr 15 01:39:26 2022
 | a RowNode class has to be implemented to encapsulate the children nodes.
 """
 
+from wordgenerator.GenerationResult import GenerationResult
 from wordgenerator.NodeIf import AbsGeneratorNode
 from wordgenerator.Print import CanConvToNode, ConvToNode
 from macro.math import ValueIf
@@ -175,11 +176,11 @@ class AbsCollectionNode(AbsGeneratorNode) :
         """Draw some children. ie select any, one or more children according to the node's logic."""
         raise NotImplementedError(f"In class {type(self).__name__}")
 
-    def execute(self) :
+    def node_action(self, generation_result:GenerationResult) :
         """Execute every node drawn from the collection."""
         for node in self.draw() :
             if node :
-                node.execute()
+                node.node_action(generation_result)
 
     #####################################################
     #                ROW COLLECTION LOGIC               #

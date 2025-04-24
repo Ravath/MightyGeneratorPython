@@ -15,4 +15,4 @@ var.extend([
 
 var.print_node()
 
-var.execute()
+var.execute().print_to_console()

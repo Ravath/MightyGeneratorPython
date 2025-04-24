@@ -107,8 +107,8 @@ root = Weight() << [
 ]
 
 generation = Generator(root)    # Give the root node to the generator
-generation.execute()            # Generate a random result
-generation.print_to_console()   # print the generated result to the console
+result = generation.execute()   # Generate a random result
+result.print_to_console()       # print the generated result to the console
 ```
 
 ## Generation order

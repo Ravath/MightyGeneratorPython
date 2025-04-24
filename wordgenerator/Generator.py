@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+from wordgenerator.GenerationResult import GenerationResult
 from wordgenerator.NodeIf import AbsGeneratorNode
-from wordgenerator.Print import PrintNode, CheckpointNode
 from macro.grammar import get_ValueIf
 from macro.math import ListValue
 import typing
 import re
+
 
 class Generator :
     """
@@ -21,44 +22,36 @@ class Generator :
 
     def __init__(self, root : AbsGeneratorNode = None, variable_converter : typing.Callable[[str], str] = None) :
         self.root = root
-        self.text = self.raw_text = ""
         self.variable_converter = variable_converter
 
-    def execute(self) :
+
+    def execute(self) -> GenerationResult:
         assert self.root
-
-        # do generation
-        self.generate_text()
-
-        # do Variable replacement
-        self.text = self.replace_variables(self.text)
-        # also do the checkpoints
-        for ckpt in CheckpointNode.checkpoints.values():
-            ckpt.text = self.replace_variables(ckpt.text)
-
-        # do macro rolls
-        self.text = self.roll_macros(self.text)
-        # also do the checkpoints
-        # TODO With the current mechanism, the checkpoints rolls have different values than the original text. Idealy should not happen.
-        for ckpt in CheckpointNode.checkpoints.values():
-            ckpt.text = self.replace_variables(ckpt.text)
-
-    def generate_text(self) :
-        """
-        Execute the root to get raw text.
-        """
+        
+        res = GenerationResult()
 
         # Reset the things that needs to
         # Reset ListValues or they will be stuck or shifted across multiple generations.
         ListValue.reset_lists()
 
-        # We have to use the buffer print mechanism in order to retreive the text.
-        # (instead of directly printing to console)
-        PrintNode.print_to_buffer()
-        PrintNode._printer.del_text()
+        # do generation
+        self.root.node_action(res)
 
-        self.root.execute()
-        self.text = self.raw_text = PrintNode._printer.get_text()
+        # do Variable replacement
+        res.text = self.replace_variables(res.raw_text)
+        # also do the checkpoints
+        # for ckpt in CheckpointNode.checkpoints.values():
+        #     ckpt.text = self.replace_variables(ckpt.text)
+
+        # do macro rolls
+        res.text = self.roll_macros(res.text)
+        # also do the checkpoints
+        # TODO With the current mechanism, the checkpoints rolls have different values than the original text. Idealy should not happen.
+        # for ckpt in CheckpointNode.checkpoints.values():
+        #     ckpt.text = self.replace_variables(ckpt.text)
+
+        return res
+
 
     def replace_variables(self, text : str) -> str :
         """
@@ -84,6 +77,7 @@ class Generator :
                 text = re.sub(match.group(0), new_text, text)
         return text
 
+
     def roll_macros(self, text : str) -> str :
         """
         Replaces and rolls the internal macro according to the defined pattern.
@@ -108,8 +102,3 @@ class Generator :
             # find next macro if any
             res = Generator.macro_pattern.search(text)
         return text
-
-
-    def print_to_console(self) :
-        print(self.text)
-

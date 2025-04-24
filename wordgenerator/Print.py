@@ -6,6 +6,7 @@ Created on Fri Apr 15 01:37:14 2022
 """
 
 import typing
+from wordgenerator.GenerationResult import GenerationResult
 from wordgenerator.NodeIf import AbsLeafNode, AbsGeneratorNode
 
 # pylint: disable-msg=R0903
@@ -33,105 +34,18 @@ def singleton(classe_definie):
 
 #___________________________________________________#
 #                                                   #
-#                  PrintDelegationIf                #
-#___________________________________________________#
-class PrintDelegationIf:
-    """A delegation for managing a given string."""
-
-    def __init__(self) :
-        # The current indentation level.
-        PrintDelegationIf.tabs = 0
-
-    @classmethod
-    def __subclasshook__(cls, subclass) :
-        """
-        The instance must instanciate a do_print function.
-        """
-        return (hasattr(subclass, 'do_print') and
-                callable(subclass.do_print) or
-                NotImplemented)
-
-    def do_print(self, to_print:str) :
-        """Print the given text."""
-        raise NotImplementedError(f"In class {type(self).__name__}")
-
-    def end_section(self) :
-        """Print the end of a text section."""
-        raise NotImplementedError(f"In class {type(self).__name__}")
-
-@singleton
-class PrintToConsole(PrintDelegationIf):
-    """Print the given text to the console."""
-
-    def do_print(self, to_print:str) :
-        """Print the given text to the console."""
-        tabs = '\t' * PrintDelegationIf.tabs
-        print(tabs + to_print)
-
-    def end_section(self) :
-        pass
-
-@singleton
-class PrintToBuffer(PrintDelegationIf):
-    """Concatene the text in a single string.
-    Have to manage endOfLine and indentation by hand
-    in order to be consistent with the PrintToConsole class behavior.
-    """
-
-    def __init__(self) :
-        self.str_build = ""
-        self.checkpoints_stack = list()
-
-    def do_print(self, to_print:str) :
-        """Concatene the given text to the generated string."""
-        tabs = ""
-        if self.str_build.endswith('\n') or self.str_build == "":
-            tabs = '\t' * PrintDelegationIf.tabs
-        self.str_build += tabs + to_print
-
-    def end_section(self) :
-        self.str_build += '\n'
-
-    def get_text(self) -> str :
-        """Get the generated string."""
-        return self.str_build
-
-    def del_text(self) :
-        """Reset the generated string."""
-        self.str_build = ""
-
-    def stack(self):
-        self.checkpoints_stack.append(self.str_build)
-        self.str_build = ""
-    
-    def unstack(self) -> str:
-        ret = self.str_build
-        self.str_build = self.checkpoints_stack.pop() + self.str_build
-        return ret
-
-#___________________________________________________#
-#                                                   #
 #                      PrintNode                    #
 #___________________________________________________#
 class PrintNode(AbsLeafNode):
     """The most important generator node : prints the given text at execution."""
 
-    # print delegate """
-    _printer = PrintToConsole()
-
-    def print_to_buffer() :
-        PrintNode._printer = PrintToBuffer()
-
-    def print_buffer() :
-        print(PrintNode._printer.get_text())
-
     def __init__(self, text:str = ""):
         AbsLeafNode.__init__(self)
         self.text = text
 
-    def execute(self):
+    def node_action(self, generation_result:GenerationResult):
         """Print the associated text."""
-        PrintNode._printer.do_print(self.text)
+        generation_result.do_print(self.text)
 
     def print_node(self, tabs:int = 0) :
         """Print the node name and printed text."""
@@ -157,25 +71,33 @@ class CheckpointNode(AbsLeafNode):
         self.text = ""
         CheckpointNode.checkpoints[label] = self
 
-    def __lshift__(self, other) :
-        """Use '<<' as shortcut for the 'set_child' operation."""
-        self.child = other
-        return self
-
-    def execute(self):
+    def node_action(self, generation_result:GenerationResult):
         """Print the associated text."""
         # stack the print
-        PrintNode._printer.stack()
+        generation_result.stack()
         
-        self.child.execute()
+        self.child.node_action(generation_result)
         
         # unstack the print
-        self.text = PrintNode._printer.unstack()
+        self.text = generation_result.unstack()
     
     def print_node(self, tabs:int = 0) :
         tab_signs="\t"*tabs
         print(f"{tab_signs}CHECKPOINT[{self.label}]")
         self.child.print_node(tabs+1)
+
+    def set_child(self, new_child) :
+        self._child = ConvToNode(new_child)
+
+    def get_child(self) :
+        return self._child
+
+    child = property(get_child, set_child)
+
+    def __lshift__(self, other) :
+        """Use '<<' as shortcut for the 'set_child' operation."""
+        self.set_child(other)
+        return self
 
 #___________________________________________________#
 #                                                   #
@@ -189,7 +111,7 @@ class ActionNode(AbsLeafNode):
         assert callable(func)
         self.func = func
 
-    def execute(self):
+    def node_action(self, generation_result:GenerationResult):
         """Execute the given function."""
         self.func()
 
@@ -214,7 +136,7 @@ class SetNode(ActionNode) :
         self.set_value = set_value
         ActionNode.__init__(self, set_function)
 
-    def execute(self):
+    def node_action(self, generation_result:GenerationResult):
         """Execute the given function."""
         self.func(self.set_value)
 
@@ -270,15 +192,15 @@ class Title(PrintNode) :
         PrintNode.__init__(self, title)
         self.child = child
 
-    def execute(self) :
+    def node_action(self, generation_result:GenerationResult):
         """Print the title, and then
         execute the children with one tabulation more."""
-        PrintNode.execute(self)
-        PrintDelegationIf.tabs += 1
-        self._printer.end_section()
-        self.child.execute()
-        PrintDelegationIf.tabs -= 1
-        self._printer.end_section()
+        PrintNode.node_action(self, generation_result)
+        GenerationResult.tabs += 1
+        generation_result.end_section()
+        self.child.node_action(generation_result)
+        GenerationResult.tabs -= 1
+        generation_result.end_section()
 
     def print_node(self, tabs:int = 0) :
         """Print the node name and printed text."""
@@ -309,38 +231,12 @@ class Label(PrintNode) :
         PrintNode.__init__(self, label + " : ")
         self.child = child
 
-    def execute(self) :
+    def node_action(self, generation_result:GenerationResult):
         """Print the label, and then
         execute the children with one tabulation more."""
-
-        # We need to use the PrintToBuffer delegate in order to
-        # handle the concatenation. because The PrintToConsole
-        # delegate will otherwise insert unwanted newLine at each print.
-        last, new = self._printer, PrintToBuffer()
-
-        if last == new :
-            # The current Print delegation is already a PrintToBuffer.
-            PrintNode.execute(self)
-            self.child.execute()
-            self._printer.end_section()
-        else :
-            # Use the PrintToBuffer
-            PrintNode._printer = new
-            prev_buffer_text = new.get_text()
-            new.del_text()
-
-            # Do the Printing
-            PrintNode.execute(self)
-            self.child.execute()
-
-             # flush to the actual Print delegate.
-            last.do_print(new.get_text())
-            new.del_text()
-
-            # Tidy
-            new.do_print(prev_buffer_text)
-            PrintNode._printer = last
-            self._printer.end_section()
+        PrintNode.node_action(self, generation_result)
+        self.child.node_action(generation_result)
+        generation_result.end_section()
 
     def print_node(self, tabs:int = 0) :
         """Print the node name and printed text."""

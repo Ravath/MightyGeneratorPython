@@ -49,23 +49,23 @@ w_back.extend([
 print("\n== Weigh maps ==")
 
 print("- Empty map :")
-w_empty.execute()
+w_empty.execute().print_to_console()
 
 print("- 1 row map :")
-w_single.execute()
+w_single.execute().print_to_console()
 
 print("- 2 row map, weight=1 (5times) :")
 for i in range(0,5):
-    w_easy.execute()
+    w_easy.execute().print_to_console()
 
 print("- 3 row map, different weight, including 0 (10times) :")
 for i in range(0,10):
-    w_ponder.execute()
+    w_ponder.execute().print_to_console()
 
 w_ponder.print_node()
 
 print("- 4 row map, 1 time but 8 draw in the same execution, with different put back :")
-w_back.execute()
+w_back.execute().print_to_console()
 w_back.print_node()
 
 #___________________________________________________#
@@ -97,24 +97,24 @@ print("\n== Interval maps 1 ==")
 
 print("- Empty map :")
 for resNode in i_empty.draw_from_result(1):
-    resNode.execute()
+    resNode.execute().print_to_console()
 
 print("- 1 row map (0->2) :")
 for i in range(0,3):
     print("single {}".format(i))
     for resNode in i_single.draw_from_result(i):
-        resNode.execute()
+        resNode.execute().print_to_console()
 
 print("- 4 row map, with overlaps (0->5) :")
 for i in range(0,6):
     print("test {}".format(i))
     for resNode in i_test.draw_from_result(i):
-        resNode.execute()
+        resNode.execute().print_to_console()
 
 print("\n== Interval maps 2 ==")
-i_empty.execute()
-i_single.execute()
-i_test.execute()
+i_empty.execute().print_to_console()
+i_single.execute().print_to_console()
+i_test.execute().print_to_console()
 
 #___________________________________________________#
 #                                                   #
@@ -139,7 +139,7 @@ test.print_node()
 for n in test :
     n.print_node()
 
-test.execute()
+test.execute().print_to_console()
 
 #___________________________________________________#
 #                                                   #
@@ -166,5 +166,4 @@ gen.variable_converter = var_converter
 
 print("\n== Generator ==")
 
-gen.execute()
-gen.print_to_console()
+gen.execute().print_to_console()

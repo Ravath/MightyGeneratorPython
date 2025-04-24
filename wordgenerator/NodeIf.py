@@ -10,6 +10,7 @@ Created on Wed Apr 13 18:02:57 2022
 |  - Leaf means the node shall not have any more chilren.
 | The the collections nodes, see AbsCollectionNode in the NodeCollectionIf module.
 """
+from wordgenerator.GenerationResult import GenerationResult
 
 #___________________________________________________#
 #                                                   #
@@ -29,11 +30,20 @@ class AbsGeneratorNode :
         """
         return (hasattr(subclass, 'execute') and
                 callable(subclass.execute) and
+                hasattr(subclass, 'node_action') and
+                callable(subclass.node_action) and
                 hasattr(subclass, 'print_node') and
                 callable(subclass.printNode) or
                 NotImplemented)
 
-    def execute(self) :
+    def execute(self) -> GenerationResult:
+        """Start the generation."""
+        res = GenerationResult()
+        self.node_action(res)
+        res.text = res.raw_text
+        return res
+    
+    def node_action(self, generation_result:GenerationResult) :
         """Execute the node action."""
         raise NotImplementedError(f"In class {type(self).__name__}")
 
