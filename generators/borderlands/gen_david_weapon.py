@@ -163,6 +163,10 @@ def update_manufacturer_flags(res:GenerationResult) :
 #           MANUFACTURER PROPERTIES             #
 #################################################
 
+def reset_property_flags() :
+    can_element.value = 1
+    nbr_of_manufacturer_properties.value = 0
+    
 def inhibit_element() :
     """"Inhibits the capacity of drawing an element for an item.
     Used for Torgue manufacturer : no element, only EXPLOSIVE
@@ -395,6 +399,7 @@ item_generation["SHIELD"] = {
                        
 generation = Generator(
     Sequence() << [
+        reset_property_flags,
         Define("CHEST_TYPE") << sel_chest,
         Define("ITEM_TYPE")  << sel_type,
         update_type_flags,
