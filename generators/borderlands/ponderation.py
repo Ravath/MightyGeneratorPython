@@ -10,16 +10,16 @@ when the different item type and manufacturer
 are chosen.
 
 """
-# Ponderations for each chest type
+# Flags for each chest type
 
-pond_chest = {
+chest_flags = {
     "COMMON"    : Value(0),
     "RARE"      : Value(0),
     "LEGENDARY" : Value(0),
 }
 
-# Ponderations for each weapon type
-pond_type = {
+# Flags for each weapon type
+type_flags = {
     "HANDGUN"   : Value(0),
     "MACHINEGUN": Value(0),
     "RIFLE"     : Value(0),
@@ -29,8 +29,8 @@ pond_type = {
     "SHIELD"    : Value(0),
 }
 
-# Ponderations for each item manufacturer
-pond_manufacturer = {
+# Flags for each item manufacturer
+manufacturer_flags = {
     # FIREARMS
     "Bandit"    : Value(0),
     "Dahl"      : Value(0),
@@ -62,8 +62,8 @@ pond_manufacturer = {
     "Turtle"    : Value(0),
 }
 
-# Ponderations for each element
-pond_element = {
+# Flags for each element
+element_flags = {
     "FIRE"  : Value(0),
     "COR"   : Value(0),
     "SHOCK" : Value(0),
@@ -80,13 +80,13 @@ can_element = Value(1)
 # Counter of the number of properties preset by the weapon manufacturer.
 nbr_of_manufacturer_properties = Value(0)
 
-### Ponderations for Special properties ###
+### Flags for Special properties ###
 
 # Initialisation for every item, resets every time
 ITEM_SPECIAL = "INIT"
 
 # Ponderation special properties for each item type
-pond_special = {
+special_flags = {
     "FIREARM"   : Value(0),
     "GRENADE"   : Value(0),
     "SHIELD"    : Value(0),
@@ -99,10 +99,10 @@ def set_special_prop(item_special) :
     item_special is either firearm_special, grenade_special or shield_special
 
     """
-    global pond_special
-    # update the ponderations
-    for v in pond_special.values() :
+    global special_flags
+    # update the Flags
+    for v in special_flags.values() :
         v.value = 0
-    pond_special[item_special].value = 1
+    special_flags[item_special].value = 1
     global ITEM_SPECIAL
     ITEM_SPECIAL = item_special

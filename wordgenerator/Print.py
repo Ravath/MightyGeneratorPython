@@ -103,6 +103,16 @@ class CheckpointNode(AbsLeafNode):
 #                                                   #
 #                      ActionNode                   #
 #___________________________________________________#
+import inspect
+
+def takes_no_arguments(func):
+    sig = inspect.signature(func)
+    return all(
+        param.default != inspect.Parameter.empty or
+        param.kind in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+        for param in sig.parameters.values()
+    )
+    
 class ActionNode(AbsLeafNode):
     """Execute the given function at execution."""
 
@@ -113,7 +123,11 @@ class ActionNode(AbsLeafNode):
 
     def node_action(self, generation_result:GenerationResult):
         """Execute the given function."""
-        self.func()
+        if takes_no_arguments(self.func):
+            self.func()
+        else:
+            # if function argument, pass the generation result
+            self.func(generation_result)
 
     def print_node(self, tabs:int = 0) :
         """Print the node name and printed text."""

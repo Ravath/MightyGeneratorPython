@@ -27,7 +27,7 @@ class Generator :
         self.variable_converter = variable_converter
 
 
-    def execute(self, input:dict=None) -> GenerationResult:
+    def execute(self, **input:dict) -> GenerationResult:
         assert self.root
         
         res = GenerationResult()

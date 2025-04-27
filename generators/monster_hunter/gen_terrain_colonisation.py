@@ -106,7 +106,7 @@ if __name__ == "__main__" :
     input = {"" : ""}
     #input = {"MAGIC" : "Tournade"}
 
-    result = generation.execute(input)
+    result = generation.execute(**input)
     
     #result.display_vars()
 

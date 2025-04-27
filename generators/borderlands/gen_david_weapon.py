@@ -5,14 +5,18 @@ if __name__ == "__main__" :
     sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 from wordgenerator.GenerationResult import GenerationResult
+from wordgenerator.DictionaryNode import DictionaryNode
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Print import PrintNode as Print
 from wordgenerator.Print import CheckpointNode as Checkpoint
 from wordgenerator.Print import SetNode, Title, Label
+from wordgenerator.Variable import CurrentVarNode as CurrentVar
+from wordgenerator.Variable import SetVarNode as SetVar
+from wordgenerator.Variable import DefineNode as Define
 from wordgenerator.Generator import Generator
-from generators.borderlands.ponderation import pond_chest, pond_type, pond_manufacturer, can_element, nbr_of_manufacturer_properties
+from generators.borderlands.ponderation import type_flags, manufacturer_flags, can_element, nbr_of_manufacturer_properties
 from generators.borderlands.properties import item_prop , item_special, sel_element
 from generators.borderlands.names import firearm_name, grenade_name, shield_name
 
@@ -25,189 +29,138 @@ Pendejo.
 """
 
 #################################################
-#                                               #
-#         CONDITIONS OF CHEST SELECTION         #
-#                                               #
+#             SELECT OF CHEST RARITY            #
 #################################################
-
-# CHEST_TYPE changes odds of getting some rarities
-CHEST_TYPE = "COMMON" # not used anymore
-
-#print("CHEST_TYPE : ", CHEST_TYPE) #not used anymore
-if CHEST_TYPE == "COMMON" :
-    ODD_COM = 50   # Odds for getting a common item
-    ODD_UNCOM = 30 # Odds for getting an uncommon item
-    ODD_RAR = 10   # Odds for getting a rare item
-    ODD_EPIC = 6   # Odds for getting an epic item
-    ODD_ETECH = 3  # Odds for getting an e-tech item
-    ODD_LEG = 1    # Odds for getting a legendary item
-elif CHEST_TYPE == "RARE" :
-    ODD_COM = 26
-    ODD_UNCOM = 40
-    ODD_RAR = 18
-    ODD_EPIC = 9
-    ODD_ETECH = 5
-    ODD_LEG = 2
-elif CHEST_TYPE == "LEGENDARY" : # Currently used for test, real values later
-    ODD_COM = 0
-    ODD_UNCOM = 0
-    ODD_RAR = 0
-    ODD_EPIC = 0
-    ODD_ETECH = 10
-    ODD_LEG = 10
-
-def set_chest_type(chest_type) :
-    # update the flag
-    global CHEST_TYPE
-    CHEST_TYPE = chest_type
-    
-    for v in pond_chest.values() :
-        v.value = 0
-    pond_chest[chest_type].value = 1
-
-c_common =  1
-c_rare =    0
-c_leg =     0
 
 sel_chest = Weight() << [
-    [c_common,  SetNode(set_chest_type,"COMMON")],
-    [c_rare,    SetNode(set_chest_type,"RARE")],
-    [c_leg,     SetNode(set_chest_type,"LEGENDARY")],
+    [1, "COMMON"],
+    [1, "RARE"],
+    [1, "LEGENDARY"],
 ]
-
-#################################################
-#                                               #
-#   CONDITIONS OF ITEM, RARITY & MANUFACTURER   #
-#                   SELECTION                   #
-#                                               #
-#################################################
 
 #################################################
 #               SELECT ITEM TYPE                #
 #################################################
 
-ODD_HAN = 1 # Odds for getting a handgun
-ODD_RIF = 1 # Odds for getting a rifle
-ODD_MAC = 1 # Odds for getting a sub-machinegun
-ODD_SHO = 1 # Odds for getting a shotgun
-ODD_SNI = 1 # Odds for getting a sniper rifle
-ODD_GRE = 1 # Odds for getting a grenade
-ODD_SHI = 1 # Odds for getting a shield
-
-def set_item_type(item_type) :
-    # update the flag
-    global ITEM_TYPE
-    ITEM_TYPE = item_type
-    # update the ponderations
-
-    for v in pond_type.values() :
-        v.value = 0
-    pond_type[item_type].value = 1
-
 sel_type = Weight() << [
-    [ODD_HAN, SetNode(set_item_type, "HANDGUN")],
-    [ODD_RIF, SetNode(set_item_type, "RIFLE")],
-    [ODD_MAC, SetNode(set_item_type, "MACHINEGUN")],
-    [ODD_SHO, SetNode(set_item_type, "SHOTGUN")],
-    [ODD_SNI, SetNode(set_item_type, "SNIPER")],
-    [ODD_GRE, SetNode(set_item_type, "GRENADE")],
-    [ODD_SHI, SetNode(set_item_type, "SHIELD")],
+    [1, "HANDGUN"],
+    [1, "RIFLE"],
+    [1, "MACHINEGUN"],
+    [1, "SHOTGUN"],
+    [1, "SNIPER"],
+    [1, "GRENADE"],
+    [1, "SHIELD"],
 ]
+
+def update_type_flags(res:GenerationResult) :
+    for v in type_flags.values() :
+        v.value = 0
+    type_flags[res.get_var("ITEM_TYPE")].value = 1
 
 #################################################
 #              SELECT ITEM RARITY               #
 #################################################
 
-def set_item_rarity(item_rarity) :
-    # update the flag
-    global ITEM_RARITY
-    ITEM_RARITY = item_rarity
+sel_rarity = {
+    "COMMON" : Weight() << [
+        [50,    "COMMON"],
+        [30,    "UNCOMMON"],
+        [10,    "RARE"],
+        [6,     "EPIC"],
+        [3,     "ETECH"],
+        [1,     "LEGENDARY"],
+    ],
+    "RARE" : Weight() << [
+        [26,    "COMMON"],
+        [40,    "UNCOMMON"],
+        [18,    "RARE"],
+        [9,     "EPIC"],
+        [5,     "ETECH"],
+        [2,     "LEGENDARY"],
+    ],
+    "LEGENDARY" : Weight() << [
+        [0,    "COMMON"],
+        [0,    "UNCOMMON"],
+        [0,    "RARE"],
+        [0,    "EPIC"],
+        [10,   "ETECH"],
+        [10,   "LEGENDARY"],
+    ],
+}
 
-sel_rarity = Weight() << [
-    [ODD_COM,   SetNode(set_item_rarity, "COMMON")],
-    [ODD_UNCOM, SetNode(set_item_rarity, "UNCOMMON")],
-    [ODD_RAR,   SetNode(set_item_rarity, "RARE")],
-    [ODD_EPIC,  SetNode(set_item_rarity, "EPIC")],
-    [ODD_ETECH, SetNode(set_item_rarity, "ETECH")],
-    [ODD_LEG,   SetNode(set_item_rarity, "LEGENDARY")],
-]
 
 #################################################
 #               SELECT MANUFACTURER             #
 #################################################
 
-def set_item_manufacturer(item_manufacturer) :
-    # update the ponderations
-    global pond_manufacturer
-    for v in pond_manufacturer.values() :
-        v.value = 0
-    pond_manufacturer[item_manufacturer].value = 1
-    global ITEM_MANUFACTURER
-    ITEM_MANUFACTURER = item_manufacturer
-
 sel_manufacturer = {
     "HANDGUN" : Weight() << [
-        SetNode(set_item_manufacturer, "Maliwan"),
-        SetNode(set_item_manufacturer, "Jakobs"),
-        SetNode(set_item_manufacturer, "Hyperion"),
-        SetNode(set_item_manufacturer, "Dahl"),
-        SetNode(set_item_manufacturer, "Vladof"),
-        SetNode(set_item_manufacturer, "Bandit"),
-        SetNode(set_item_manufacturer, "Tediore"),
-        SetNode(set_item_manufacturer, "Torgue"),
+        "Maliwan",
+        "Jakobs",
+        "Hyperion",
+        "Dahl",
+        "Vladof",
+        "Bandit",
+        "Tediore",
+        "Torgue",
     ],
     "MACHINEGUN" : Weight() << [
-        SetNode(set_item_manufacturer, "Maliwan"),
-        SetNode(set_item_manufacturer, "Hyperion"),
-        SetNode(set_item_manufacturer, "Dahl"),
-        SetNode(set_item_manufacturer, "Bandit"),
-        SetNode(set_item_manufacturer, "Tediore"),
+        "Maliwan",
+        "Hyperion",
+        "Dahl",
+        "Bandit",
+        "Tediore",
     ],
     "RIFLE" : Weight() << [
-        SetNode(set_item_manufacturer, "Jakobs"),
-        SetNode(set_item_manufacturer, "Dahl"),
-        SetNode(set_item_manufacturer, "Bandit"),
-        SetNode(set_item_manufacturer, "Torgue"),
+        "Jakobs",
+        "Dahl",
+        "Bandit",
+        "Torgue",
     ],
     "SHOTGUN" : Weight() << [
-        SetNode(set_item_manufacturer, "Jakobs"),
-        SetNode(set_item_manufacturer, "Hyperion"),
-        SetNode(set_item_manufacturer, "Bandit"),
-        SetNode(set_item_manufacturer, "Tediore"),
-        SetNode(set_item_manufacturer, "Torgue"),
+        "Jakobs",
+        "Hyperion",
+        "Bandit",
+        "Tediore",
+        "Torgue",
     ],
     "SNIPER" : Weight() << [
-        SetNode(set_item_manufacturer, "Maliwan"),
-        SetNode(set_item_manufacturer, "Jakobs"),
-        SetNode(set_item_manufacturer, "Hyperion"),
-        SetNode(set_item_manufacturer, "Vladof"),
+        "Maliwan",
+        "Jakobs",
+        "Hyperion",
+        "Vladof",
     ],
     "GRENADE" : Weight() << [
-        SetNode(set_item_manufacturer, "Classic"),
-        SetNode(set_item_manufacturer, "Contact"),
-        SetNode(set_item_manufacturer, "Proximity"),
-        SetNode(set_item_manufacturer, "MIRV"),
-        SetNode(set_item_manufacturer, "Singularity"),
-        SetNode(set_item_manufacturer, "Tesla"),
-        SetNode(set_item_manufacturer, "Transfusion"),
-        SetNode(set_item_manufacturer, "Betty"),
+        "Classic",
+        "Contact",
+        "Proximity",
+        "MIRV",
+        "Singularity",
+        "Tesla",
+        "Transfusion",
+        "Betty",
     ],
     "SHIELD" : Weight() << [
-        SetNode(set_item_manufacturer, "Absorb"),
-        SetNode(set_item_manufacturer, "Adaptive"),
-        SetNode(set_item_manufacturer, "Amplify"),
-        SetNode(set_item_manufacturer, "Booster"),
-        SetNode(set_item_manufacturer, "Lifeline"),
-        SetNode(set_item_manufacturer, "Nova"),
-        SetNode(set_item_manufacturer, "Raid"),
-        SetNode(set_item_manufacturer, "Shield"),
-        SetNode(set_item_manufacturer, "Spike"),
-        SetNode(set_item_manufacturer, "Turtle"),
+        "Absorb",
+        "Adaptive",
+        "Amplify",
+        "Booster",
+        "Lifeline",
+        "Nova",
+        "Raid",
+        "Shield",
+        "Spike",
+        "Turtle",
     ],
 }
 
+def update_manufacturer_flags(res:GenerationResult) :
+    for v in manufacturer_flags.values() :
+        v.value = 0
+    manufacturer_flags[res.get_var("ITEM_MANUFACTURER")].value = 1
+
 #################################################
-#              ELEMENT GENERATION               #
+#           MANUFACTURER PROPERTIES             #
 #################################################
 
 def inhibit_element() :
@@ -222,57 +175,57 @@ def predraw_one() :
     """
     nbr_of_manufacturer_properties.value = 1
 
-# spe_manufacturer resolves all specifications for every manufacturer
-spe_manufacturer = Interval(1) << [
+# resolves all specifications for every manufacturer
+manufacturer_properties = Interval(1) << [
     # update ponderation to :
-    [0, pond_manufacturer["Maliwan"], inhibit_element],
-    [0, pond_manufacturer["Maliwan"], predraw_one],
-    [0, pond_manufacturer["Torgue"],  inhibit_element],
-    [0, pond_manufacturer["Nova"],    predraw_one],
-    [0, pond_manufacturer["Spike"],   predraw_one],
-    [0, pond_manufacturer["Tesla"],   inhibit_element],
-    [0, pond_manufacturer["Tesla"],   predraw_one],
+    [0, manufacturer_flags["Maliwan"], inhibit_element],
+    [0, manufacturer_flags["Maliwan"], predraw_one],
+    [0, manufacturer_flags["Torgue"],  inhibit_element],
+    [0, manufacturer_flags["Nova"],    predraw_one],
+    [0, manufacturer_flags["Spike"],   predraw_one],
+    [0, manufacturer_flags["Tesla"],   inhibit_element],
+    [0, manufacturer_flags["Tesla"],   predraw_one],
     # resolve the manufacturer specific capacity
     # FIREARMS
-    [0, pond_manufacturer["Bandit"], "*Chargeur X2*\n"],
-    [0, pond_manufacturer["Dahl"], "*Mode Rafale et Automatique: possibilité d'alterner 2 cartes successives d'un tir*\n"],
-    [0, pond_manufacturer["Hyperion"], "*Bouclier d'énergie avec [[1d20+10]]PV*\n"],
-    [0, pond_manufacturer["Jakobs"], "*Tir ricochant si critique*\n"],
-    [0, pond_manufacturer["Maliwan"], "*Meilleures chances de déclencher l'effet élémentaire*\n"],
-    [0, pond_manufacturer["Maliwan"], sel_element],
-    [0, pond_manufacturer["Tediore"], "*Lancer l'arme pour recharger, dégâts similaire à une balle en zone*\n"],
-    [0, pond_manufacturer["Torgue"], "*Arme Explosive*\n"],
-    [0, pond_manufacturer["Vladof"], "*+1 Augmentation de dé, +1 Dégâts, +1 Difficulté de visée, +1 Magasin*\n"],
+    [0, manufacturer_flags["Bandit"], "*Chargeur X2*\n"],
+    [0, manufacturer_flags["Dahl"], "*Mode Rafale et Automatique: possibilité d'alterner 2 cartes successives d'un tir*\n"],
+    [0, manufacturer_flags["Hyperion"], "*Bouclier d'énergie avec [[1d20+10]]PV*\n"],
+    [0, manufacturer_flags["Jakobs"], "*Tir ricochant si critique*\n"],
+    [0, manufacturer_flags["Maliwan"], "*Meilleures chances de déclencher l'effet élémentaire*\n"],
+    [0, manufacturer_flags["Maliwan"], sel_element],
+    [0, manufacturer_flags["Tediore"], "*Lancer l'arme pour recharger, dégâts similaire à une balle en zone*\n"],
+    [0, manufacturer_flags["Torgue"], "*Arme Explosive*\n"],
+    [0, manufacturer_flags["Vladof"], "*+1 Augmentation de dé, +1 Dégâts, +1 Difficulté de visée, +1 Magasin*\n"],
     # GRENADES
-    [0, pond_manufacturer["Classic"], "*Grosse Explosion 5x5*\n"],
-    [0, pond_manufacturer["Contact"], "*Explosion sur contact 3x3*\n"],
-    [0, pond_manufacturer["Proximity"], "*Mine, explosion 3x3 si déplacement alentour*\n"],
-    [0, pond_manufacturer["MIRV"], "*Explose 3x3, puis lance [[1d5+3]] mini grenades qui explosent 3x3 autour de l'explosion initiale le tour suivant*\n"],
-    [0, pond_manufacturer["Singularity"], "*Attire les ennemis autour de la grenade 3x3 et explose 3x3*\n"],
-    [0, pond_manufacturer["Tesla"], "*Explose 3x3 et laisse une traînée élémentaire pendant 2 tours*\n"],
-    [0, pond_manufacturer["Tesla"], sel_element],
-    [0, pond_manufacturer["Transfusion"], "*Explosion 3x3, soigne le lanceur des dégâts infligés après 1 tour*\n"],
-    [0, pond_manufacturer["Betty"], "*Rebondit jusqu'à toucher un ennemi, explosion 3x3*\n"],
+    [0, manufacturer_flags["Classic"], "*Grosse Explosion 5x5*\n"],
+    [0, manufacturer_flags["Contact"], "*Explosion sur contact 3x3*\n"],
+    [0, manufacturer_flags["Proximity"], "*Mine, explosion 3x3 si déplacement alentour*\n"],
+    [0, manufacturer_flags["MIRV"], "*Explose 3x3, puis lance [[1d5+3]] mini grenades qui explosent 3x3 autour de l'explosion initiale le tour suivant*\n"],
+    [0, manufacturer_flags["Singularity"], "*Attire les ennemis autour de la grenade 3x3 et explose 3x3*\n"],
+    [0, manufacturer_flags["Tesla"], "*Explose 3x3 et laisse une traînée élémentaire pendant 2 tours*\n"],
+    [0, manufacturer_flags["Tesla"], sel_element],
+    [0, manufacturer_flags["Transfusion"], "*Explosion 3x3, soigne le lanceur des dégâts infligés après 1 tour*\n"],
+    [0, manufacturer_flags["Betty"], "*Rebondit jusqu'à toucher un ennemi, explosion 3x3*\n"],
     # SHIELDS
-    [0, pond_manufacturer["Absorb"], "*Si l'arme utilisée contre vous est la même que celle que vous utilisez, gagne (+1 Aug dégâts) à chaque tir reçu pour votre prochain tour*\n"],
-    [0, pond_manufacturer["Adaptive"], "*Dégâts/2 au 1er tir du dernier élément qui vous a touché*\n"],
-    [0, pond_manufacturer["Amplify"], "*Une fois totalement chargé, le bouclier ajoute [[1d10]] dégâts à la prochaine attaque et diminue les PVs du bouclier d'autant*\n"],
-    [0, pond_manufacturer["Booster"], "*Une fois touché, balance une unité de rechargement de bouclier à [[1d20]] PV*\n"],
-    [0, pond_manufacturer["Lifeline"], "*Vie max +[[1d20+10]], Bouclier -[[1d20]]*\n"],
-    [0, pond_manufacturer["Nova"], "*Une fois vidé, le bouclier génère une nova élémentaire faisant [[1d20]] dégâts autour de vous + effet élémentaire*\n"],
-    [0, pond_manufacturer["Nova"], sel_element],
-    [0, pond_manufacturer["Raid"], "*Une fois vidé, ajoute un bonus de [[1d20]] dégâts à vos attaques de corps (une fois par tour)*\n"],
-    [0, pond_manufacturer["Shield"], "*Cadence de rechargement +10, Capacité -15*\n"],
-    [0, pond_manufacturer["Spike"], "*Si attaque subie à courte distance, inflige [[1d10]] dégâts élémentaires à l'attaquant*\n"],
-    [0, pond_manufacturer["Spike"], sel_element],
-    [0, pond_manufacturer["Turtle"], "*Bouclier +[[1d20+10]] PV, Vie max -[[1d20]]*\n"],
+    [0, manufacturer_flags["Absorb"], "*Si l'arme utilisée contre vous est la même que celle que vous utilisez, gagne (+1 Aug dégâts) à chaque tir reçu pour votre prochain tour*\n"],
+    [0, manufacturer_flags["Adaptive"], "*Dégâts/2 au 1er tir du dernier élément qui vous a touché*\n"],
+    [0, manufacturer_flags["Amplify"], "*Une fois totalement chargé, le bouclier ajoute [[1d10]] dégâts à la prochaine attaque et diminue les PVs du bouclier d'autant*\n"],
+    [0, manufacturer_flags["Booster"], "*Une fois touché, balance une unité de rechargement de bouclier à [[1d20]] PV*\n"],
+    [0, manufacturer_flags["Lifeline"], "*Vie max +[[1d20+10]], Bouclier -[[1d20]]*\n"],
+    [0, manufacturer_flags["Nova"], "*Une fois vidé, le bouclier génère une nova élémentaire faisant [[1d20]] dégâts autour de vous + effet élémentaire*\n"],
+    [0, manufacturer_flags["Nova"], sel_element],
+    [0, manufacturer_flags["Raid"], "*Une fois vidé, ajoute un bonus de [[1d20]] dégâts à vos attaques de corps (une fois par tour)*\n"],
+    [0, manufacturer_flags["Shield"], "*Cadence de rechargement +10, Capacité -15*\n"],
+    [0, manufacturer_flags["Spike"], "*Si attaque subie à courte distance, inflige [[1d10]] dégâts élémentaires à l'attaquant*\n"],
+    [0, manufacturer_flags["Spike"], sel_element],
+    [0, manufacturer_flags["Turtle"], "*Bouclier +[[1d20+10]] PV, Vie max -[[1d20]]*\n"],
 ]
 
 #################################################
 #                 ITEM GENERATION               #
 #################################################
 
-item_generation = {"" : {"" : Sequence() }}
+item_generation = {"ITEM_TYPE" : {"ITEM_RARITY" : Sequence() }}
 item_generation .clear()
 
 def get_firearm_builder(firearm_type:str,
@@ -436,181 +389,44 @@ item_generation["SHIELD"] = {
     "LEGENDARY":get_shield_builder("Bouclier Légendaire"),
 }
 
-#################################################
-#               FORCING GENERATION              #
-#################################################
-
-"""These functions will be used by our GUI to force some features to be picked,
-instead of being randomly picked, allowing to generate a specific item.
-
-In terms of C0D1NG: It will bypass set_item_type, set_item_rarity &
-set_item_manufacturer by putting directly a value in respectively ITEM_TYPE,
-ITEM_RARITY & ITEM_MANUFACTURER
-"""
-
-def force_chest_type(c_type:str):
-    """Use in GUI, c_type is recovered from the attribute_chest_type method."""
-    #global CHEST_TYPE, ODD_COM, ODD_UNCOM, ODD_RAR, ODD_EPIC, ODD_ETECH, ODD_LEG
-    for child in sel_chest.children:
-        child.weight = 0
-
-    if c_type == "COMMON":
-        CHEST_TYPE = "COMMON"
-        sel_chest.children[0].weight = 1
-    elif c_type == "RARE":
-        CHEST_TYPE = "RARE"
-        sel_chest.children[1].weight = 1
-    elif c_type == "LEGENDARY":
-        CHEST_TYPE = "LEGENDARY"
-        sel_chest.children[2].weight = 1
-    else:
-        print("error, chest type argument not processed : ", c_type)
-
-def force_item_type(i_type:str):
-    """Use in GUI, i_type is recovered from the attribute_item_type method."""
-    if i_type == "RANDOM":
-        for child in sel_type.children :
-            child.weight = 1
-    else:
-        for child in sel_type.children :
-            child.weight = 0
-        if i_type == "HANDGUN":
-            sel_type.children[0].weight = 1
-        elif i_type == "RIFLE":
-            sel_type.children[1].weight = 1
-        elif i_type == "MACHINEGUN":
-            sel_type.children[2].weight = 1
-        elif i_type == "SHOTGUN":
-            sel_type.children[3].weight = 1
-        elif i_type == "SNIPER":
-            sel_type.children[4].weight = 1
-        elif i_type == "GRENADE":
-            sel_type.children[5].weight = 1
-        elif i_type == "SHIELD":
-            sel_type.children[6].weight = 1
-        else:
-            print("error, item type argument not processed : ", i_type)
-
-def force_item_rarity(rarity:str):
-    """Use in GUI, rarity is recovered from the attribute_rarity method."""
-    if rarity == "RANDOM":
-        for child in sel_rarity.children :
-            child.weight = 1 # TODO Actually not what we want, we want to put odds 
-            # on chest rarities odds instead of equal chances, but that's a beginning
-    else:
-        for child in sel_rarity.children :
-            child.weight = 0
-        if rarity == "COMMON":
-            sel_rarity.children[0].weight = 1
-        elif rarity == "UNCOMMON":
-            sel_rarity.children[1].weight = 1
-        elif rarity == "RARE":
-            sel_rarity.children[2].weight = 1
-        elif rarity == "EPIC":
-            sel_rarity.children[3].weight = 1
-        elif rarity == "ETECH":
-            sel_rarity.children[4].weight = 1
-        elif rarity == "LEGENDARY":
-            sel_rarity.children[5].weight = 1
-        else:
-            print("error, rarity argument not processed : ", rarity)
-
 #####################################P#E#N#D#E#J#
 #                   GENERATION                  O
 #################################################
-
-from wordgenerator.NodeIf import AbsLeafNode
-# TODO move to default library, and compare to tabNode
-class DictionaryNode(AbsLeafNode) :
-    """Node managing a dictionary of nodes"""
-
-    def __init__(self, node_dictionary, *variables : str):
-        AbsLeafNode.__init__(self)
-        self.dict = node_dictionary
-        # name of variables
-        self.variables = variables
-
-    def node_action(self, generation_result:GenerationResult):
-        """Execute the designated node."""
-        # Get the first dictionary
-        var_name = self.variables[0]
-        to_execute = self.dict[globals()[var_name]]
-
-        # progress through each dictionary
-        for si in range(1, len(self.variables)) :
-            # get name of the variable containing the key
-            var_name = self.variables[si]
-            # get the node associated with this key in the dictionary
-            to_execute = to_execute[globals()[var_name]]
-
-        # Execute the found dictionary
-        to_execute.node_action(generation_result)
-
-    def print_node(self, tabs:int = 0) :
-        """Print the node name and its dictionary keys and values."""
-        # Node Name
-        tab_sign="\t"
-        print(f"{tab_sign*tabs}[{type(self).__name__} : {self.variables}]")
-        # dictionary
-        DictionaryNode.display_dico_node(self.dict, tabs + 1)
-
-    def display_dico_node(dico_node, tabs : int) :
-        tab_sign="\t"
-        if isinstance(dico_node, dict) :
-            for k in dico_node :
-                print(f"{tab_sign*tabs}{k}")
-                DictionaryNode.display_dico_node(dico_node[k], tabs + 1)
-        else :
-            dico_node.print_node(tabs)
-
-### GENERATION TEMPLATE ###
-prop_ckpt = Checkpoint("Properties",
-    Sequence() << [
-        spe_manufacturer,
-        DictionaryNode(item_prop, "ITEM_RARITY", "ITEM_TYPE"),
-        item_special,
-])
                        
 generation = Generator(
     Sequence() << [
-        sel_chest,
-        sel_type,
-        sel_rarity,
-        DictionaryNode(sel_manufacturer, "ITEM_TYPE"),
+        Define("CHEST_TYPE") << sel_chest,
+        Define("ITEM_TYPE")  << sel_type,
+        update_type_flags,
+        Define("ITEM_RARITY")       << DictionaryNode(sel_rarity, "CHEST_TYPE"),
+        Define("ITEM_MANUFACTURER") << DictionaryNode(sel_manufacturer, "ITEM_TYPE"),
+        update_manufacturer_flags,
         DictionaryNode(item_generation, "ITEM_TYPE", "ITEM_RARITY"),
-        Title("Propriétés", prop_ckpt)
+        CurrentVar("PROPERTIES"),
+        manufacturer_properties,
+        DictionaryNode(item_prop, "ITEM_RARITY", "ITEM_TYPE"),
+        item_special,
 ])
-
-# text var converter
-def var_converter(name) -> str :
-    if name in globals().keys() :
-        return globals()[name]
-    else :
-        return "{" + name + "}"
-generation.variable_converter = var_converter
 
 
 if __name__ == "__main__" :
-    # Do generation
-    result = generation.execute()
+    for i in range(0,1):
+        # Do generation
+        result = generation.execute(CHEST_TYPE="COMMON")
+        
+        # print generation result
+        result.print_to_console(
+"""
+________________________
+Coffre : {CHEST_TYPE}
+Arme   : {ITEM_TYPE}
+Rareté : {ITEM_RARITY}
+Fabriquant : {ITEM_MANUFACTURER}
+________________________
+{DEFAULT}
+________________________
+{PROPERTIES}
+________________________
+""")
     
-    print("Coffre :", globals()["CHEST_TYPE"])
-    print("Arme   :", ITEM_TYPE)
-    print("Rareté :", ITEM_RARITY)
-    print("Fabriquant :", ITEM_MANUFACTURER)
-    print()
-
-    # print generation result
-    result.print_to_console()
-
-    print("checkpoint test")
-    print(prop_ckpt.text)
-    result = prop_ckpt.execute()
-    print(result.text)
-    print("checkpoint test end")
-
-    # After generation, delete any item specs for further generation
-    del ITEM_TYPE
-    del ITEM_RARITY
-    del ITEM_MANUFACTURER
-    del CHEST_TYPE
+    #result.display_vars()
