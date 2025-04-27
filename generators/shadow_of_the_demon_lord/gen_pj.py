@@ -11,7 +11,7 @@ if __name__ == "__main__" :
 
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Interval import IntervalNode as Interval
-from wordgenerator.Sequence import SequenceNode as Sequence
+from wordgenerator.Sequence import S
 from wordgenerator.Print import Title, Label
 from wordgenerator.Generator import Generator
 
@@ -812,9 +812,6 @@ trait_negatif = Weight() << [
 ]
 
 ################ ROOT
-
-def S(*args) :
-    return Sequence() << [*args]
 
 root = S(
     Weight() << [

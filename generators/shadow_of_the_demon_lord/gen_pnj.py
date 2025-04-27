@@ -10,7 +10,7 @@ if __name__ == "__main__" :
     sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 from wordgenerator.Weight import WeightNode as Weight
-from wordgenerator.Sequence import SequenceNode as Sequence
+from wordgenerator.Sequence import S
 from wordgenerator.Print import Title
 from wordgenerator.Generator import Generator
 
@@ -82,9 +82,6 @@ charactere = Weight() << [
 
 
 ################ ROOT
-
-def S(*args) :
-    return Sequence()<< [*args]
 
 root = S(
     Title("Trait Physique") << physique,

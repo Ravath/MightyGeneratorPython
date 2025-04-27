@@ -18,17 +18,24 @@ class Generator :
     """
 
     replacement_pattern = re.compile(r'\{(.*?)\}')
+    """The pattern to format the string and do replacements."""
     macro_pattern =re.compile(r'\[\[(.*?)\]\]')
+    """The pattern to find the macros to execute."""
 
     def __init__(self, root : AbsGeneratorNode = None, variable_converter : typing.Callable[[str], str] = None) :
         self.root = root
         self.variable_converter = variable_converter
 
 
-    def execute(self) -> GenerationResult:
+    def execute(self, input:dict=None) -> GenerationResult:
         assert self.root
         
         res = GenerationResult()
+        
+        # if any input, add them to the generation
+        if input:
+            for k in input:
+                res.set_var(k, input[k])
 
         # Reset the things that needs to
         # Reset ListValues or they will be stuck or shifted across multiple generations.
@@ -38,13 +45,15 @@ class Generator :
         self.root.node_action(res)
 
         # do Variable replacement
-        res.text = self.replace_variables(res.raw_text)
+        for rtk in res.var_list:
+            res._raw_text[rtk] = self.replace_variables(res._raw_text[rtk], res)
         # also do the checkpoints
         # for ckpt in CheckpointNode.checkpoints.values():
         #     ckpt.text = self.replace_variables(ckpt.text)
 
         # do macro rolls
-        res.text = self.roll_macros(res.text)
+        for rtk in res.var_list:
+            res._raw_text[rtk] = self.roll_macros(res._raw_text[rtk])
         # also do the checkpoints
         # TODO With the current mechanism, the checkpoints rolls have different values than the original text. Idealy should not happen.
         # for ckpt in CheckpointNode.checkpoints.values():
@@ -53,7 +62,7 @@ class Generator :
         return res
 
 
-    def replace_variables(self, text : str) -> str :
+    def replace_variables(self, text : str, res:GenerationResult) -> str :
         """
         Replaces the variables according to the defined pattern.
         ("{<Variable_Name>}" by default. See Generator.replacement_pattern).
@@ -68,13 +77,17 @@ class Generator :
         str Processed text.
 
         """
-        # only if a converter is provided by user
-        if self.variable_converter :
-            for match in Generator.replacement_pattern.finditer(text) :
-                # find replacement text
-                new_text = self.variable_converter(match.group(1))
-                # replace any match
-                text = re.sub(match.group(0), new_text, text)
+        # search for replacements in text
+        for match in Generator.replacement_pattern.finditer(text) :
+            key = match.group(1)
+            # find replacement text in result variables
+            if res.is_var_defined(key):
+                new_text = res._raw_text[key]
+            # or in the given var pool is any
+            elif self.variable_converter:
+                new_text = self.variable_converter(key)
+            # replace any match
+            text = re.sub(match.group(0), new_text, text)
         return text
 
 

@@ -23,7 +23,11 @@ The generators are composed of different nodes implementing various behaviors.
 - Print Node : Default node, prints a given text.
   - Title : automatic __Title__ formating.
   - Label : automatic __Label : Text__ formatting.
-  - By default. the generated output is printed to the console, but by setting `PrintNode.print_to_buffer()`, it can be used as a normal string without using the console. The generated text can then be accessed with `generation.text` 
+- By default. the generated output is stacked in a variable buffer named "DEFAULT".
+  The generated text can then be accessed with `generation.raw_text`
+  - CurrentVar Node : Changes the used buffer. If a buffer with the given name does not exist, it is created.
+  - SetVar Node : Sets a value to a buffer whitout changing the used buffer. Erases previous value if any, and creates a buffer if didn't existed.
+  - Define Node : If the associated buffer does not exist, changes context, and executes children in order to set the buffer. If the buffer is already set, does nothing. Usefull for managing variables that may be passed as arguments in input of the generation.
 
 ### Utilities
  - using the `<<` operator on a table enables to extend the table with new rows.

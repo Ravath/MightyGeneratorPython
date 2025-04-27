@@ -4,6 +4,7 @@ if __name__ == "__main__" :
     import sys, os
     sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
+from wordgenerator.Variable import DefineNode as Define
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import S
 from wordgenerator.Print import Title, Label
@@ -30,7 +31,7 @@ population_race = Weight() << [
     ["Magique"],
 ]
 
-population_organisatoin_sociale = Weight() << [
+population_organisation_sociale = Weight() << [
     ["Libérale"],
     ["Méritocratie/Aristocratie"],
     ["Monarchie"],
@@ -88,27 +89,35 @@ point_interet = Weight() << [
 
 root = S(
     # Population
-    Title("Population") << S(
-        Label("Type      ", population_type),
-        Label("Race      ", population_race),
-        Label("Organisation Sociale", population_organisatoin_sociale),
-    ),
-    # Minéraux
-    Title("Minéraux") << S(
-        Label("Minéraux      ", minéraux),
-    ),
-    # Magie
-    Title("Magie") << S(
-        Label("Magie ", magie),
-    ),
-    # Point d'interet
-    Title("Point d'interet") << S(
-        point_interet,
-    ),
+    Define("POPULATION_TYPE")       << population_type,
+    Define("POPULATION_RACE")       << population_race,
+    Define("POPULATION_SOCIETY")    << population_organisation_sociale,
+    # Environment
+    Define("MINERALS")  << minéraux,
+    Define("MAGIC")     << magie,
+    Define("INTEREST")  << point_interet,
 )
 
 ################ Generation
 
 generation = Generator(root)
 if __name__ == "__main__" :
-    generation.execute().print_to_console()
+    
+    input = {"" : ""}
+    #input = {"MAGIC" : "Tournade"}
+
+    result = generation.execute(input)
+    
+    #result.display_vars()
+
+    result.print_to_console(
+"""Une colonie!
+Population :
+\t{POPULATION_TYPE}
+\t{POPULATION_RACE}
+\t{POPULATION_SOCIETY}
+Ressources : {MINERALS}
+Magie : {MAGIC}
+Point d'interet : {INTEREST}
+"""
+)
