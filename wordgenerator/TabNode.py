@@ -33,6 +33,15 @@ class TabNode(AbsCollectionNode) :
         AbsCollectionNode.__init__(self)
         self.value = value
         self.nbr_draw = nbr_draw
+    
+    def Automaton(pick_nbr:list[int], nbr_draw:int = 1):
+        tp = []
+        it = 0
+        for p in pick_nbr:
+            tp.append((it,p))
+            it += 1
+        
+        return TabNode(tp, nbr_draw)
 
     def draw(self) :
         for _ in range(0, self.nbr_draw.value) :

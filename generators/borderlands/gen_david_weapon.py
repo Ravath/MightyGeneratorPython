@@ -5,14 +5,14 @@ if __name__ == "__main__" :
     sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 from wordgenerator.GenerationResult import GenerationResult
-from wordgenerator.DictionaryNode import DictionaryNode
+from wordgenerator.Dictionary import DictionaryNode
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode as Sequence
 from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Print import PrintNode as Print
 from wordgenerator.Print import CheckpointNode as Checkpoint
 from wordgenerator.Print import SetNode, Title, Label
-from wordgenerator.Variable import CurrentVarNode as CurrentVar
+from wordgenerator.Variable import SwitchVarNode as SwitchVar
 from wordgenerator.Variable import SetVarNode as SetVar
 from wordgenerator.Variable import DefineNode as Define
 from wordgenerator.Generator import Generator
@@ -407,7 +407,7 @@ generation = Generator(
         Define("ITEM_MANUFACTURER") << DictionaryNode(sel_manufacturer, "ITEM_TYPE"),
         update_manufacturer_flags,
         DictionaryNode(item_generation, "ITEM_TYPE", "ITEM_RARITY"),
-        CurrentVar("PROPERTIES"),
+        SwitchVar("PROPERTIES"),
         manufacturer_properties,
         DictionaryNode(item_prop, "ITEM_RARITY", "ITEM_TYPE"),
         item_special,

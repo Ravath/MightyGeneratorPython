@@ -16,6 +16,7 @@ from wordgenerator.Generator import Generator
 from wordgenerator.Print import SetNode as Set
 from wordgenerator.Print import Label, Title
 from wordgenerator.TabNode import TabNode
+from macro.grammar import get_ValueIf
 from enum import Enum
 
 # Renseigner ici le rang de l'objet entre 1 et 4,
@@ -289,19 +290,11 @@ weapon = {
         [2, "Vladof Absorption "],
     ],
 }
-#TODO WeightNode value, with a ComputeTotalWeight as default
-#TODO implement nbr_draw in CollectionNode
-#TODO Maybe implement Roll in CollectionNode (remove then from SequenceNode)
-#TODO Sequence as a Specific case of IntervalNode with roll=0, every interval=0
-#TODO Similarly, TabNode maybe a IntervalNode with a custom behavior for default row values
-#TODO Implémenter WeighNode.fusion(WeighNode)
-#TODO implémenter contre-mesures contre les récursions dans print_node
 
-from macro.grammar import get_ValueIf
 def Automaton(nbr_draw, val1:str, val2:str) -> Interval :
-    return Interval([(0, get_ValueIf(nbr_draw)), (1, -1)]) << [
-        [0, 0, val1],
-        [1, 1, val2],
+    return TabNode.Automaton([get_ValueIf(nbr_draw), -1]) << [
+        [val1],
+        [val2],
     ]
 
 # Weapon Improvements
@@ -463,7 +456,6 @@ generation = Generator(S(
             TabNode(lambda : WEAPON_TYPE) << list(improvement.values())
         ]
     ),
-    # Title("Améliorations", None),
 ))
 
 if __name__ == "__main__" :

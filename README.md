@@ -115,3 +115,20 @@ result.print_to_console()       # print the generated result to the console
  - Rolls the tables starting from root.
  - Use the `{VAR_NAME}` syntaxe to include variable results in the generations.
  - Use the `[[1d6]]` syntaxe to roll dice and apply computations macros.
+
+# TODO
+- Check if Dictionnary and SetVar nodes can manage enums instead of string
+- AppendVarNode : same as SetNode, but append instead of set. (or use a flag in SetNode for alternative behavior)
+- Separate the Action nodes and other unrelated objects from the Print.py file
+- factorize Generator.replacement_pattern and GenerationResult.replacement_pattern
+- Maybe transfert Generator code & logic to NodeIf ?
+- Complete documentation of the generation process on macro level
+- Doc on the Math.Variable objects
+- Complete exemples of new nodes and generation process
+- do some TU ?
+- Complete the Chekpoint node
+
+- implement nbr_draw in CollectionNode
+- Maybe implement Roll in CollectionNode (remove then from SequenceNode)
+- Implémenter WeighNode.fusion(WeighNode)
+- implémenter contre-mesures contre les récursions dans print_node

@@ -15,7 +15,13 @@ The generators are composed of different nodes implementing various behaviors.
   - Default row format : `[minThreshold, maxThreshold, value]`
 - **Sequence Node** : Each row of the table will be drawn sequentially.
   - Default row format : __`value`__
-- **Tab Node** : Returns the row at the given index, generaly a variable red by a lambda.
+- **Tab Node** : Returns the row at the given index, generaly a variable red by a lambda or a ListValue.
+    On the contrary of a Weight node, interesting when randomisation is not the purpose.
+- **Dictionary Node** : Get children in a dictionary structure, and returns the node associated with the 
+    picked key. Key is red in a given variable or text buffer.
+- **Automaton Node** : Use TabNode.Automaton to create an automaton.
+    They just pop the first child in the list each time they are called.
+    Loops back to the beginning of the list when arrives at the end.
 
 ### Leafs
 - Action Node : Executes a given function on execution
@@ -25,7 +31,7 @@ The generators are composed of different nodes implementing various behaviors.
   - Label : automatic __Label : Text__ formatting.
 - By default. the generated output is stacked in a variable buffer named "DEFAULT".
   The generated text can then be accessed with `generation.raw_text`
-  - CurrentVar Node : Changes the used buffer. If a buffer with the given name does not exist, it is created.
+  - SwitchVar Node : Changes the used buffer. If a buffer with the given name does not exist, it is created.
   - SetVar Node : Sets a value to a buffer whitout changing the used buffer. Erases previous value if any, and creates a buffer if didn't existed.
   - Define Node : If the associated buffer does not exist, changes context, and executes children in order to set the buffer. If the buffer is already set, does nothing. Usefull for managing variables that may be passed as arguments in input of the generation.
 

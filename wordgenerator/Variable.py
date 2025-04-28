@@ -9,7 +9,7 @@ from wordgenerator.GenerationResult import GenerationResult
 from wordgenerator.NodeIf import AbsLeafNode, AbsGeneratorNode
 from wordgenerator.Print import ConvToNode
 
-class CurrentVarNode(AbsLeafNode):
+class SwitchVarNode(AbsLeafNode):
     """Node changing the buffer context.
         Every print onforth will be buffered to the variable with the given Id.
 
