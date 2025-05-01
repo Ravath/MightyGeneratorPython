@@ -182,7 +182,6 @@ grenade_name = Sequence() << [
         [" salsa pimenté"],
         [" plasmatique"],
     ],
-    "\n"
 ]
 
 ############# SHIELDS
@@ -260,5 +259,4 @@ shield_name = Sequence() << [
         [" occultant"],
         [" de mauvaise facture"],
     ],
-    "\n"
 ]

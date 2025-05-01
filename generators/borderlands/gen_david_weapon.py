@@ -8,6 +8,7 @@ from wordgenerator.GenerationResult import GenerationResult
 from wordgenerator.Dictionary import DictionaryNode
 from wordgenerator.Weight import WeightNode as Weight
 from wordgenerator.Sequence import SequenceNode as Sequence
+from wordgenerator.Sequence import S
 from wordgenerator.Interval import IntervalNode as Interval
 from wordgenerator.Print import PrintNode as Print
 from wordgenerator.Print import CheckpointNode as Checkpoint
@@ -15,6 +16,8 @@ from wordgenerator.Print import SetNode, Title, Label
 from wordgenerator.Variable import SwitchVarNode as SwitchVar
 from wordgenerator.Variable import SetVarNode as SetVar
 from wordgenerator.Variable import DefineNode as Define
+from wordgenerator.Output import FormatNode as Format
+from wordgenerator.Output import MacroNode as Macro
 from wordgenerator.Generator import Generator
 from generators.borderlands.ponderation import type_flags, manufacturer_flags, can_element, nbr_of_manufacturer_properties
 from generators.borderlands.properties import item_prop , item_special, sel_element
@@ -352,16 +355,32 @@ def get_grenade_builder(grenade_type:str,
                      grenade_damage,
                      grenade_aim:str,
                      grenade_modes) :
-    return Title(grenade_type+" {ITEM_MANUFACTURER}",
-                 Sequence() << [
-                     grenade_name,
-                     Label("Dégats",              grenade_damage),
-                     Label("Difficulté de visée", grenade_aim),
-                     grenade_modes,
-                ])
+    return S(
+            Define("W_TYPE") << grenade_type,
+            Define("W_NAME") << grenade_name,
+            
+            SwitchVar("W_DGTS"),
+            grenade_damage,
+            Macro(),
+            
+            SwitchVar("W_AIM"),
+            grenade_aim,
+            Format(),
+            Macro(),
+            
+            SwitchVar("W_SHOOT"),
+            grenade_modes,
+            
+            SwitchVar("DEFAULT"),
+            Format(format="""{W_TYPE} {ITEM_MANUFACTURER}
+    {W_NAME}
+    Dégats : {W_DGTS}
+    Difficulté de visée  : {W_AIM}
+    {W_SHOOT}""")
+        )
 
 grenade_damage = Print("2D20 + [[1d11+23]]")
-grenade_modes = " - Tir Simple\n"
+grenade_modes = " - Tir Simple"
 
 item_generation["GRENADE"] = {
     "COMMON":   get_grenade_builder("Grenade Commune",     grenade_damage, "[[4-1d7]]", grenade_modes),
@@ -374,15 +393,28 @@ item_generation["GRENADE"] = {
 
 ############# SHIELD BUILDING
 
-shield_intensity = "(1d11+6)"
-
 def get_shield_builder(shield_type:str) :
-    return Title(shield_type+" {ITEM_MANUFACTURER}",
-                 Sequence() << [
-                     shield_name,
-                     Label("Capacité", f"[[84 - 3*{shield_intensity} + 1d7]]"),
-                     Label("Cadence",  f"[[1d5 + {shield_intensity}]]"),
-                ])
+    return S(
+            Define("W_TYPE") << shield_type,
+            Define("W_NAME") << shield_name,
+            # SetVar("S_INTENSITY", "[[1d11+6]]"), Macro("S_INTENSITY")
+            Macro("S_INTENSITY", "[[1d11+6]]"),
+            
+            SwitchVar("W_CAPA"),
+            Format(format="[[84 - 3*{S_INTENSITY} + 1d7]]"),
+            Macro(),
+            
+            SwitchVar("W_CADE"),
+            "[[1d5 + {S_INTENSITY}]]",
+            Format(),
+            Macro(),
+            
+            SwitchVar("DEFAULT"),
+            Format("DEFAULT", """{W_TYPE} {ITEM_MANUFACTURER}
+    {W_NAME} [{S_INTENSITY}]
+    Capacité : {W_CAPA}
+    Cadence  : {W_CADE}""")
+        )
 
 item_generation["SHIELD"] = {
     "COMMON":   get_shield_builder("Bouclier Commun"),
@@ -417,7 +449,7 @@ generation = Generator(
 if __name__ == "__main__" :
     for i in range(0,1):
         # Do generation
-        result = generation.execute(CHEST_TYPE="COMMON")
+        result = generation.execute(CHEST_TYPE="COMMON", ITEM_TYPE="GRENADE")
         
         # print generation result
         result.print_to_console(

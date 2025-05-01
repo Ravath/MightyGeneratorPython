@@ -3,20 +3,26 @@
 The result of a generation
 @author: Ehlion
 """
+from macro.grammar import get_ValueIf
+import typing
 import re
 
-replacement_pattern = re.compile(r'\{(.*?)\}')
-"""The pattern to format the string and do replacements."""
 
 class GenerationResult:
     
-    def __init__(self):
+    replacement_pattern = re.compile(r'\{(.*?)\}')
+    """The pattern to format the string and do replacements."""
+    macro_pattern =re.compile(r'\[\[(.*?)\]\]')
+    """The pattern to find the macros to execute."""
+    
+    def __init__(self, variable_converter : typing.Callable[[str], str] = None):
         # The current indentation level.
         GenerationResult.tabs = 0
         self.current_var_id = "DEFAULT"
         self.var_list = { self.current_var_id }
         self._raw_text = {self.current_var_id : ""}
         self.text = ""
+        self.variable_converter = variable_converter
         
         self.checkpoints_stack = list()
         
@@ -49,6 +55,19 @@ class GenerationResult:
     def is_var_defined(self, varid):
         return varid in self.var_list and self._raw_text[varid] != ""
     
+    def get_var_or_text(self, varid):
+        if not varid:
+            return self.raw_text
+        return self._raw_text[varid]
+    
+    def set_var_or_text(self, varid, value):
+        if not varid:
+            self.raw_text = value
+        else:
+            if not varid in self.var_list:
+                self.var_list.add(varid)
+            self._raw_text[varid] = value
+    
     #### The print accesses ####
     
     def do_print(self, to_print:str) :
@@ -75,14 +94,57 @@ class GenerationResult:
     #### output access ####
     
     def format(self, format_string:str) -> str:
+        """
+        Replaces the variables according to the defined pattern.
+        ("{<Variable_Name>}" by default. See GenerationResult.replacement_pattern).
+        Uses the converter provided by user if any in self.variable_converter.
+
+        Parameters
+        ----------
+        text : str The text to replace the variables from.
+
+        Returns
+        -------
+        str Processed text.
+        """
         text = format_string
-        for match in replacement_pattern.finditer(text):
+        # search for replacements in text
+        for match in GenerationResult.replacement_pattern.finditer(text):
             varid = match.group(1)
             if self.is_var_defined(varid):
                 # find replacement text
                 new_text = self._raw_text[varid]
-                # replace any match
-                text = re.sub(match.group(0), new_text, text)
+            # or in the given var pool is any
+            elif self.variable_converter:
+                new_text = self.variable_converter(varid)
+            # replace any match
+            text = re.sub(match.group(0), new_text, text)
+        return text
+
+
+    def roll_macros(text : str) -> str :
+        """
+        Replaces and rolls the internal macro according to the defined pattern.
+        ("[[<Macro>]]" by default. See Generator.macro_pattern)
+
+        Parameters
+        ----------
+        text : str The text to replace the macro from.
+
+        Returns
+        -------
+        str Processed text.
+
+        """
+        res = GenerationResult.macro_pattern.search(text)
+        # for every found macro
+        while(res) :
+            # roll the macro
+            newText = get_ValueIf(res.group(1)).value
+            # replace it
+            text = text.replace(res.group(0), str(newText), 1)
+            # find next macro if any
+            res = GenerationResult.macro_pattern.search(text)
         return text
         
     def print_to_console(self, format_string:str=None):
