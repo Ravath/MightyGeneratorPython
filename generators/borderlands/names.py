@@ -106,7 +106,6 @@ firearm_name = Sequence() << [
         [" canon"],
         [" glorieux"],
     ],
-    "\n"
 ]
 
 ############# GRENADES

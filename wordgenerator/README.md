@@ -33,7 +33,10 @@ The generators are composed of different nodes implementing various behaviors.
   The generated text can then be accessed with `generation.raw_text`
   - SwitchVar Node : Changes the used buffer. If a buffer with the given name does not exist, it is created.
   - SetVar Node : Sets a value to a buffer whitout changing the used buffer. Erases previous value if any, and creates a buffer if didn't existed.
-  - Define Node : If the associated buffer does not exist, changes context, and executes children in order to set the buffer. If the buffer is already set, does nothing. Usefull for managing variables that may be passed as arguments in input of the generation.
+  - Context Node : Changes context, and executes children in order to set the buffer.
+    At the end, reset back to previous context, after applying format and macro. 
+  - Define Node : A Context Node that executes only if the target buffer is not already defined.
+    If the buffer is already set, does nothing. Usefull for managing variables that may be passed as arguments in input of the generation.
   - Format Node : Execute the format on the target buffer.
     If no target buffer provided, uses the current buffer.
     If no format provided, uses the target as input.

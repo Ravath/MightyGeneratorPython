@@ -15,6 +15,7 @@ from wordgenerator.Print import CheckpointNode as Checkpoint
 from wordgenerator.Print import SetNode, Title, Label
 from wordgenerator.Variable import SwitchVarNode as SwitchVar
 from wordgenerator.Variable import SetVarNode as SetVar
+from wordgenerator.Variable import ContextNode as Context
 from wordgenerator.Variable import DefineNode as Define
 from wordgenerator.Output import FormatNode as Format
 from wordgenerator.Output import MacroNode as Macro
@@ -240,14 +241,23 @@ def get_firearm_builder(firearm_type:str,
                      firearm_aim:str,
                      firearm_magazine:str,
                      firearm_modes) :
-    return Title(firearm_type+" {ITEM_MANUFACTURER}",
-                 Sequence() << [
-                    firearm_name,
-                    Label("Dégats",              firearm_damage),
-                    Label("Difficulté de visée", firearm_aim),
-                    Label("Magasin",             firearm_magazine),
-                    firearm_modes,
-                ])
+    return S(
+            Define("W_TYPE") << firearm_type,
+            Define("W_NAME") << firearm_name,
+            
+            Context("W_DGTS") << firearm_damage,
+            Context("W_AIM") << firearm_aim,
+            Context("W_MAG") << firearm_magazine,
+            Context("W_SHOOT") << firearm_modes,
+            
+            Format(format="""{W_TYPE} {ITEM_MANUFACTURER}
+    {W_NAME}
+    Dégats : {W_DGTS}
+    Difficulté de visée  : {W_AIM}
+    Magasin  : {W_MAG}
+    Modes :
+{W_SHOOT}""")
+        )
 
 ############# HANDGUN BUILDING
 
@@ -359,19 +369,10 @@ def get_grenade_builder(grenade_type:str,
             Define("W_TYPE") << grenade_type,
             Define("W_NAME") << grenade_name,
             
-            SwitchVar("W_DGTS"),
-            grenade_damage,
-            Macro(),
+            Context("W_DGTS") << grenade_damage,
+            Context("W_AIM") << grenade_aim,
+            Context("W_SHOOT") << grenade_modes,
             
-            SwitchVar("W_AIM"),
-            grenade_aim,
-            Format(),
-            Macro(),
-            
-            SwitchVar("W_SHOOT"),
-            grenade_modes,
-            
-            SwitchVar("DEFAULT"),
             Format(format="""{W_TYPE} {ITEM_MANUFACTURER}
     {W_NAME}
     Dégats : {W_DGTS}
@@ -397,19 +398,11 @@ def get_shield_builder(shield_type:str) :
     return S(
             Define("W_TYPE") << shield_type,
             Define("W_NAME") << shield_name,
-            # SetVar("S_INTENSITY", "[[1d11+6]]"), Macro("S_INTENSITY")
             Macro("S_INTENSITY", "[[1d11+6]]"),
             
-            SwitchVar("W_CAPA"),
-            Format(format="[[84 - 3*{S_INTENSITY} + 1d7]]"),
-            Macro(),
+            Context("W_CAPA") << "[[84 - 3*{S_INTENSITY} + 1d7]]",
+            Context("W_CADE") << "[[1d5 + {S_INTENSITY}]]",
             
-            SwitchVar("W_CADE"),
-            "[[1d5 + {S_INTENSITY}]]",
-            Format(),
-            Macro(),
-            
-            SwitchVar("DEFAULT"),
             Format("DEFAULT", """{W_TYPE} {ITEM_MANUFACTURER}
     {W_NAME} [{S_INTENSITY}]
     Capacité : {W_CAPA}
@@ -449,7 +442,7 @@ generation = Generator(
 if __name__ == "__main__" :
     for i in range(0,1):
         # Do generation
-        result = generation.execute(CHEST_TYPE="COMMON", ITEM_TYPE="GRENADE")
+        result = generation.execute(CHEST_TYPE="COMMON", ITEM_TYPE="RIFLE")
         
         # print generation result
         result.print_to_console(
