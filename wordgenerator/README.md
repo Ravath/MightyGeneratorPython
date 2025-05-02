@@ -23,6 +23,14 @@ The generators are composed of different nodes implementing various behaviors.
     They just pop the first child in the list each time they are called.
     Loops back to the beginning of the list when arrives at the end.
 
+#### Some collections special attributes
+These are nodes a collection can execute at specific moments during his execution.
+before_execute : before its execution.
+after_execute  : after its execution.
+before_action  : before a children's execution.
+between_action : between two children's execution.
+after_action   : after a children's execution.
+
 ### Leafs
 - Action Node : Executes a given function on execution
 - Set Node : Set a variable with a given value.

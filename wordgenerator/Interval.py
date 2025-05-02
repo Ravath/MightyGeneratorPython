@@ -64,7 +64,7 @@ class IntervalRow(RowNode) :
     max = property(get_max, set_max)
     nbr_pick = property(get_nbr_pick, set_nbr_pick)
 
-    def __init__(self) :
+    def __init__(self):
         RowNode.__init__(self)
 
         # introduce new attributes
@@ -124,8 +124,11 @@ class IntervalNode(AbsCollectionNode) :
         self._nbr_draw = get_ValueIf(dice)
     nbr_draw = property(get_nbr_draw, set_nbr_draw)
 
-    def __init__(self, dice, nbr_draw = 1, put_back:bool = True) :
-        AbsCollectionNode.__init__(self)
+    def __init__(self, dice, nbr_draw = 1, put_back:bool = True,
+                 before_execute=None, after_execute=None, 
+                 before_action=None, between_action=None, after_action=None):
+        AbsCollectionNode.__init__(self, before_execute, after_execute,
+                                   before_action, between_action, after_action)
 
         # dice is a ValueIf, or an int
         self.dice = dice

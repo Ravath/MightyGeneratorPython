@@ -266,10 +266,10 @@ handgun_damage = Weight() << [
     [50, "1D6 + [[1d5+4]]"],
     [25, "1D8 + [[1d5+3]]"],
 ]
-handgun_modes = Weight(2, False) << [
-    [" - Tir Simple\n"],
-    [" - Tir Rafale\n"],
-    [" - Tir Automatique\n"],
+handgun_modes = Weight(2, False, between_action="\n") << [
+    [" - Tir Simple"],
+    [" - Tir Rafale"],
+    [" - Tir Automatique"],
 ]
 
 item_generation["HANDGUN"] = {
@@ -307,10 +307,10 @@ machinegun_damage = Weight() << [
     [40, "1D10 + [[1d7-1]]"],
     [40, "1D12 + [[1d7-2]]"],
 ]
-machinegun_modes = Sequence() << [
-    " - Tir Simple\n",
-    " - Tir Rafale\n",
-    " - Tir Automatique\n"
+machinegun_modes = Sequence(between_action="\n") << [
+    " - Tir Simple",
+    " - Tir Rafale",
+    " - Tir Automatique"
 ]
 
 item_generation["MACHINEGUN"] = {
@@ -330,7 +330,7 @@ shotgun_damage = Weight() << [
     [40, "2D12 + [[1d9+10]]"],
     [10, "2D20 + [[1d9+2]]"],
 ]
-shotgun_modes = " - Tir Simple\n"
+shotgun_modes = " - Tir Simple"
 
 item_generation["SHOTGUN"] = {
     "COMMON":   get_firearm_builder("Fusil à pompe Commun",     shotgun_damage, "[[6-1d7]]", "[[1d3]]",   shotgun_modes),
@@ -348,7 +348,7 @@ sniper_damage = Weight() << [
     [25, "1D6 + [[1d7+34]]"],
     [15, "1D8 + [[1d7+33]]"],
 ]
-sniper_modes = " - Tir Simple\n"
+sniper_modes = " - Tir Simple"
 
 item_generation["SNIPER"] = {
     "COMMON":   get_firearm_builder("Sniper Commun",     sniper_damage, "[[3-1d5]]", "[[1d4]]",   sniper_modes),
@@ -442,7 +442,11 @@ generation = Generator(
 if __name__ == "__main__" :
     for i in range(0,1):
         # Do generation
-        result = generation.execute(CHEST_TYPE="COMMON", ITEM_TYPE="RIFLE")
+        # Tesla / Proximity
+        result = generation.execute(CHEST_TYPE="LEGENDARY",
+                                    ITEM_TYPE="GRENADE",
+                                    ITEM_RARITY="ETECH",
+                                    ITEM_MANUFACTURER="Tesla")
         
         # print generation result
         result.print_to_console(

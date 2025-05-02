@@ -16,22 +16,18 @@ from macro.grammar import get_ValueIf
 class SequenceNode(AbsCollectionNode):
     """A basic collection node. Executes every child sequentially"""
 
-    def __init__(self, nbr_draw = 1, inbetween_action = None):
-        AbsCollectionNode.__init__(self)
+    def __init__(self, nbr_draw = 1, before_execute=None, after_execute=None, 
+                 before_action=None, between_action=None, after_action=None):
+        AbsCollectionNode.__init__(self, before_execute, after_execute,
+                                   before_action, between_action, after_action)
         self.nbr_draw = nbr_draw
-        self.inbetween_action = inbetween_action
 
     def draw(self):
         """draw every children sequentially"""
-        first_action = True
 
         for _ in range(0, self.nbr_draw.value) :
 
             for row in self.children :
-                if first_action :
-                    first_action = False
-                else :
-                    yield self.inbetween_action
                 yield row.node
 
     def print_node(self, tabs:int = 0) :
@@ -48,12 +44,6 @@ class SequenceNode(AbsCollectionNode):
     def set_nbr_draw(self, dice) :
         self._nbr_draw = get_ValueIf(dice)
     nbr_draw = property(get_nbr_draw, set_nbr_draw)
-
-    def set_inbetween_action(self, new_inbetween) :
-        self._inbetween_action = ConvToNode(new_inbetween)
-    def get_inbetween_action(self) :
-        return self._inbetween_action
-    inbetween_action = property(get_inbetween_action, set_inbetween_action)
 
     def __str_attributes__(self) -> str :
         return f"Draws={self.nbr_draw} " \

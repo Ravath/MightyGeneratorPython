@@ -102,8 +102,11 @@ class WeightNode(AbsCollectionNode):
 
     nbr_draw = property(_get_nbr_draw, _set_nbr_draw)
 
-    def __init__(self, nbr_draw = 1, do_put_back:bool = True) :
-        AbsCollectionNode.__init__(self)
+    def __init__(self, nbr_draw = 1, do_put_back:bool = True,
+                 before_execute=None, after_execute=None, 
+                 before_action=None, between_action=None, after_action=None):
+        AbsCollectionNode.__init__(self, before_execute, after_execute,
+                                   before_action, between_action, after_action)
         # flag raised if the total weight of the row
         # has changed and must be recomputed
         self.totalWeight = 0

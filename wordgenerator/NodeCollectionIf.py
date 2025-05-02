@@ -164,9 +164,49 @@ class AbsCollectionNode(AbsGeneratorNode) :
                 callable(subclass.get_row) or
                 NotImplemented)
 
-    def __init__(self) :
+    def __init__(self, before_execute=None, after_execute=None, 
+                 before_action=None, between_action=None, after_action=None ) :
         AbsGeneratorNode.__init__(self)
         self.children = []
+        self.before_execute = before_execute
+        self.after_execute = after_execute
+        self.before_action = before_action
+        self.between_action = between_action
+        self.after_action = after_action
+
+    #####################################################
+    #                    PROPERTIES                     #
+    #####################################################
+
+    def set_before_execute(self, new_before) :
+        self._before_execute = ConvToNode(new_before)
+    def get_before_execute(self) :
+        return self._before_execute
+    before_execute = property(get_before_execute, set_before_execute)
+
+    def set_after_execute(self, new_after) :
+        self._after_execute = ConvToNode(new_after)
+    def get_after_execute(self) :
+        return self._after_execute
+    after_execute = property(get_after_execute, set_after_execute)
+
+    def set_before_action(self, new_before) :
+        self._before_action = ConvToNode(new_before)
+    def get_before_action(self) :
+        return self._before_action
+    before_action = property(get_before_action, set_before_action)
+
+    def set_between_action(self, new_between) :
+        self._between_action = ConvToNode(new_between)
+    def get_between_action(self) :
+        return self._between_action
+    between_action = property(get_between_action, set_between_action)
+
+    def set_after_action(self, new_after) :
+        self._after_action = ConvToNode(new_after)
+    def get_after_action(self) :
+        return self._after_action
+    after_action = property(get_after_action, set_after_action)
 
     #####################################################
     #                   EXECUTE LOGIC                   #
@@ -178,9 +218,29 @@ class AbsCollectionNode(AbsGeneratorNode) :
 
     def node_action(self, generation_result:GenerationResult) :
         """Execute every node drawn from the collection."""
+        first_action = True
+        
+        if self.before_execute :
+            self.before_execute.node_action(generation_result)
+        
         for node in self.draw() :
+
+            if first_action :
+                first_action = False
+            elif self.between_action:
+                self.between_action.node_action(generation_result)
+                    
+            if self.before_action :
+                self.before_action.node_action(generation_result)
+                
             if node :
                 node.node_action(generation_result)
+                
+            if self.after_action :
+                self.after_action.node_action(generation_result)
+        
+        if self.after_execute :
+            self.after_execute.node_action(generation_result)
 
     #####################################################
     #                ROW COLLECTION LOGIC               #

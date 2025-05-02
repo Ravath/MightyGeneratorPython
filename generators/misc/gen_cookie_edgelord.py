@@ -131,7 +131,7 @@ sequence = SequenceNode() << [
     victim,
     outcome
 ]
-sequence.inbetween_action = " "
+sequence.between_action = " "
 
 generation = Generator(sequence)
 if __name__ == "__main__" :
