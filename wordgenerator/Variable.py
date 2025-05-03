@@ -52,15 +52,25 @@ class ContextNode(AbsLeafNode):
         varid : The name of the variable
         autoformat : true for applying the format on the current context at the end of the action.
         automacro : true for applying the macros on the current context at the end of the action.
+        append : true to reset the target context when switching to it.
         child : The child tree to execute and supposed to set the variable if not already done.
     """
 
-    def __init__(self, varid, autoformat:bool=True, automacro:bool=True, child:AbsGeneratorNode = None):
+    def __init__(self, varid,
+                 autoformat:bool=True, automacro:bool=True,
+                 append=False,
+                 child:AbsGeneratorNode = None):
         AbsLeafNode.__init__(self)
         self.varid = varid
+        """The name of the context to switch to."""
+        self.append = append
+        """Reset the context at start."""
         self.autoformat = autoformat
+        """At the end of context, automatically apply format."""
         self.automacro = automacro
+        """At the end of context, automatically apply macros."""
         self.child = child
+        """The generation that will happen in this context."""
 
     def node_action(self, generation_result:GenerationResult):
         """Change context,
@@ -68,13 +78,22 @@ class ContextNode(AbsLeafNode):
             Apply format and macro if needed,
             then switch back to previous context.
         """
+        # Init new context
         self.previous_varid = generation_result.current_var_id
         generation_result.switch_to_var(self.varid)
+        if not self.append:
+            generation_result.set_text("")
+            
+        # Execute context
         self.child.node_action(generation_result)
+        
+        # Post-treatment
         if self.autoformat:
             FormatNode().node_action(generation_result)
         if self.automacro:
             MacroNode().node_action(generation_result)
+        
+        # Reset to previous context
         generation_result.switch_to_var(self.previous_varid)
 
     def set_child(self, new_child) :
@@ -105,7 +124,7 @@ class DefineNode(ContextNode):
     """
 
     def __init__(self, varid, autoformat:bool=True, automacro:bool=True, child:AbsGeneratorNode = None):
-        ContextNode.__init__(self, varid, autoformat, automacro, child)
+        ContextNode.__init__(self, varid, autoformat, automacro, child=child)
     
     def node_action(self, generation_result:GenerationResult):
         """Switch to the contect only if not already defined."""

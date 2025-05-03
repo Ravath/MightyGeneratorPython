@@ -111,6 +111,7 @@ class GenerationResult:
         # search for replacements in text
         for match in GenerationResult.replacement_pattern.finditer(text):
             varid = match.group(1)
+            new_text = "{" + varid + "}"
             if self.is_var_defined(varid):
                 # find replacement text
                 new_text = self._raw_text[varid]
