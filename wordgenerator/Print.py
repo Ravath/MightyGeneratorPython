@@ -32,6 +32,29 @@ def singleton(classe_definie):
         return instances[classe_definie]
     return get_instance
 
+class NodeChild :
+    """
+    At execution, prints a Title
+    before printing the main text.
+    The main text is indented, and starts at a new line.
+    """
+
+    def __init__(self, child = None) :
+        self.child = child
+
+    def set_child(self, new_child) :
+        self._child = ConvToNode(new_child)
+
+    def get_child(self) :
+        return self._child
+
+    child = property(get_child, set_child)
+
+    def __lshift__(self, other) :
+        """Use '<<' as shortcut for the 'set_child' operation."""
+        self.set_child(other)
+        return self
+
 #___________________________________________________#
 #                                                   #
 #                      PrintNode                    #
@@ -56,7 +79,7 @@ class PrintNode(AbsLeafNode):
 #                                                   #
 #                   CheckpointNode                  #
 #___________________________________________________#
-class CheckpointNode(AbsLeafNode):
+class CheckpointNode(AbsLeafNode, NodeChild):
     """A Node wrapper used to manipulate subsections of the generation tree.
     Specific uses include catching output in variables
     and regenerating only a subtree of the whole."""
@@ -66,8 +89,8 @@ class CheckpointNode(AbsLeafNode):
 
     def __init__(self, label:str, child:AbsGeneratorNode = None):
         AbsLeafNode.__init__(self)
+        NodeChild.__init__(self, child)
         self.label = label
-        self.child = child
         self.text = ""
         CheckpointNode.checkpoints[label] = self
 
@@ -85,19 +108,6 @@ class CheckpointNode(AbsLeafNode):
         tab_signs="\t"*tabs
         print(f"{tab_signs}CHECKPOINT[{self.label}]")
         self.child.print_node(tabs+1)
-
-    def set_child(self, new_child) :
-        self._child = ConvToNode(new_child)
-
-    def get_child(self) :
-        return self._child
-
-    child = property(get_child, set_child)
-
-    def __lshift__(self, other) :
-        """Use '<<' as shortcut for the 'set_child' operation."""
-        self.set_child(other)
-        return self
 
 #___________________________________________________#
 #                                                   #
@@ -195,7 +205,7 @@ def ConvToNode(conv_from) -> AbsGeneratorNode :
 #                     STR FORMATING                 #
 #___________________________________________________#
 
-class Title(PrintNode) :
+class Title(PrintNode, NodeChild) :
     """
     At execution, prints a Title
     before printing the main text.
@@ -204,7 +214,7 @@ class Title(PrintNode) :
 
     def __init__(self, title:str, child = None) :
         PrintNode.__init__(self, title)
-        self.child = child
+        NodeChild.__init__(self, child)
 
     def node_action(self, generation_result:GenerationResult):
         """Print the title, and then
@@ -221,20 +231,7 @@ class Title(PrintNode) :
         PrintNode.print_node(self, tabs)
         self.child.print_node(tabs+1)
 
-    def set_child(self, new_child) :
-        self._child = ConvToNode(new_child)
-
-    def get_child(self) :
-        return self._child
-
-    child = property(get_child, set_child)
-
-    def __lshift__(self, other) :
-        """Use '<<' as shortcut for the 'set_child' operation."""
-        self.set_child(other)
-        return self
-
-class Label(PrintNode) :
+class Label(PrintNode, NodeChild) :
     """
     At execution, prints a text label
     before printing the main text.
@@ -243,7 +240,7 @@ class Label(PrintNode) :
 
     def __init__(self, label:str, child = None) :
         PrintNode.__init__(self, label + " : ")
-        self.child = child
+        NodeChild.__init__(self, child)
 
     def node_action(self, generation_result:GenerationResult):
         """Print the label, and then
@@ -256,16 +253,3 @@ class Label(PrintNode) :
         """Print the node name and printed text."""
         PrintNode.print_node(self, tabs)
         self.child.print_node(tabs+1)
-
-    def set_child(self, new_child) :
-        self._child = ConvToNode(new_child)
-
-    def get_child(self) :
-        return self._child
-
-    child = property(get_child, set_child)
-
-    def __lshift__(self, other) :
-        """Use '<<' as shortcut for the 'set_child' operation."""
-        self.set_child(other)
-        return self

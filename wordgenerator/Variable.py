@@ -8,7 +8,7 @@ Created on Sun Apr 27 11:55:00 2025
 from wordgenerator.GenerationResult import GenerationResult
 from wordgenerator.NodeIf import AbsLeafNode, AbsGeneratorNode
 from wordgenerator.Output import FormatNode, MacroNode
-from wordgenerator.Print import ConvToNode
+from wordgenerator.Print import NodeChild
 
 class SwitchVarNode(AbsLeafNode):
     """Node changing the buffer context.
@@ -45,7 +45,7 @@ class SetVarNode(AbsLeafNode):
         tab_signs="\t"*tabs
         print(f"{tab_signs}SETVAR[{self.varid}:{self.value}]")
 
-class ContextNode(AbsLeafNode):
+class ContextNode(AbsLeafNode, NodeChild):
     """Use the target buffer as context, execute children, and then get back to previous context.\n
         Before leaving the context, can automatically 
     Args:
@@ -61,6 +61,7 @@ class ContextNode(AbsLeafNode):
                  append=False,
                  child:AbsGeneratorNode = None):
         AbsLeafNode.__init__(self)
+        NodeChild.__init__(self, child)
         self.varid = varid
         """The name of the context to switch to."""
         self.append = append
@@ -95,19 +96,6 @@ class ContextNode(AbsLeafNode):
         
         # Reset to previous context
         generation_result.switch_to_var(self.previous_varid)
-
-    def set_child(self, new_child) :
-        self._child = ConvToNode(new_child)
-
-    def get_child(self) :
-        return self._child
-
-    child = property(get_child, set_child)
-
-    def __lshift__(self, other) :
-        """Use '<<' as shortcut for the 'set_child' operation."""
-        self.set_child(other)
-        return self
     
     def print_node(self, tabs:int = 0) :
         tab_signs="\t"*tabs
