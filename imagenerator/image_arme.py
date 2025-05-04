@@ -1,28 +1,31 @@
 # -*- coding: utf-8 -*-
 import re
 from PIL import Image, ImageDraw, ImageFont, ImageShow
-from generators.borderlands.gen_david_weapon import generation, force_chest_type, force_item_type, force_item_rarity
-from wordgenerator.Print import PrintNode
+from generators.borderlands.gen_david_weapon import generation#, force_chest_type, force_item_type, force_item_rarity
+#from wordgenerator.Print import PrintNode
 
 ###################
 # Text Generation #
 ###################
-PrintNode.print_to_buffer()
+#PrintNode.print_to_buffer()
 
-generation.execute()
+res = generation.execute()
+#res.item_type = res.get_var("ITEM_TYPE")
+#print(res.get_var("ITEM_TYPE"))
+res.display_vars()
 
+#generation.text = generation.get_var("DEFAULT")
+#print(generation.text)
 
-find_weapon = re.findall(r"Pistolet|Fusil à pompe|Fusil d'assaut|Mitraillette|Sniper|Grenade|Bouclier", generation.text)
-find_rarity = re.findall(r"Commun|Uncommun|Rare|Epique|E-Tech|Légendaire", generation.text)
-find_brand = re.findall(r"Jakobs|Maliwan|Hyperion|Dahl|Vladof|Bandit|Tediore|Torgue|Classic|Contact|Proximity|MIRV|Singularity|Tesla|Transfusion|Betty|Absorb|Adaptive|Amplify|Booster|Lifeline|Nova|Raid|Shield|Spike|Turtle", generation.text)
-text_split = re.split("Dégats : |Difficulté de visée : |Magasin : |Capacité : |Cadence : |\n\t", generation.text)
-properties_split = re.split("Propriétés", generation.text)
-find_shoot_simple = re.findall(r"Tir Simple", generation.text)
-find_shoot_burst = re.findall(r"Tir Rafale", generation.text)
-find_shoot_auto = re.findall(r"Tir Automatique", generation.text)
-find_X2_visor = re.findall(r"- Viseur X2", generation.text)
-find_X4_visor = re.findall(r"- Viseur X4", generation.text)
-find_X6_visor = re.findall(r"- Viseur X6", generation.text)
+find_weapon = re.findall(r"Pistolet|Fusil à pompe|Fusil d'assaut|Mitraillette|Sniper|Grenade|Bouclier", res.get_var("W_TYPE"))
+find_rarity = re.findall(r"Commun|Uncommun|Rare|Epique|E-Tech|Légendaire", res.get_var("W_TYPE"))
+find_brand = re.findall(r"Jakobs|Maliwan|Hyperion|Dahl|Vladof|Bandit|Tediore|Torgue|Classic|Contact|Proximity|MIRV|Singularity|Tesla|Transfusion|Betty|Absorb|Adaptive|Amplify|Booster|Lifeline|Nova|Raid|Shield|Spike|Turtle", res.get_var("ITEM_MANUFACTURER"))
+#text_split = re.split("Dégats : |Difficulté de visée : |Magasin : |Capacité : |Cadence : |\n\t", generation.text)
+#properties_split = re.split("Propriétés", generation.text)
+
+find_X2_visor = re.findall(r"- Viseur X2", res.get_var("PROPERTIES"))
+find_X4_visor = re.findall(r"- Viseur X4", res.get_var("PROPERTIES"))
+find_X6_visor = re.findall(r"- Viseur X6", res.get_var("PROPERTIES"))
 # text_split[1] is Weapon Name
 # text_split[5] is Difficulty Threshold
 ####################
@@ -49,7 +52,7 @@ d = ImageDraw.Draw(image)
 
 # Weapon name
 
-d.text((10, 10), text_split[1], font=font_used, fill=BLACK)
+d.text((10, 10), res.get_var("W_NAME"), font=font_used, fill=BLACK)
 
 # Weapon type
 if find_weapon:
@@ -103,7 +106,10 @@ else :
 
 # Gun damage, magazine, difficulty threshold, brand information and properties#
 if weapon_type == "gun":
-    difficulty = int(text_split[5]) 
+    find_shoot_simple = re.findall(r"Tir Simple", res.get_var("W_SHOOT"))
+    find_shoot_burst = re.findall(r"Tir Rafale", res.get_var("W_SHOOT"))
+    find_shoot_auto = re.findall(r"Tir Automatique", res.get_var("W_SHOOT"))
+    difficulty = int(res.get_var("W_AIM")) 
     bonus_2x = 0
     bonus_4x = 0
     bonus_6x = 0
@@ -163,12 +169,12 @@ if weapon_type == "gun":
     BL_image_arme = ImageDraw.Draw(back_im)
     # Damage
     BL_image_arme.text((10, 110), "Degats", font=font_used, fill=BLACK)
-    BL_image_arme.text((10, 158), text_split[3], font=font_used_big, fill=BLACK)   
+    BL_image_arme.text((10, 158), res.get_var("W_DGTS"), font=font_used_big, fill=BLACK)   
     # Magazine
     BL_image_arme.text((131, 110), "Magasin", font=font_used, fill=BLACK)
-    BL_image_arme.text((131, 158), text_split[7], font=font_used_big, fill=BLACK)
+    BL_image_arme.text((131, 158), res.get_var("W_MAG"), font=font_used_big, fill=BLACK)
     # Properties
-    BL_image_arme.text((15, 410), properties_split[1], font=font_used, fill=BLACK) 
+    BL_image_arme.text((15, 410), res.get_var("PROPERTIES"), font=font_used, fill=BLACK) 
     out = Image.alpha_composite(back_im, back_im)
     
     out.show()
@@ -181,9 +187,9 @@ elif weapon_type == "grenade":
     BL_image_arme = ImageDraw.Draw(back_im)
     # Damage
     BL_image_arme.text((15, 110), "Dégâts", font=font_used, fill=BLACK)
-    BL_image_arme.text((15, 158), text_split[3], font=font_used_big, fill=BLACK)
+    BL_image_arme.text((15, 158), res.get_var("W_DGTS"), font=font_used_big, fill=BLACK)
     # Properties
-    BL_image_arme.text((15, 250), properties_split[1], font=font_used, fill=BLACK) 
+    BL_image_arme.text((15, 250), res.get_var("PROPERTIES"), font=font_used, fill=BLACK) 
     out = Image.alpha_composite(back_im, back_im)
     
     out.show()
@@ -197,9 +203,9 @@ elif weapon_type == "bouclier":
     BL_image_arme = ImageDraw.Draw(back_im)
     # Damage
     BL_image_arme.text((15, 110), "Capacité", font=font_used, fill=BLACK)
-    BL_image_arme.text((15, 158), text_split[3], font=font_used_big, fill=BLACK)
+    BL_image_arme.text((15, 158), res.get_var("W_CAPA"), font=font_used_big, fill=BLACK)
     # Properties
-    BL_image_arme.text((15, 250), properties_split[1], font=font_used, fill=BLACK) 
+    BL_image_arme.text((15, 250), res.get_var("PROPERTIES"), font=font_used, fill=BLACK) 
     out = Image.alpha_composite(back_im, back_im)
     
     out.show()
