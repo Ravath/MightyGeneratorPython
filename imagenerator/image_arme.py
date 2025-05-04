@@ -1,33 +1,22 @@
 # -*- coding: utf-8 -*-
 import re
 from PIL import Image, ImageDraw, ImageFont, ImageShow
-from generators.borderlands.gen_david_weapon import generation#, force_chest_type, force_item_type, force_item_rarity
-#from wordgenerator.Print import PrintNode
+from generators.borderlands.gen_david_weapon import generation
 
 ###################
 # Text Generation #
 ###################
-#PrintNode.print_to_buffer()
 
 res = generation.execute()
-#res.item_type = res.get_var("ITEM_TYPE")
-#print(res.get_var("ITEM_TYPE"))
-res.display_vars()
-
-#generation.text = generation.get_var("DEFAULT")
-#print(generation.text)
+#res.display_vars()
 
 find_weapon = re.findall(r"Pistolet|Fusil à pompe|Fusil d'assaut|Mitraillette|Sniper|Grenade|Bouclier", res.get_var("W_TYPE"))
 find_rarity = re.findall(r"Commun|Uncommun|Rare|Epique|E-Tech|Légendaire", res.get_var("W_TYPE"))
 find_brand = re.findall(r"Jakobs|Maliwan|Hyperion|Dahl|Vladof|Bandit|Tediore|Torgue|Classic|Contact|Proximity|MIRV|Singularity|Tesla|Transfusion|Betty|Absorb|Adaptive|Amplify|Booster|Lifeline|Nova|Raid|Shield|Spike|Turtle", res.get_var("ITEM_MANUFACTURER"))
-#text_split = re.split("Dégats : |Difficulté de visée : |Magasin : |Capacité : |Cadence : |\n\t", generation.text)
-#properties_split = re.split("Propriétés", generation.text)
-
 find_X2_visor = re.findall(r"- Viseur X2", res.get_var("PROPERTIES"))
 find_X4_visor = re.findall(r"- Viseur X4", res.get_var("PROPERTIES"))
 find_X6_visor = re.findall(r"- Viseur X6", res.get_var("PROPERTIES"))
-# text_split[1] is Weapon Name
-# text_split[5] is Difficulty Threshold
+
 ####################
 # Image Generation #
 ####################
@@ -93,16 +82,6 @@ elif find_weapon[0] == "Bouclier" :
     weapon_type = "bouclier"
 else :
     weapon_type = None
-
-# Weapon type (underlined)
-# Weapon rarity (bold)
-# Weapon brand (italic)
-# Weapon line of sight (scheme) TODO
-# Damage (case)
-# Magazine (case)
-# Difficulty threshold (chart)
-# Brand information (main words italic)
-# Properties (main word underlined)
 
 # Gun damage, magazine, difficulty threshold, brand information and properties#
 if weapon_type == "gun":
