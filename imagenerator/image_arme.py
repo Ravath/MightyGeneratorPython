@@ -54,7 +54,7 @@ item_length = d.textlength(write_item, font_used)+6
 
 # Rarity
 
-if ((res.get_var("ITEM_RARITY") == "COMMON") or (res.get_var("ITEM_RARITY") == "UNCOMMON")) and ((res.get_var("ITEM_TYPE") == "GRENADE") or (res.get_var("ITEM_TYPE") == "MACHINEGUN")) :
+if ((res.get_var("ITEM_RARITY") == "commun") or (res.get_var("ITEM_RARITY") == "uncommun")) and ((res.get_var("ITEM_TYPE") == "GRENADE") or (res.get_var("ITEM_TYPE") == "MACHINEGUN")) :
     d.text((10+item_length, 30), res.get_var("ITEM_RARITY") + "E", font=font_used, fill=BLACK)
     write_rar=res.get_var("ITEM_RARITY") + "E"
 elif res.get_var("ITEM_RARITY"):
@@ -94,45 +94,14 @@ if (res.get_var("ITEM_TYPE") == "HANDGUN") or (res.get_var("ITEM_TYPE") == "SHOT
     range_2x = 8 + bonus_2x
     range_4x = 10 + bonus_4x
     range_6x = 12 + bonus_6x
-
-    # Table for Difficulty threshold #
-    nb_lines_table = [0, 1, 2, 3, 4]
-    for l in nb_lines_table :
-        d.line((5,(188 + l * 25 ),245,(188 + l * 25)), fill=BLACK)
-        
-    nb_columns_table = [0, 1, 2, 3, 4, 5]
-    for c in nb_columns_table :
-        d.line(((5 + c * 48),188,(5 + c * 48),288), fill=BLACK)
-        
-    d.text((7, (188+8 )), "Distance"   , font=font_used, fill=BLACK)
-    d.text((7, (188+32)), "Simple"      , font=font_used, fill=BLACK)
-    d.text((7, (188+58)), "Rafale"      , font=font_used, fill=BLACK)
-    d.text((7, (188+82)), "Auto"        , font=font_used, fill=BLACK)    
     
-    d.text(((5+52 ), (188+8)), "0-5"     , font=font_used, fill=BLACK)
-    d.text(((5+100), (188+8)), "6-10"    , font=font_used, fill=BLACK)
-    d.text(((5+148), (188+8)), "11-15"  , font=font_used, fill=BLACK)
-    d.text(((5+196), (188+8)), "16-20"  , font=font_used, fill=BLACK)
-    
-    if find_shoot_simple:
-        d.text(((5+70 ), (188+32)), str(difficulty+range_0x), font=font_used, fill=BLACK)
-        d.text(((5+118), (188+32)), str(difficulty+range_2x), font=font_used, fill=BLACK)
-        d.text(((5+166), (188+32)), str(difficulty+range_4x), font=font_used, fill=BLACK)
-        d.text(((5+214), (188+32)), str(difficulty+range_6x), font=font_used, fill=BLACK)
-    if find_shoot_burst:
-        d.text(((5+70 ), (188+58)), str(difficulty +2 +range_0x), font=font_used, fill=BLACK)
-        d.text(((5+118), (188+58)), str(difficulty +2 +range_2x), font=font_used, fill=BLACK)
-        d.text(((5+166), (188+58)), str(difficulty +2 +range_4x), font=font_used, fill=BLACK)
-        d.text(((5+214), (188+58)), str(difficulty +2 +range_6x), font=font_used, fill=BLACK)
-    if find_shoot_auto:
-        d.text(((5+70 ), (188+82)), str(difficulty +4 +range_0x), font=font_used, fill=BLACK)
-        d.text(((5+118), (188+82)), str(difficulty +4 +range_2x), font=font_used, fill=BLACK)
-        d.text(((5+166), (188+82)), str(difficulty +4 +range_4x), font=font_used, fill=BLACK)
-        d.text(((5+214), (188+82)), str(difficulty +4 +range_6x), font=font_used, fill=BLACK)
-
-    # Frames for weapon damage and weapon magazine
     frame_square = Image.open('BL_Frame_Square116.png')
     back_im = image.copy()
+    # Adding a frame for the table
+    frame_diff_thresh = Image.open('BL_Frame_Diff_Thresh.png')
+    back_im.paste(frame_diff_thresh, (0,184))
+    # Frames for weapon damage and weapon magazine
+
     back_im.paste(frame_square, (5, 50))
     back_im.paste(frame_square, (126, 50))
     BL_image_arme = ImageDraw.Draw(back_im)
@@ -142,11 +111,45 @@ if (res.get_var("ITEM_TYPE") == "HANDGUN") or (res.get_var("ITEM_TYPE") == "SHOT
     # Magazine
     BL_image_arme.text((131, 60), "Magasin", font=font_used, fill=BLACK)
     BL_image_arme.text((131, 108), res.get_var("W_MAG"), font=font_used_big, fill=BLACK)
-    # Properties
-    BL_image_arme.text((15, 308), res.get_var("PROPERTIES"), font=font_used, fill=BLACK) 
-    out = Image.alpha_composite(back_im, back_im)
+    # Table for Difficulty threshold #
+
+    # Constructing table
+    nb_lines_table = [0, 1, 2, 3, 4]
+    for l in nb_lines_table :
+        BL_image_arme.line((5,(188 + l * 25 ),245,(188 + l * 25)), fill=BLACK)
+        
+    nb_columns_table = [0, 1, 2, 3, 4, 5]
+    for c in nb_columns_table :
+        BL_image_arme.line(((5 + c * 48),188,(5 + c * 48),288), fill=BLACK)
+        
+    BL_image_arme.text((7, (188+8 )), "Distance"   , font=font_used, fill=BLACK)
+    BL_image_arme.text((7, (188+32)), "Simple"      , font=font_used, fill=BLACK)
+    BL_image_arme.text((7, (188+58)), "Rafale"      , font=font_used, fill=BLACK)
+    BL_image_arme.text((7, (188+82)), "Auto"        , font=font_used, fill=BLACK)    
     
-    out.show()
+    BL_image_arme.text(((5+52 ), (188+8)), "0-5"     , font=font_used, fill=BLACK)
+    BL_image_arme.text(((5+100), (188+8)), "6-10"    , font=font_used, fill=BLACK)
+    BL_image_arme.text(((5+148), (188+8)), "11-15"  , font=font_used, fill=BLACK)
+    BL_image_arme.text(((5+196), (188+8)), "16-20"  , font=font_used, fill=BLACK)
+    
+    if find_shoot_simple:
+        BL_image_arme.text(((5+70 ), (188+32)), str(difficulty+range_0x), font=font_used, fill=BLACK)
+        BL_image_arme.text(((5+118), (188+32)), str(difficulty+range_2x), font=font_used, fill=BLACK)
+        BL_image_arme.text(((5+166), (188+32)), str(difficulty+range_4x), font=font_used, fill=BLACK)
+        BL_image_arme.text(((5+214), (188+32)), str(difficulty+range_6x), font=font_used, fill=BLACK)
+    if find_shoot_burst:
+        BL_image_arme.text(((5+70 ), (188+58)), str(difficulty +2 +range_0x), font=font_used, fill=BLACK)
+        BL_image_arme.text(((5+118), (188+58)), str(difficulty +2 +range_2x), font=font_used, fill=BLACK)
+        BL_image_arme.text(((5+166), (188+58)), str(difficulty +2 +range_4x), font=font_used, fill=BLACK)
+        BL_image_arme.text(((5+214), (188+58)), str(difficulty +2 +range_6x), font=font_used, fill=BLACK)
+    if find_shoot_auto:
+        BL_image_arme.text(((5+70 ), (188+82)), str(difficulty +4 +range_0x), font=font_used, fill=BLACK)
+        BL_image_arme.text(((5+118), (188+82)), str(difficulty +4 +range_2x), font=font_used, fill=BLACK)
+        BL_image_arme.text(((5+166), (188+82)), str(difficulty +4 +range_4x), font=font_used, fill=BLACK)
+        BL_image_arme.text(((5+214), (188+82)), str(difficulty +4 +range_6x), font=font_used, fill=BLACK)
+    # Properties
+    BL_image_arme.text((15, 308), res.get_var("PROPERTIES"), font=font_used, fill=BLACK)
+
     
 # Grenade damage and properties, including brand information#
 elif res.get_var("ITEM_TYPE") == "GRENADE":
@@ -160,9 +163,7 @@ elif res.get_var("ITEM_TYPE") == "GRENADE":
     BL_image_arme.text((15, 108), res.get_var("W_DGTS"), font=font_used_big, fill=BLACK)
     # Properties
     BL_image_arme.text((15, 200), res.get_var("PROPERTIES"), font=font_used, fill=BLACK) 
-    out = Image.alpha_composite(back_im, back_im)
-    
-    out.show()
+
 
 # Shield Capacity and properties, including brand information#
 elif res.get_var("ITEM_TYPE") == "SHIELD":
@@ -176,10 +177,17 @@ elif res.get_var("ITEM_TYPE") == "SHIELD":
     BL_image_arme.text((15, 108), res.get_var("W_CAPA"), font=font_used_big, fill=BLACK)
     # Properties
     BL_image_arme.text((15, 200), res.get_var("PROPERTIES"), font=font_used, fill=BLACK) 
-    out = Image.alpha_composite(back_im, back_im)
-    
-    out.show()
 
 else:
-    print("Arme inconnue: ")
+    print( "Arme inconnue: ")
     print(res.get_var("ITEM_TYPE"))
+
+#Adding Header and Footer
+header = Image.open('BL_Frame_Header.png')
+back_im.paste(header, (5, 1))
+footer = header.transpose(Image.Transpose.ROTATE_180)
+back_im.paste(footer, (5, 590))
+
+# Finally, generating image in png
+out = Image.alpha_composite(back_im, back_im)
+out.show()
