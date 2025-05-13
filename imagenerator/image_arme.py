@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
+import textwrap
 from PIL import Image, ImageDraw, ImageFont, ImageShow
 from generators.borderlands.gen_david_weapon import generation
 
@@ -8,13 +9,37 @@ from generators.borderlands.gen_david_weapon import generation
 ###################
 
 res = generation.execute()
-#res.display_vars()
 
-#find_weapon = re.findall(r"Pistolet|Fusil à pompe|Fusil d'assaut|Mitraillette|Sniper|Grenade|Bouclier", res.get_var("W_TYPE"))
+# Creating Regex used for text image generation
 find_rarity = re.findall(r"Commun|Uncommun|Rare|Epique|E-Tech|Légendaire", res.get_var("W_TYPE"))
 find_X2_visor = re.findall(r"- Viseur X2", res.get_var("PROPERTIES"))
 find_X4_visor = re.findall(r"- Viseur X4", res.get_var("PROPERTIES"))
 find_X6_visor = re.findall(r"- Viseur X6", res.get_var("PROPERTIES"))
+
+# Finally, generate PROPERTIES text with line breaks for text image generation
+# contained in image width
+def wrap_text(text, width):
+    wrapped_text = []
+    start = 0
+    while start < len(text):
+        end = start + width
+        if end < len(text):
+            # Find last space or line break before width limit
+            last_space = text.rfind(' ', start, end)
+            last_newline = text.rfind('\n', start, end)
+            if last_newline != -1:
+                end = last_newline
+            elif last_space != -1:
+                end = last_space
+            else:
+                end = end  # If no space or line break found, cut to specified width
+        wrapped_text.append(text[start:end].strip())
+        start = end + 1
+    return '\n'.join(wrapped_text) # Join all chains together with a line break
+
+max_length= 40 # Used for max width image
+
+properties_modif = wrap_text(res.get_var("PROPERTIES"), max_length)
 
 ####################
 # Image Generation #
@@ -23,6 +48,7 @@ find_X6_visor = re.findall(r"- Viseur X6", res.get_var("PROPERTIES"))
 # Image background creation with dimensions
 width = 250
 height = 600
+
 
 # Colors, used for later
 WHITE = (255, 255, 255, 255)
@@ -148,7 +174,7 @@ if (res.get_var("ITEM_TYPE") == "HANDGUN") or (res.get_var("ITEM_TYPE") == "SHOT
         BL_image_arme.text(((5+166), (188+82)), str(difficulty +4 +range_4x), font=font_used, fill=BLACK)
         BL_image_arme.text(((5+214), (188+82)), str(difficulty +4 +range_6x), font=font_used, fill=BLACK)
     # Properties
-    BL_image_arme.text((15, 308), res.get_var("PROPERTIES"), font=font_used, fill=BLACK)
+    BL_image_arme.text((15, 308), properties_modif, font=font_used, fill=BLACK)
 
     
 # Grenade damage and properties, including brand information#
@@ -162,7 +188,7 @@ elif res.get_var("ITEM_TYPE") == "GRENADE":
     BL_image_arme.text((15, 60), "Dégâts", font=font_used, fill=BLACK)
     BL_image_arme.text((15, 108), res.get_var("W_DGTS"), font=font_used_big, fill=BLACK)
     # Properties
-    BL_image_arme.text((15, 200), res.get_var("PROPERTIES"), font=font_used, fill=BLACK) 
+    BL_image_arme.text((15, 200), properties_modif, font=font_used, fill=BLACK) 
 
 
 # Shield Capacity and properties, including brand information#
@@ -176,7 +202,7 @@ elif res.get_var("ITEM_TYPE") == "SHIELD":
     BL_image_arme.text((15, 60), "Capacité", font=font_used, fill=BLACK)
     BL_image_arme.text((15, 108), res.get_var("W_CAPA"), font=font_used_big, fill=BLACK)
     # Properties
-    BL_image_arme.text((15, 200), res.get_var("PROPERTIES"), font=font_used, fill=BLACK) 
+    BL_image_arme.text((15, 200), properties_modif, font=font_used, fill=BLACK) 
 
 else:
     print( "Arme inconnue: ")
